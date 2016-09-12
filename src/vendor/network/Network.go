@@ -9,11 +9,11 @@ import (
 )
 
 var NET = NETWORK{
-	_host:      "http://localhost",
-	_method:    0,
-	_parameter: "fuzzer",
-	_crypt:     false,
-	_status:    false,
+	host:      "http://localhost",
+	method:    0,
+	parameter: "fuzzer",
+	crypt:     false,
+	status:    false,
 }
 
 type config struct {
@@ -27,32 +27,38 @@ type config struct {
 }
 
 type NETWORK struct {
-	_host       string
-	_method     int
-	_parameter  string
-	_crypt      bool
-	_httpMethod string
-	_status     bool
+	host      string
+	method    int
+	parameter string
+	crypt     bool
+	status    bool
 
 	_config config
 }
 
 func (n *NETWORK) IsSetup() bool {
-	return n._status
+	return n.status
 }
 
 func (n *NETWORK) Setup(c *cli.Context) {
 	url := c.String("u")
+	method := c.Int("m")
+	parameter := c.String("p")
+	crypt := false
 
 	if url == "" {
 		fmt.Println("flag -u (url) is required")
 		return
 	}
 
-	fmt.Println(url)
-	n._host = url
+	n.host = url
+	n.method = method
+	n.parameter = parameter
+	n.crypt = crypt
 
-	n._status = true
+	n.status = true
+
+	fmt.Println(n)
 }
 
 func (n *NETWORK) _getHandleBack() string {
@@ -61,22 +67,25 @@ func (n *NETWORK) _getHandleBack() string {
 
 func (n *NETWORK) _initConfig(r string) {
 	c := config{
-		status: true,
+		url:    n.host,
 		method: "GET",
+		status: true,
 	}
 
 	c.headers = []string{"UserAgent"}
 	request := r + n._getHandleBack()
 
-	if n._method == 0 {
-		c.url = n._host + "?" + n._parameter + "=" + request
-	} else if n._method == 1 {
+	if n.method == 0 { //GET
+		c.url = n.host + "?" + n.parameter + "=" + request
+	} else if n.method == 1 { //POST
 		c.form = request
-	} else if n._method == 2 {
+		c.method = "POST"
+	} else if n.method == 2 { //HEADER
 		c.headers = []string{request}
-	} else if n._method == 3 {
-		//cookie
+	} else if n.method == 3 { //COOKIE
 		c.jar = []string{}
+	} else {
+		c.status = false
 	}
 
 	n._config = c
@@ -108,7 +117,7 @@ func (n *NETWORK) Send(r string) {
 	n._initConfig(r)
 
 	if n._config.status == false {
-		fmt.Println("HERE")
+		fmt.Println("HERE 1")
 		err := new(error)
 		panic(err)
 	}
@@ -116,13 +125,14 @@ func (n *NETWORK) Send(r string) {
 	req, err := http.NewRequest(n._config.method, n._config.url, nil)
 
 	if err != nil {
-		fmt.Println("HERE2")
+		fmt.Println("HERE 2")
 		panic(err)
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
+		fmt.Println("HERE 3")
 		panic(err)
 	}
 

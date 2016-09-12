@@ -10,7 +10,6 @@ import (
 )
 
 var CMD = command.CMD{}
-var NET = network.NET
 
 var helpDefinition = cli.Command{
 	Name:    "help",
@@ -46,15 +45,17 @@ var srvDefinition = cli.Command{
 			Usage:  "list file on server",
 			Action: CMD.Ls,
 			Flags: []cli.Flag{
-				cli.BoolFlag{Name: "raw"},
+				cli.BoolFlag{Name: "raw, send a raw ls"},
 			},
 		},
 		{
 			Name:   "config",
 			Usage:  "configure server",
-			Action: NET.Setup,
+			Action: network.NET.Setup,
 			Flags: []cli.Flag{
-				cli.StringFlag{Name: "u"},
+				cli.StringFlag{Name: "u, url of the server"},
+				cli.IntFlag{Name: "m, method to use"},
+				cli.StringFlag{Name: "p, parameter to use"},
 			},
 		},
 		{
@@ -72,30 +73,6 @@ var srvDefinition = cli.Command{
 						fmt.Println("t2")
 					},
 				},
-			},
-		},
-	},
-}
-
-var template = cli.Command{
-	Name:    "template",
-	Aliases: []string{"t"},
-	Usage:   "options for task templates",
-	Subcommands: []cli.Command{
-		{
-			Name:  "add",
-			Usage: "add a new template",
-			Action: func(c *cli.Context) error {
-				fmt.Println("new task template: ", c.Args().First())
-				return nil
-			},
-		},
-		{
-			Name:  "remove",
-			Usage: "remove an existing template",
-			Action: func(c *cli.Context) error {
-				fmt.Println("removed task template: ", c.Args().First())
-				return nil
 			},
 		},
 	},

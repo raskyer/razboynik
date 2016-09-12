@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"network"
+	"strings"
 
 	"github.com/urfave/cli"
 )
@@ -48,6 +49,14 @@ func (cmd *CMD) Ls(c *cli.Context) {
 		return
 	}
 
+	if c.Bool("raw") {
+		ls := "ls " + strings.Join(c.Args(), " ")
+		cmd.createCMD(&ls, "a")
+		network.NET.Send(ls)
+
+		return
+	}
+
 	var context string
 
 	if len(c.Args()) > 0 {
@@ -60,9 +69,7 @@ func (cmd *CMD) Ls(c *cli.Context) {
 	cmd.createCMD(&lsFolder, "a")
 	cmd.createCMD(&lsFile, "b")
 
-	ls := lsFolder + lsFile + "$r=json_encode(array(urlencode($fo), urlencode($fi)));"
-
-	//fmt.Println(ls)
+	ls := lsFolder + lsFile + "$r=json_encode(array(urlencode($a), urlencode($b)));"
 
 	network.NET.Send(ls)
 }
