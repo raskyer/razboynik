@@ -73,7 +73,7 @@ func (cmd *CMD) Ls(c *cli.Context) {
 	cmd.createCMD(&lsFolder, "a")
 	cmd.createCMD(&lsFile, "b")
 
-	ls := lsFolder + lsFile + "$r=json_encode(array(urlencode($a), urlencode($b)));"
+	ls := lsFolder + lsFile + "$r=json_encode(array($a, $b));"
 
 	network.NET.Send(ls)
 }

@@ -21,9 +21,7 @@ func showRequestMethod(r *http.Request) {
 }
 
 func showRequestBody(r *http.Request) {
-	r.ParseForm()
-	fmt.Println(r)
-	fmt.Println(r.Body)
+	fmt.Println(r.PostForm)
 }
 
 func showRequestHeaders(r *http.Request) {

