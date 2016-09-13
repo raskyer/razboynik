@@ -17,6 +17,10 @@ func handleNotConnected() {
 	fmt.Println("You haven't setup the required information, please refer to srv config")
 }
 
+func (c *CMD) Setup() {
+	fmt.Println("in progress")
+}
+
 func (c *CMD) getSystemCMD(cmd, r string) string {
 	return "ob_start();system('" + cmd + "');$" + r + "=ob_get_contents();ob_end_clean();"
 }

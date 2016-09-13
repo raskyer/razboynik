@@ -51,14 +51,16 @@ func (n *NETWORK) Setup(c *cli.Context) {
 		return
 	}
 
+	if parameter == "" {
+		parameter = n.parameter
+	}
+
 	n.host = url
 	n.method = method
 	n.parameter = parameter
 	n.crypt = crypt
 
 	n.status = true
-
-	fmt.Println(n)
 }
 
 func (n *NETWORK) _getHandleBack() string {
