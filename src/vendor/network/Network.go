@@ -1,6 +1,7 @@
 package network
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -17,13 +18,13 @@ var NET = NETWORK{
 }
 
 type config struct {
-	url     string
-	method  string
-	headers []string
-	form    string
-	jar     []string
-	proxy   string
-	status  bool
+	url    string
+	method string
+	form   []byte
+	jar    []string
+	proxy  string
+	cmd    string
+	status bool
 }
 
 type NETWORK struct {
@@ -64,7 +65,17 @@ func (n *NETWORK) Setup(c *cli.Context) {
 }
 
 func (n *NETWORK) _getHandleBack() string {
-	return ""
+	var r string
+
+	if n.method == 0 || n.method == 1 {
+		r = "echo($r);exit();"
+	} else if n.method == 2 {
+		r = "header('" + n.parameter + ":' . $r);exit();"
+	} else if n.method == 3 {
+		r = "setcookie('" + n.parameter + "', $r);exit();"
+	}
+
+	return r
 }
 
 func (n *NETWORK) _initConfig(r string) {
@@ -74,16 +85,13 @@ func (n *NETWORK) _initConfig(r string) {
 		status: true,
 	}
 
-	c.headers = []string{"UserAgent"}
 	request := r + n._getHandleBack()
 
 	if n.method == 0 { //GET
 		c.url = n.host + "?" + n.parameter + "=" + request
 	} else if n.method == 1 { //POST
-		c.form = request
+		c.form = []byte(n.parameter + "=" + request)
 		c.method = "POST"
-	} else if n.method == 2 { //HEADER
-		c.headers = []string{request}
 	} else if n.method == 3 { //COOKIE
 		c.jar = []string{}
 	} else {
@@ -91,6 +99,12 @@ func (n *NETWORK) _initConfig(r string) {
 	}
 
 	n._config = c
+}
+
+func (n *NETWORK) _headerConfig(req *http.Request) {
+	if n.method == 2 {
+		req.Header.Set(n.parameter, n._config.cmd)
+	}
 }
 
 func (n *NETWORK) _handleSuccess(response *http.Response) {
@@ -124,12 +138,14 @@ func (n *NETWORK) Send(r string) {
 		panic(err)
 	}
 
-	req, err := http.NewRequest(n._config.method, n._config.url, nil)
+	req, err := http.NewRequest(n._config.method, n._config.url, bytes.NewBuffer(n._config.form))
 
 	if err != nil {
 		fmt.Println("HERE 2")
 		panic(err)
 	}
+
+	n._headerConfig(req)
 
 	resp, err := client.Do(req)
 
