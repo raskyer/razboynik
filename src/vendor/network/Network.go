@@ -3,8 +3,8 @@ package network
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"net/url"
 
 	"github.com/urfave/cli"
 )
@@ -20,11 +20,10 @@ var NET = NETWORK{
 type config struct {
 	url    string
 	method string
-	form   []byte
+	form   *bytes.Buffer
 	jar    []string
 	proxy  string
 	cmd    string
-	status bool
 }
 
 type NETWORK struct {
@@ -34,7 +33,9 @@ type NETWORK struct {
 	crypt     bool
 	status    bool
 
-	_config config
+	_config       config
+	_lastRequest  http.Request
+	_lastResponse *http.Response
 }
 
 func (n *NETWORK) IsSetup() bool {
@@ -82,77 +83,112 @@ func (n *NETWORK) _initConfig(r string) {
 	c := config{
 		url:    n.host,
 		method: "GET",
-		status: true,
 	}
+
+	n.status = true
 
 	request := r + n._getHandleBack()
 
 	if n.method == 0 { //GET
 		c.url = n.host + "?" + n.parameter + "=" + request
 	} else if n.method == 1 { //POST
-		c.form = []byte(n.parameter + "=" + request)
 		c.method = "POST"
+
+		form := url.Values{}
+		form.Set(n.parameter, request)
+		c.form = bytes.NewBufferString(form.Encode())
 	} else if n.method == 3 { //COOKIE
 		c.jar = []string{}
 	} else {
-		c.status = false
+		n.status = false
 	}
 
 	n._config = c
 }
 
 func (n *NETWORK) _headerConfig(req *http.Request) {
-	if n.method == 2 {
-		req.Header.Set(n.parameter, n._config.cmd)
+	if n.method == 1 {
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	} else if n.method == 2 {
+		req.Header.Add(n.parameter, n._config.cmd)
 	}
 }
 
 func (n *NETWORK) _handleSuccess(response *http.Response) {
-	defer response.Body.Close()
-
-	//Read status
-	fmt.Println(response.Status)
-
-	//Read body
-	body, err := ioutil.ReadAll(response.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("body: %v", string(body))
-
-	//Read headers
-	fmt.Println(response.Header)
-
-	//Read cookie
+	n._lastResponse = response
 }
 
 func (n *NETWORK) Send(r string) {
 	client := &http.Client{}
 	n._initConfig(r)
 
-	if n._config.status == false {
-		fmt.Println("HERE 1")
+	if n.status == false {
 		err := new(error)
 		panic(err)
 	}
 
-	req, err := http.NewRequest(n._config.method, n._config.url, bytes.NewBuffer(n._config.form))
+	req, err := http.NewRequest(n._config.method, n._config.url, n._config.form)
 
 	if err != nil {
-		fmt.Println("HERE 2")
 		panic(err)
 	}
+
+	n._lastRequest = *req
+	fmt.Println(n._lastRequest)
 
 	n._headerConfig(req)
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		fmt.Println("HERE 3")
 		panic(err)
 	}
 
 	n._handleSuccess(resp)
+}
+
+func (n *NETWORK) RequestInfo(c *cli.Context) {
+	if n._lastResponse == nil {
+		fmt.Println("You havn't made a request. You must make a request before seeing any information")
+		return
+	}
+
+	if c.Bool("url") {
+		showRequestUrl(&n._lastRequest)
+	}
+
+	if c.Bool("method") {
+		showRequestMethod(&n._lastRequest)
+	}
+
+	if c.Bool("body") {
+		showRequestBody(&n._lastRequest)
+	}
+
+	if c.Bool("headers") {
+		showRequestHeaders(&n._lastRequest)
+	}
+}
+
+func (n *NETWORK) ResponseInfo(c *cli.Context) {
+	if n._lastResponse == nil {
+		fmt.Println("You havn't made a request. You must make a request before seeing any information")
+		return
+	}
+
+	if c.Bool("status") {
+		showResponseStatus(n._lastResponse)
+	}
+
+	if c.Bool("body") {
+		showResponseBody(n._lastResponse)
+	}
+
+	if c.Bool("headers") {
+		showResponseHeaders(n._lastResponse)
+	}
+
+	if c.Bool("request") {
+		showResponseRequest(n._lastResponse)
+	}
 }

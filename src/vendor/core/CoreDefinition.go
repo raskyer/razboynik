@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"network"
 
 	"command"
@@ -67,25 +66,37 @@ var srvDefinition = cli.Command{
 			Action: network.NET.Setup,
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "u, url", Usage: "Url of the server. Ex: -u http://localhost"},
-				cli.IntFlag{Name: "m, method", Usage: "Method to use. Ex: -m 1 [0 = GET, 1 = POST, 2 = HEADER, 3 = COOKIE]"},
+				cli.IntFlag{Name: "m, method", Usage: "Method to use. Ex: -m 1"},
 				cli.StringFlag{Name: "p, parameter", Usage: "Parameter to use. Ex: -p test"},
-				cli.BoolFlag{Name: "f, file", Usage: "Use a config from file (default path : ./config). Ex: -f"},
-				cli.BoolFlag{Name: "c, crypt", Usage: "Use a crypt. Ex: -c"},
+				cli.BoolFlag{Name: "f, file", Usage: "Use a config from file (default path : ./config)"},
+				cli.BoolFlag{Name: "c, crypt", Usage: "Use a crypt"},
 			},
 		},
 		{
-			Name:  "t",
-			Usage: "test",
-			Action: func(c *cli.Context) error {
-				fmt.Println("test")
-				return nil
-			},
+			Name:   "info",
+			Usage:  "Give information on the last specified item",
+			Action: network.SpecifiedItem,
 			Subcommands: []cli.Command{
 				{
-					Name:  "t2",
-					Usage: "not",
-					Action: func(c *cli.Context) {
-						fmt.Println("t2")
+					Name:   "request",
+					Usage:  "Give information about the last request",
+					Action: network.NET.RequestInfo,
+					Flags: []cli.Flag{
+						cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
+						cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
+						cli.BoolFlag{Name: "body", Usage: "Shows request's body"},
+						cli.BoolFlag{Name: "headers", Usage: "Shows request's headers"},
+					},
+				},
+				{
+					Name:   "response",
+					Usage:  "Give information about the last response",
+					Action: network.NET.ResponseInfo,
+					Flags: []cli.Flag{
+						cli.BoolFlag{Name: "status", Usage: "Shows response's status"},
+						cli.BoolFlag{Name: "headers", Usage: "Shows response's headers"},
+						cli.BoolFlag{Name: "body", Usage: "Shows response's body"},
+						cli.BoolFlag{Name: "request", Usage: "Shows response's interpreted request"},
 					},
 				},
 			},
