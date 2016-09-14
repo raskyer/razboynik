@@ -3,7 +3,6 @@ package bash
 import (
 	"command"
 	"core"
-	"network"
 
 	"github.com/chzyer/readline"
 )
@@ -33,12 +32,6 @@ func (b *BashInterface) GetPrompt() *readline.Instance {
 
 func (b *BashInterface) Run(l string) {
 	if l == "exit" {
-		core.ExitBash()
-		return
-	}
-
-	if !network.NET.IsSetup() {
-		command.HandleNotConnected()
 		core.ExitBash()
 		return
 	}

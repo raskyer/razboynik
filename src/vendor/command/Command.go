@@ -18,10 +18,6 @@ type COMMAND struct {
 	_context string
 }
 
-func (c *COMMAND) Setup() {
-	fmt.Println("in progress")
-}
-
 func HandleNotConnected() {
 	fmt.Println("You haven't setup the required information, please refer to srv config")
 }

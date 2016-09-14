@@ -31,19 +31,6 @@ var exitDefinition = cli.Command{
 	Action:  exit,
 }
 
-var cmdDefinition = cli.Command{
-	Name:    "cmd",
-	Aliases: []string{"c"},
-	Usage:   "Prefix to make cmd command",
-	Subcommands: []cli.Command{
-		{
-			Name:   "config",
-			Usage:  "Configure cmd",
-			Action: command.CMD.Setup,
-		},
-	},
-}
-
 var srvDefinition = cli.Command{
 	Name:    "srv",
 	Aliases: []string{"s"},
