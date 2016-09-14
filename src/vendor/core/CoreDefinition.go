@@ -3,6 +3,7 @@ package core
 import (
 	"command"
 	"network"
+	"php"
 
 	"github.com/urfave/cli"
 )
@@ -57,6 +58,11 @@ var srvDefinition = cli.Command{
 			Name:  "exec",
 			Usage: "Execute a special command on server",
 			Subcommands: []cli.Command{
+				{
+					Name:   "php",
+					Usage:  "Execute php on server",
+					Action: php.Raw,
+				},
 				{
 					Name:   "ls",
 					Usage:  "List file on server",
