@@ -8,6 +8,75 @@ import (
 	"github.com/urfave/cli"
 )
 
+func RequestInfo(c *cli.Context) {
+	if NET._lastResponse == nil {
+		fmt.Println("You havn't made a request. You must make a request before seeing any information")
+		return
+	}
+
+	request := NET._lastResponse.Request
+	flag := false
+	request.PostForm = NET._body
+
+	if c.Bool("url") {
+		showRequestUrl(request)
+		flag = true
+	}
+
+	if c.Bool("method") {
+		showRequestMethod(request)
+		flag = true
+	}
+
+	if c.Bool("body") {
+		showRequestBody(request)
+		flag = true
+	}
+
+	if c.Bool("headers") {
+		showRequestHeaders(request)
+		flag = true
+	}
+
+	if !flag {
+		fmt.Println(request)
+	}
+}
+
+func ResponseInfo(c *cli.Context) {
+	if NET._lastResponse == nil {
+		fmt.Println("You havn't made a request. You must make a request before seeing any information")
+		return
+	}
+
+	response := NET._lastResponse
+	flag := false
+
+	if c.Bool("status") {
+		showResponseStatus(response)
+		flag = true
+	}
+
+	if c.Bool("body") {
+		showResponseBody(response)
+		flag = true
+	}
+
+	if c.Bool("headers") {
+		showResponseHeaders(response)
+		flag = true
+	}
+
+	if c.Bool("request") {
+		showResponseRequest(response)
+		flag = true
+	}
+
+	if !flag {
+		fmt.Println(response)
+	}
+}
+
 func SpecifiedItem(c *cli.Context) {
 	fmt.Println("Please specified the item: response or request")
 }

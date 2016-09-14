@@ -80,7 +80,7 @@ var srvDefinition = cli.Command{
 				{
 					Name:   "request",
 					Usage:  "Give information about the last request",
-					Action: network.NET.RequestInfo,
+					Action: network.RequestInfo,
 					Flags: []cli.Flag{
 						cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
 						cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
@@ -91,7 +91,7 @@ var srvDefinition = cli.Command{
 				{
 					Name:   "response",
 					Usage:  "Give information about the last response",
-					Action: network.NET.ResponseInfo,
+					Action: network.ResponseInfo,
 					Flags: []cli.Flag{
 						cli.BoolFlag{Name: "status", Usage: "Shows response's status"},
 						cli.BoolFlag{Name: "headers", Usage: "Shows response's headers"},

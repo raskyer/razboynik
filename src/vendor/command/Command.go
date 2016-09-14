@@ -2,7 +2,10 @@ package command
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"network"
+	"normalizer"
 	"strings"
 
 	"github.com/urfave/cli"
@@ -56,7 +59,7 @@ func (cmd *CMD) Ls(c *cli.Context) {
 	if c.Bool("raw") {
 		ls := "ls " + strings.Join(c.Args(), " ")
 		cmd.createCMD(&ls, "a")
-		network.NET.Send(ls)
+		network.NET.Send(ls, lsEnd)
 
 		return
 	}
@@ -75,5 +78,19 @@ func (cmd *CMD) Ls(c *cli.Context) {
 
 	ls := lsFolder + lsFile + "$r=json_encode(array($a, $b));"
 
-	network.NET.Send(ls)
+	network.NET.Send(ls, lsEnd)
+}
+
+func lsEnd(r *http.Response) {
+	defer r.Body.Close()
+	buffer, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		panic(err)
+	}
+
+	base64 := string(buffer)
+	body := normalizer.Decode(base64)
+
+	fmt.Println(body)
 }
