@@ -148,8 +148,16 @@ func (n *NETWORK) getWithCookie(r string) {
 
 func (n *NETWORK) _send(c *config) *http.Response {
 	client := &http.Client{}
+	data := c.form
 
-	req, err := http.NewRequest(c.method, c.url, c.form)
+	var req *http.Request
+	var err error
+
+	if c.form != nil {
+		req, err = http.NewRequest(c.method, c.url, data)
+	} else {
+		req, err = http.NewRequest(c.method, c.url, nil)
+	}
 
 	if err != nil {
 		panic(err)

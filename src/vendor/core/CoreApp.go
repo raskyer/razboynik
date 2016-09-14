@@ -9,6 +9,8 @@ import (
 )
 
 var Running = true
+var RunningMain = true
+var RunningBash = false
 
 type CoreInterface struct {
 	cmd         *cli.App
@@ -27,16 +29,11 @@ func Create() *CoreInterface {
 		helpDefinition,
 		exitDefinition,
 	}
-
 	c.completer = readline.NewPrefixCompleter()
 	buildCompleter(&c.commands, &c.completer)
 
-	c.cmd = cli.NewApp()
+	c.cmd = createCli(&c.commands)
 	addInformation(c.cmd)
-	c.cmd.Commands = c.commands
-	c.cmd.CommandNotFound = func(c *cli.Context, command string) {
-		cli.ShowAppHelp(c)
-	}
 
 	return &c
 }
@@ -81,6 +78,16 @@ func addInformation(app *cli.App) {
 	}
 	app.Copyright = "(c) 2016 Eat Bytes"
 	app.Usage = "File upload meterpreter"
+}
+
+func createCli(commands *[]cli.Command) *cli.App {
+	client := cli.NewApp()
+	client.Commands = *commands
+	client.CommandNotFound = func(c *cli.Context, command string) {
+		cli.ShowAppHelp(c)
+	}
+
+	return client
 }
 
 func (c *CoreInterface) GetCommand(line string) []string {

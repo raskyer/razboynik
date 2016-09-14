@@ -1,14 +1,11 @@
 package core
 
 import (
-	"network"
-
 	"command"
+	"network"
 
 	"github.com/urfave/cli"
 )
-
-var CMD = command.CMD{}
 
 var helpDefinition = cli.Command{
 	Name:    "help",
@@ -42,7 +39,7 @@ var cmdDefinition = cli.Command{
 		{
 			Name:   "config",
 			Usage:  "Configure cmd",
-			Action: CMD.Setup,
+			Action: command.CMD.Setup,
 		},
 	},
 }
@@ -53,9 +50,14 @@ var srvDefinition = cli.Command{
 	Usage:   "Prefix to make server command",
 	Subcommands: []cli.Command{
 		{
+			Name:   "bash",
+			Usage:  "Open meterpreter like session (command are send raw to server except 'cd')",
+			Action: bash,
+		},
+		{
 			Name:   "ls",
 			Usage:  "List file on server",
-			Action: CMD.Ls,
+			Action: command.CMD.Ls,
 			Flags: []cli.Flag{
 				cli.BoolFlag{Name: "raw, send a raw ls"},
 			},
@@ -74,31 +76,15 @@ var srvDefinition = cli.Command{
 		},
 		{
 			Name:   "info",
-			Usage:  "Give information on the last specified item",
-			Action: network.SpecifiedItem,
-			Subcommands: []cli.Command{
-				{
-					Name:   "request",
-					Usage:  "Give information about the last request",
-					Action: network.RequestInfo,
-					Flags: []cli.Flag{
-						cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
-						cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
-						cli.BoolFlag{Name: "body", Usage: "Shows request's body"},
-						cli.BoolFlag{Name: "headers", Usage: "Shows request's headers"},
-					},
-				},
-				{
-					Name:   "response",
-					Usage:  "Give information about the last response",
-					Action: network.ResponseInfo,
-					Flags: []cli.Flag{
-						cli.BoolFlag{Name: "status", Usage: "Shows response's status"},
-						cli.BoolFlag{Name: "headers", Usage: "Shows response's headers"},
-						cli.BoolFlag{Name: "body", Usage: "Shows response's body"},
-						cli.BoolFlag{Name: "request", Usage: "Shows response's interpreted request"},
-					},
-				},
+			Usage:  "Give information on the last specified item. Ex: srv info request",
+			Action: network.Info,
+			Flags: []cli.Flag{
+				cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
+				cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
+				cli.BoolFlag{Name: "status", Usage: "Shows response's status"},
+				cli.BoolFlag{Name: "request", Usage: "Shows response's interpreted request"},
+				cli.BoolFlag{Name: "body", Usage: "Shows item's body"},
+				cli.BoolFlag{Name: "headers", Usage: "Shows item's headers"},
 			},
 		},
 	},

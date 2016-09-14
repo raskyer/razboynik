@@ -2,120 +2,99 @@ package network
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	"worker"
 
 	"github.com/urfave/cli"
 )
 
-func RequestInfo(c *cli.Context) {
-	if NET._lastResponse == nil {
-		fmt.Println("You havn't made a request. You must make a request before seeing any information")
-		return
-	}
-
-	request := NET._lastResponse.Request
+func requestInfo(c *cli.Context) {
 	flag := false
-	request.PostForm = NET._body
+	r := NET._lastResponse.Request
+	r.PostForm = NET._body
 
 	if c.Bool("url") {
-		showRequestUrl(request)
+		fmt.Println(r.URL)
 		flag = true
 	}
 
 	if c.Bool("method") {
-		showRequestMethod(request)
+		fmt.Println(r.Method)
 		flag = true
 	}
 
 	if c.Bool("body") {
-		showRequestBody(request)
+		fmt.Println(r.PostForm)
 		flag = true
 	}
 
 	if c.Bool("headers") {
-		showRequestHeaders(request)
+		fmt.Println(r.Header)
 		flag = true
 	}
 
 	if !flag {
-		fmt.Println(request)
+		fmt.Println(r)
 	}
 }
 
-func ResponseInfo(c *cli.Context) {
+func responseInfo(c *cli.Context) {
+	r := NET._lastResponse
+	flag := false
+
+	if c.Bool("status") {
+		fmt.Println(r.Status)
+		flag = true
+	}
+
+	if c.Bool("body") {
+		body := worker.GetBody(r)
+		fmt.Println("body: %v", string(body))
+
+		flag = true
+	}
+
+	if c.Bool("headers") {
+		fmt.Println(r.Header)
+		flag = true
+	}
+
+	if c.Bool("request") {
+		fmt.Println(r.Request)
+		flag = true
+	}
+
+	if !flag {
+		fmt.Println(r)
+	}
+}
+
+func Info(c *cli.Context) {
 	if NET._lastResponse == nil {
 		fmt.Println("You havn't made a request. You must make a request before seeing any information")
 		return
 	}
 
-	response := NET._lastResponse
-	flag := false
+	if len(c.Args()) < 1 {
+		fmt.Println("Request => ")
+		requestInfo(c)
 
-	if c.Bool("status") {
-		showResponseStatus(response)
-		flag = true
+		fmt.Println("Response => ")
+		responseInfo(c)
+
+		return
 	}
 
-	if c.Bool("body") {
-		showResponseBody(response)
-		flag = true
+	item := c.Args().Get(0)
+
+	if item == "request" {
+		requestInfo(c)
+		return
 	}
 
-	if c.Bool("headers") {
-		showResponseHeaders(response)
-		flag = true
+	if item == "response" {
+		responseInfo(c)
+		return
 	}
 
-	if c.Bool("request") {
-		showResponseRequest(response)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(response)
-	}
-}
-
-func SpecifiedItem(c *cli.Context) {
-	fmt.Println("Please specified the item: response or request")
-}
-
-func showRequestUrl(r *http.Request) {
-	fmt.Println(r.URL)
-}
-
-func showRequestMethod(r *http.Request) {
-	fmt.Println(r.Method)
-}
-
-func showRequestBody(r *http.Request) {
-	fmt.Println(r.PostForm)
-}
-
-func showRequestHeaders(r *http.Request) {
-	fmt.Println(r.Header)
-}
-
-func showResponseStatus(r *http.Response) {
-	fmt.Println(r.Status)
-}
-
-func showResponseBody(r *http.Response) {
-	defer r.Body.Close()
-	body, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("body: %v", string(body))
-}
-
-func showResponseHeaders(r *http.Response) {
-	fmt.Println(r.Header)
-}
-
-func showResponseRequest(r *http.Response) {
-	fmt.Println(r.Request)
+	fmt.Println("This item : " + item + " is not specified please refer to srv info -h for more info")
 }
