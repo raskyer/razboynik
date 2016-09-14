@@ -54,7 +54,7 @@ func bashLoop(running *bool) {
 	for *running {
 		line, err := prompt.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
-			break
+			*running = false
 		}
 
 		if len(line) == 0 {

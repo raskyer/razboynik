@@ -25,6 +25,8 @@ func Create() *CoreInterface {
 	c.commands = []cli.Command{
 		generateDefinition,
 		srvDefinition,
+		encodeDefinition,
+		decodeDefinition,
 		helpDefinition,
 		exitDefinition,
 	}

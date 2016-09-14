@@ -4,6 +4,7 @@ import (
 	"command"
 	"fmt"
 	"network"
+	"normalizer"
 
 	"github.com/urfave/cli"
 )
@@ -33,4 +34,16 @@ func ExitBash() {
 
 func exit(c *cli.Context) {
 	Running = false
+}
+
+func encode(c *cli.Context) {
+	str := c.Args().Get(0)
+	sEnc := normalizer.Encode(str)
+	fmt.Println(sEnc)
+}
+
+func decode(c *cli.Context) {
+	str := c.Args().Get(0)
+	sDec := normalizer.Decode(str)
+	fmt.Println(sDec)
 }

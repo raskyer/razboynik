@@ -31,6 +31,18 @@ var exitDefinition = cli.Command{
 	Action:  exit,
 }
 
+var encodeDefinition = cli.Command{
+	Name:   "encode",
+	Usage:  "Encode a string to base64",
+	Action: encode,
+}
+
+var decodeDefinition = cli.Command{
+	Name:   "decode",
+	Usage:  "Decode a base64 string",
+	Action: decode,
+}
+
 var srvDefinition = cli.Command{
 	Name:    "srv",
 	Aliases: []string{"s"},
@@ -38,15 +50,21 @@ var srvDefinition = cli.Command{
 	Subcommands: []cli.Command{
 		{
 			Name:   "bash",
-			Usage:  "Open meterpreter like session (command are send raw to server except 'cd')",
+			Usage:  "Open meterpreter like session (command are send raw to the server)",
 			Action: bash,
 		},
 		{
-			Name:   "ls",
-			Usage:  "List file on server",
-			Action: command.CMD.Ls,
-			Flags: []cli.Flag{
-				cli.BoolFlag{Name: "raw, send a raw ls"},
+			Name:  "exec",
+			Usage: "Execute a special command on server",
+			Subcommands: []cli.Command{
+				{
+					Name:   "ls",
+					Usage:  "List file on server",
+					Action: command.CMD.Ls,
+					Flags: []cli.Flag{
+						cli.BoolFlag{Name: "raw, send a raw ls"},
+					},
+				},
 			},
 		},
 		{
