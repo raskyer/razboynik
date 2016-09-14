@@ -28,6 +28,7 @@ func bash(c *cli.Context) {
 }
 
 func ExitBash() {
+	command.CMD.Reset()
 	RunningBash = false
 	RunningMain = true
 }

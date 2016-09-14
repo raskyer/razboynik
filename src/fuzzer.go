@@ -45,7 +45,7 @@ func mainLoop() {
 }
 
 func bashLoop(running *bool) {
-	bash := bash.CreateBash()
+	bash := bash.BSH
 	prompt := bash.GetPrompt()
 
 	defer prompt.Close()

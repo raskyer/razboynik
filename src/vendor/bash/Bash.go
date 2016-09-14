@@ -3,6 +3,7 @@ package bash
 import (
 	"command"
 	"core"
+	"global"
 	"strings"
 
 	"github.com/chzyer/readline"
@@ -10,31 +11,32 @@ import (
 
 type spFunc func(string)
 
+var BSH = BashInterface{
+	spCmd:     []string{"cd", "vim"},
+	spCmdFunc: []spFunc{command.CMD.Cd},
+}
+
 type BashInterface struct {
 	spCmd     []string
 	spCmdFunc []spFunc
-}
-
-func CreateBash() *BashInterface {
-	b := BashInterface{
-		spCmd:     []string{"cd", "vim"},
-		spCmdFunc: []spFunc{command.CMD.Cd},
-	}
-
-	return &b
+	prompt    *string
 }
 
 func (b *BashInterface) GetPrompt() *readline.Instance {
-	l, err := readline.NewEx(&readline.Config{
+	config := &readline.Config{
 		Prompt:          "\033[31m»\033[0m [Bash]$ ",
 		HistoryFile:     "/tmp/readlinebash.tmp",
 		InterruptPrompt: "^C",
 		EOFPrompt:       "exit",
-	})
+	}
+
+	l, err := readline.NewEx(config)
 
 	if err != nil {
 		panic(err)
 	}
+
+	global.Global.BashReadline = l
 
 	return l
 }

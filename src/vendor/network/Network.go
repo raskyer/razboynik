@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"net/url"
 	"normalizer"
+	"worker"
 
 	"github.com/urfave/cli"
 )
 
-type callback func(*http.Response)
+type callback func(string)
 
 var NET = NETWORK{
 	host:      "http://localhost",
@@ -76,15 +77,19 @@ func (n *NETWORK) Setup(c *cli.Context) {
 }
 
 func (n *NETWORK) Send(r string, f callback) {
-	var response *http.Response
-	response = nil
+	var httpResponse *http.Response
+	var response string
 
 	if n.method == 0 {
-		response = n.get(r)
+		httpResponse = n.get(r)
+		buffer := worker.GetBody(httpResponse)
+		response = string(buffer)
 	}
 
 	if n.method == 1 {
-		response = n.post(r)
+		httpResponse = n.post(r)
+		buffer := worker.GetBody(httpResponse)
+		response = string(buffer)
 	}
 
 	if n.method == 3 {
@@ -95,8 +100,10 @@ func (n *NETWORK) Send(r string, f callback) {
 		n.getWithCookie(r)
 	}
 
-	if response != nil && response.StatusCode < 400 {
+	if httpResponse != nil && httpResponse.StatusCode < 400 {
 		f(response)
+	} else {
+		fmt.Println("Error with the response: " + httpResponse.Status)
 	}
 }
 
@@ -182,4 +189,8 @@ func (n *NETWORK) _headerConfig(req *http.Request) {
 	} else if n.method == 2 {
 		req.Header.Add(n.parameter, n.cmd)
 	}
+}
+
+func (n *NETWORK) _getResponse() {
+
 }

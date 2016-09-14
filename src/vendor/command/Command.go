@@ -2,11 +2,10 @@ package command
 
 import (
 	"fmt"
-	"net/http"
+	"global"
 	"network"
 	"normalizer"
 	"strings"
-	"worker"
 
 	"github.com/urfave/cli"
 )
@@ -20,6 +19,10 @@ type COMMAND struct {
 
 func HandleNotConnected() {
 	fmt.Println("You haven't setup the required information, please refer to srv config")
+}
+
+func (c *COMMAND) Reset() {
+	c._context = ""
 }
 
 func (c *COMMAND) getSystemCMD(cmd, r string) string {
@@ -95,9 +98,7 @@ func (cmd *COMMAND) Ls(c *cli.Context) {
 	network.NET.Send(ls, lsEnd)
 }
 
-func lsEnd(r *http.Response) {
-	buffer := worker.GetBody(r)
-	base64 := string(buffer)
+func lsEnd(base64 string) {
 	body := normalizer.Decode(base64)
 
 	fmt.Println(body)
@@ -110,9 +111,7 @@ func (cmd *COMMAND) Raw(a string) {
 	network.NET.Send(a, rawEnd)
 }
 
-func rawEnd(r *http.Response) {
-	buffer := worker.GetBody(r)
-	base64 := string(buffer)
+func rawEnd(base64 string) {
 	body := normalizer.Decode(base64)
 
 	fmt.Println(body)
@@ -126,13 +125,14 @@ func (cmd *COMMAND) Cd(a string) {
 	network.NET.Send(a, cdEnd)
 }
 
-func cdEnd(r *http.Response) {
-	buffer := worker.GetBody(r)
-	base64 := string(buffer)
+func cdEnd(base64 string) {
 	body := normalizer.Decode(base64)
 
 	line := strings.TrimSpace(body)
-	CMD._context = line
 
-	fmt.Println(body)
+	if line != "" {
+		CMD._context = line
+		global.Global.BashReadline.SetPrompt("\033[31m»\033[0m [Bash]:" + line + "$ ")
+		fmt.Println(body)
+	}
 }
