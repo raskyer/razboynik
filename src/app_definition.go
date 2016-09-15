@@ -47,6 +47,11 @@ func (main *MainInterface) _buildCommand() {
 		Usage:   "Prefix to make server command",
 		Subcommands: []cli.Command{
 			{
+				Name:   "test",
+				Usage:  "Test if server connexion is ok",
+				Action: main.SendTest,
+			},
+			{
 				Name:   "bash",
 				Usage:  "Open meterpreter like session (command are send raw to the server)",
 				Action: main.StartBash,
@@ -80,6 +85,7 @@ func (main *MainInterface) _buildCommand() {
 					cli.StringFlag{Name: "p, parameter", Usage: "Parameter to use. Ex: -p test"},
 					cli.BoolFlag{Name: "f, file", Usage: "Use a config from file (default path : ./config)"},
 					cli.BoolFlag{Name: "c, crypt", Usage: "Use a crypt"},
+					cli.BoolFlag{Name: "i, info", Usage: "Give info on actual config"},
 				},
 			},
 			{

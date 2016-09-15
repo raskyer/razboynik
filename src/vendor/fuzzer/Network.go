@@ -10,7 +10,7 @@ import (
 type callback func(string)
 
 var NET = NETWORK{
-	host:      "http://localhost",
+	host:      "",
 	method:    0,
 	parameter: "fuzzer",
 	crypt:     false,
@@ -34,11 +34,36 @@ type NETWORK struct {
 	cmd       string
 
 	_body         url.Values
+	_respBody     []byte
 	_lastResponse *http.Response
+}
+
+func (n *NETWORK) GetUrl() string {
+	return n.host
 }
 
 func (n *NETWORK) GetMethod() int {
 	return n.method
+}
+
+func (n *NETWORK) GetMethodStr() string {
+	if n.method == 0 {
+		return "GET"
+	}
+
+	if n.method == 1 {
+		return "POST"
+	}
+
+	if n.method == 3 {
+		return "HEADER"
+	}
+
+	if n.method == 4 {
+		return "COOKIE"
+	}
+
+	return "ERROR"
 }
 
 func (n *NETWORK) GetParameter() string {
@@ -59,17 +84,35 @@ func (n *NETWORK) SetConfig(url string, method int, parameter string, crypt bool
 }
 
 func (n *NETWORK) Send(r string, f callback) {
+	if n.status != true {
+		fmt.Println("You havn't setup the required information, please refer to srv config")
+		return
+	}
+
 	var httpResponse *http.Response
+	var err int
 	var response string
 
+	n._respBody = nil
+
 	if n.method == 0 {
-		httpResponse = n.get(r)
+		httpResponse, err = n.get(r)
+
+		if err == 1 {
+			return
+		}
+
 		buffer := GetBody(httpResponse)
 		response = string(buffer)
 	}
 
 	if n.method == 1 {
-		httpResponse = n.post(r)
+		httpResponse, err = n.post(r)
+
+		if err == 1 {
+			return
+		}
+
 		buffer := GetBody(httpResponse)
 		response = string(buffer)
 	}
@@ -89,7 +132,7 @@ func (n *NETWORK) Send(r string, f callback) {
 	}
 }
 
-func (n *NETWORK) post(r string) *http.Response {
+func (n *NETWORK) post(r string) (*http.Response, int) {
 	n.status = true
 
 	request := Encode(r)
@@ -110,7 +153,7 @@ func (n *NETWORK) post(r string) *http.Response {
 	return n._send(&c)
 }
 
-func (n *NETWORK) get(r string) *http.Response {
+func (n *NETWORK) get(r string) (*http.Response, int) {
 	n.status = true
 
 	request := Encode(r)
@@ -135,7 +178,7 @@ func (n *NETWORK) getWithCookie(r string) {
 
 }
 
-func (n *NETWORK) _send(c *config) *http.Response {
+func (n *NETWORK) _send(c *config) (*http.Response, int) {
 	client := &http.Client{}
 	data := c.form
 
@@ -149,7 +192,9 @@ func (n *NETWORK) _send(c *config) *http.Response {
 	}
 
 	if err != nil {
-		panic(err)
+		fmt.Println("Error: Impossible to create request with config :")
+		fmt.Println(c)
+		return nil, 1
 	}
 
 	n._headerConfig(req)
@@ -157,12 +202,14 @@ func (n *NETWORK) _send(c *config) *http.Response {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		panic(err)
+		fmt.Println("Error: Impossible to send request. Error msg : ")
+		fmt.Println(err)
+		return nil, 1
 	}
 
 	n._lastResponse = resp
 
-	return resp
+	return resp, 0
 }
 
 func (n *NETWORK) _headerConfig(req *http.Request) {

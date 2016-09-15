@@ -47,7 +47,7 @@ func responseInfo(c *cli.Context) {
 
 	if c.Bool("body") {
 		body := fuzzer.GetBody(r)
-		fmt.Println("body: %v", string(body))
+		fmt.Println("body: " + string(body))
 
 		flag = true
 	}

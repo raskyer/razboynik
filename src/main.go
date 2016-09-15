@@ -11,10 +11,13 @@ func main() {
 	main := CreateMainApp()
 	main.Start()
 
-	mainLoop(main)
+	Global.Main = main
+
+	mainLoop()
 }
 
-func mainLoop(main *MainInterface) {
+func mainLoop() {
+	main := Global.Main
 	prompt := main.GetPrompt()
 	defer prompt.Close()
 	log.SetOutput(prompt.Stderr())
@@ -22,7 +25,7 @@ func mainLoop(main *MainInterface) {
 	for main.IsRunning() {
 		line, err := prompt.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
-			break
+			return
 		}
 
 		if len(line) == 0 {
@@ -32,22 +35,21 @@ func mainLoop(main *MainInterface) {
 		command := main.GetCommand(line)
 		main.Run(command)
 	}
+}
 
-	if Global.BashSession {
-		bash := CreateBashApp()
-		bash.Start()
+func createBash() {
+	bash := CreateBashApp()
+	bash.Start()
 
-		if bash.IsRunning() {
-			bashLoop(bash, main)
-		} else {
-			Global.MainSession = true
-			main.Start()
-			mainLoop(main)
-		}
+	Global.Bash = bash
+
+	if bash.IsRunning() {
+		bashLoop()
 	}
 }
 
-func bashLoop(bash *BashInterface, parent *MainInterface) {
+func bashLoop() {
+	bash := Global.Bash
 	prompt := bash.GetPrompt()
 	defer prompt.Close()
 	log.SetOutput(prompt.Stderr())
@@ -55,7 +57,8 @@ func bashLoop(bash *BashInterface, parent *MainInterface) {
 	for bash.IsRunning() {
 		line, err := prompt.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
-			bash.Stop()
+			Global.Stop()
+			return
 		}
 
 		if len(line) == 0 {
@@ -63,9 +66,5 @@ func bashLoop(bash *BashInterface, parent *MainInterface) {
 		}
 
 		bash.Run(line)
-	}
-
-	if Global.MainSession {
-		mainLoop(parent)
 	}
 }

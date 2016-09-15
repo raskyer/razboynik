@@ -10,19 +10,10 @@ import (
 
 func (main *MainInterface) SendRawPHP(c *cli.Context) {
 	cmd := strings.Join(c.Args(), " ")
-	fuzzer.NET.Send(cmd, main.ReceiveRawPHP)
-}
-
-func (main *MainInterface) ReceiveRawPHP(result string) {
-	fmt.Println(result)
+	fuzzer.NET.Send(cmd, Global.Read)
 }
 
 func (main *MainInterface) SendLs(c *cli.Context) {
-	if !fuzzer.NET.IsSetup() {
-		fmt.Println("You haven't setup the required information, please refer to srv config")
-		return
-	}
-
 	var ls string
 
 	if c.Bool("raw") {
@@ -33,23 +24,45 @@ func (main *MainInterface) SendLs(c *cli.Context) {
 		ls = fuzzer.CMD.Ls(context)
 	}
 
-	fuzzer.NET.Send(ls, main.ReceiveLs)
+	fuzzer.NET.Send(ls, Global.ReadEncode)
 }
 
-func (main *MainInterface) ReceiveLs(result string) {
-	fmt.Println(result)
+func (main *MainInterface) SendTest(c *cli.Context) {
+	t := "echo 1;"
+	fuzzer.NET.Send(t, main.ReceiveTest)
+}
+
+func (main *MainInterface) ReceiveTest(str string) {
+	if str == "1" {
+		fmt.Println("Connected")
+		return
+	}
+
+	fmt.Println("Error")
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) {
 	srv := &fuzzer.NET
+
+	if c.Bool("i") {
+		fmt.Println("url : " + srv.GetUrl())
+		fmt.Println("method : " + srv.GetMethodStr())
+		fmt.Println("parameter : " + srv.GetParameter())
+		return
+	}
 
 	url := c.String("u")
 	method := c.Int("m")
 	parameter := c.String("p")
 	crypt := false
 
-	if url == "" {
-		fmt.Println("flag -u (url) is required")
+	if url == "" && srv.GetUrl() == "" {
+		fmt.Println("Flag -u (url) is required")
+		return
+	}
+
+	if method > 4 {
+		fmt.Println("Method is between 0 (default) and 4. [0 => GET, 1 => POST, 3 => HEADER, 4 => COOKIE]")
 		return
 	}
 
