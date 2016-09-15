@@ -1,9 +1,6 @@
-package bash
+package main
 
 import (
-	"command"
-	"core"
-	"global"
 	"strings"
 
 	"github.com/chzyer/readline"
@@ -11,15 +8,21 @@ import (
 
 type spFunc func(string)
 
-var BSH = BashInterface{
-	spCmd:     []string{"cd", "vim"},
-	spCmdFunc: []spFunc{command.CMD.Cd},
-}
-
 type BashInterface struct {
 	spCmd     []string
 	spCmdFunc []spFunc
 	prompt    *string
+	running   bool
+}
+
+func CreateBashApp() *BashInterface {
+	app := BashInterface{
+		spCmd: []string{"cd", "vim"},
+	}
+
+	app.spCmdFunc = []spFunc{app.SendCd}
+
+	return &app
 }
 
 func (b *BashInterface) GetPrompt() *readline.Instance {
@@ -36,14 +39,12 @@ func (b *BashInterface) GetPrompt() *readline.Instance {
 		panic(err)
 	}
 
-	global.Global.BashReadline = l
-
 	return l
 }
 
 func (b *BashInterface) Run(l string) {
 	if l == "exit" {
-		core.ExitBash()
+		b.Stop()
 		return
 	}
 
@@ -55,5 +56,5 @@ func (b *BashInterface) Run(l string) {
 		}
 	}
 
-	command.CMD.Raw(l)
+	b.SendRaw(l)
 }

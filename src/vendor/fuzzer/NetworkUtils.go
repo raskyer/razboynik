@@ -1,4 +1,4 @@
-package worker
+package fuzzer
 
 import (
 	"io/ioutil"

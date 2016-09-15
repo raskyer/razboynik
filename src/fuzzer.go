@@ -1,31 +1,25 @@
 package main
 
 import (
-	"bash"
 	"io"
 	"log"
-
-	"core"
 
 	"github.com/chzyer/readline"
 )
 
 func main() {
-	mainLoop()
+	main := CreateMainApp()
+	main.Start()
+
+	mainLoop(main)
 }
 
-func mainLoop() {
-	app := core.Create()
-	prompt := app.GetPrompt()
-
+func mainLoop(main *MainInterface) {
+	prompt := main.GetPrompt()
 	defer prompt.Close()
 	log.SetOutput(prompt.Stderr())
 
-	running := &core.Running
-	runningMain := &core.RunningMain
-	runningBash := &core.RunningBash
-
-	for *running && *runningMain {
+	for main.IsRunning() {
 		line, err := prompt.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
 			break
@@ -35,26 +29,33 @@ func mainLoop() {
 			continue
 		}
 
-		command := app.GetCommand(line)
-		app.Run(command)
+		command := main.GetCommand(line)
+		main.Run(command)
 	}
 
-	if *runningBash {
-		bashLoop(runningBash)
+	if Global.BashSession {
+		bash := CreateBashApp()
+		bash.Start()
+
+		if bash.IsRunning() {
+			bashLoop(bash, main)
+		} else {
+			Global.MainSession = true
+			main.Start()
+			mainLoop(main)
+		}
 	}
 }
 
-func bashLoop(running *bool) {
-	bash := bash.BSH
+func bashLoop(bash *BashInterface, parent *MainInterface) {
 	prompt := bash.GetPrompt()
-
 	defer prompt.Close()
 	log.SetOutput(prompt.Stderr())
 
-	for *running {
+	for bash.IsRunning() {
 		line, err := prompt.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
-			*running = false
+			bash.Stop()
 		}
 
 		if len(line) == 0 {
@@ -64,5 +65,7 @@ func bashLoop(running *bool) {
 		bash.Run(line)
 	}
 
-	mainLoop()
+	if Global.MainSession {
+		mainLoop(parent)
+	}
 }

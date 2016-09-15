@@ -1,4 +1,4 @@
-package normalizer
+package fuzzer
 
 import "encoding/base64"
 

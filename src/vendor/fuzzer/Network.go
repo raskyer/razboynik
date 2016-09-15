@@ -1,14 +1,10 @@
-package network
+package fuzzer
 
 import (
 	"bytes"
 	"fmt"
 	"net/http"
 	"net/url"
-	"normalizer"
-	"worker"
-
-	"github.com/urfave/cli"
 )
 
 type callback func(string)
@@ -53,21 +49,7 @@ func (n *NETWORK) IsSetup() bool {
 	return n.status
 }
 
-func (n *NETWORK) Setup(c *cli.Context) {
-	url := c.String("u")
-	method := c.Int("m")
-	parameter := c.String("p")
-	crypt := false
-
-	if url == "" {
-		fmt.Println("flag -u (url) is required")
-		return
-	}
-
-	if parameter == "" {
-		parameter = n.parameter
-	}
-
+func (n *NETWORK) SetConfig(url string, method int, parameter string, crypt bool) {
 	n.host = url
 	n.method = method
 	n.parameter = parameter
@@ -82,13 +64,13 @@ func (n *NETWORK) Send(r string, f callback) {
 
 	if n.method == 0 {
 		httpResponse = n.get(r)
-		buffer := worker.GetBody(httpResponse)
+		buffer := GetBody(httpResponse)
 		response = string(buffer)
 	}
 
 	if n.method == 1 {
 		httpResponse = n.post(r)
-		buffer := worker.GetBody(httpResponse)
+		buffer := GetBody(httpResponse)
 		response = string(buffer)
 	}
 
@@ -110,7 +92,7 @@ func (n *NETWORK) Send(r string, f callback) {
 func (n *NETWORK) post(r string) *http.Response {
 	n.status = true
 
-	request := normalizer.Encode(r)
+	request := Encode(r)
 	n.cmd = request
 
 	form := url.Values{}
@@ -131,7 +113,7 @@ func (n *NETWORK) post(r string) *http.Response {
 func (n *NETWORK) get(r string) *http.Response {
 	n.status = true
 
-	request := normalizer.Encode(r)
+	request := Encode(r)
 	n.cmd = request
 
 	url := n.host + "?" + n.parameter + "=" + request
@@ -191,6 +173,11 @@ func (n *NETWORK) _headerConfig(req *http.Request) {
 	}
 }
 
-func (n *NETWORK) _getResponse() {
+func (n *NETWORK) GetResponse() *http.Response {
+	return n._lastResponse
+}
 
+func (n *NETWORK) GetRequest() *http.Request {
+	n._lastResponse.Request.PostForm = n._body
+	return n._lastResponse.Request
 }
