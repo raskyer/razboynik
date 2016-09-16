@@ -86,6 +86,7 @@ func (b *BashInterface) Start() {
 	}
 
 	b.running = true
+	b.Loop()
 }
 
 func (b *BashInterface) Stop() {

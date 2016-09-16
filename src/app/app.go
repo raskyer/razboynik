@@ -171,8 +171,4 @@ func (main *MainInterface) Decode(c *cli.Context) {
 func (main *MainInterface) StartBash(c *cli.Context) {
 	bsh := bash.CreateBashApp()
 	bsh.Start()
-
-	if bsh.IsRunning() {
-		bsh.Loop()
-	}
 }
