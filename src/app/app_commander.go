@@ -11,7 +11,13 @@ import (
 
 func (main *MainInterface) SendRawPHP(c *cli.Context) {
 	cmd := strings.Join(c.Args(), " ")
-	fuzzer.NET.Send(cmd, reader.Read)
+	req, err := fuzzer.NET.Prepare(cmd)
+
+	if err {
+		return
+	}
+
+	fuzzer.NET.Send(req, reader.Read)
 }
 
 func (main *MainInterface) SendLs(c *cli.Context) {
@@ -25,12 +31,24 @@ func (main *MainInterface) SendLs(c *cli.Context) {
 		ls = fuzzer.CMD.Ls(context)
 	}
 
-	fuzzer.NET.Send(ls, reader.ReadEncode)
+	req, err := fuzzer.NET.Prepare(ls)
+
+	if err {
+		return
+	}
+
+	fuzzer.NET.Send(req, reader.ReadEncode)
 }
 
 func (main *MainInterface) SendTest(c *cli.Context) {
 	t := "echo 1;"
-	fuzzer.NET.Send(t, main.ReceiveTest)
+	req, err := fuzzer.NET.Prepare(t)
+
+	if err {
+		return
+	}
+
+	fuzzer.NET.Send(req, main.ReceiveTest)
 }
 
 func (main *MainInterface) ReceiveTest(str string) {
@@ -40,6 +58,45 @@ func (main *MainInterface) ReceiveTest(str string) {
 	}
 
 	fmt.Println("Error")
+}
+
+func (main *MainInterface) SendUpload(c *cli.Context) {
+	arr := c.Args()
+
+	if len(arr) < 1 {
+		fmt.Println("Please write the path of the local file to upload")
+		return
+	}
+
+	path := arr.First()
+	dir := "./titi.txt"
+
+	if len(arr) > 1 {
+		dir = arr.Get(1)
+	}
+
+	bytes, bondary, err := fuzzer.Upload(path, dir)
+
+	if err {
+		return
+	}
+
+	req, err := fuzzer.NET.PrepareUpload(bytes, bondary)
+
+	if err {
+		return
+	}
+
+	fuzzer.NET.Send(req, main.ReceiveDownload)
+}
+
+func (main *MainInterface) ReceiveDownload(result string) {
+	if result == "1" {
+		fmt.Println("File succeedly upload")
+		return
+	}
+
+	fmt.Println("An error occured")
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) {

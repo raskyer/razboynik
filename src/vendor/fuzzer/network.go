@@ -23,6 +23,7 @@ type config struct {
 	form   *bytes.Buffer
 	jar    []string
 	proxy  string
+	file   bool
 }
 
 type NETWORK struct {
@@ -83,7 +84,76 @@ func (n *NETWORK) SetConfig(url string, method int, parameter string, crypt bool
 	n.status = true
 }
 
-func (n *NETWORK) Send(r string, f callback) {
+func (n *NETWORK) PrepareUpload(bytes *bytes.Buffer, bondary string) (*http.Request, bool) {
+	if n.status != true {
+		fmt.Println("You havn't setup the required information, please refer to srv config")
+		return nil, true
+	}
+
+	n.status = true
+
+	c := config{
+		url:    n.host,
+		method: "POST",
+		form:   bytes,
+	}
+
+	req, err := http.NewRequest("POST", n.host, bytes)
+
+	req.Header.Set("Content-Type", bondary)
+
+	if err != nil {
+		fmt.Println("Error: Impossible to create request with config :")
+		fmt.Println(c)
+		return nil, true
+	}
+
+	return req, false
+}
+
+func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
+	if n.status != true {
+		fmt.Println("You havn't setup the required information, please refer to srv config")
+		return nil, true
+	}
+
+	var config *config
+	var req *http.Request
+	var err error
+
+	if n.method == 0 {
+		config = n.getConfig(r)
+		req, err = http.NewRequest(config.method, config.url, nil)
+
+		if err != nil {
+			fmt.Println("Error: Impossible to create request with config :")
+			fmt.Println(config)
+			return nil, true
+		}
+	}
+
+	if n.method == 1 {
+		config = n.postConfig(r)
+		req, err = http.NewRequest(config.method, config.url, config.form)
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+		if err != nil {
+			fmt.Println("Error: Impossible to create request with config :")
+			fmt.Println(config)
+			return nil, true
+		}
+	}
+
+	if n.method == 3 {
+	}
+
+	if n.method == 4 {
+	}
+
+	return req, false
+}
+
+func (n *NETWORK) Send(req *http.Request, f callback) {
 	if n.status != true {
 		fmt.Println("You havn't setup the required information, please refer to srv config")
 		return
@@ -95,35 +165,14 @@ func (n *NETWORK) Send(r string, f callback) {
 
 	n._respBody = nil
 
-	if n.method == 0 {
-		httpResponse, err = n.get(r)
+	httpResponse, err = n._send(req)
 
-		if err == 1 {
-			return
-		}
-
-		buffer := GetBody(httpResponse)
-		response = string(buffer)
+	if err == 1 {
+		return
 	}
 
-	if n.method == 1 {
-		httpResponse, err = n.post(r)
-
-		if err == 1 {
-			return
-		}
-
-		buffer := GetBody(httpResponse)
-		response = string(buffer)
-	}
-
-	if n.method == 3 {
-		n.getWithHeader(r)
-	}
-
-	if n.method == 4 {
-		n.getWithCookie(r)
-	}
+	buffer := GetBody(httpResponse)
+	response = string(buffer)
 
 	if httpResponse != nil && httpResponse.StatusCode < 400 {
 		f(response)
@@ -132,7 +181,7 @@ func (n *NETWORK) Send(r string, f callback) {
 	}
 }
 
-func (n *NETWORK) post(r string) (*http.Response, int) {
+func (n *NETWORK) postConfig(r string) *config {
 	n.status = true
 
 	request := Encode(r)
@@ -150,10 +199,10 @@ func (n *NETWORK) post(r string) (*http.Response, int) {
 		form:   data,
 	}
 
-	return n._send(&c)
+	return &c
 }
 
-func (n *NETWORK) get(r string) (*http.Response, int) {
+func (n *NETWORK) getConfig(r string) *config {
 	n.status = true
 
 	request := Encode(r)
@@ -167,38 +216,17 @@ func (n *NETWORK) get(r string) (*http.Response, int) {
 		form:   nil,
 	}
 
-	return n._send(&c)
+	return &c
 }
 
-func (n *NETWORK) getWithHeader(r string) {
-
+func (n *NETWORK) headerConfig(r string) {
 }
 
-func (n *NETWORK) getWithCookie(r string) {
-
+func (n *NETWORK) cookieConfig(r string) {
 }
 
-func (n *NETWORK) _send(c *config) (*http.Response, int) {
+func (n *NETWORK) _send(req *http.Request) (*http.Response, int) {
 	client := &http.Client{}
-	data := c.form
-
-	var req *http.Request
-	var err error
-
-	if c.form != nil {
-		req, err = http.NewRequest(c.method, c.url, data)
-	} else {
-		req, err = http.NewRequest(c.method, c.url, nil)
-	}
-
-	if err != nil {
-		fmt.Println("Error: Impossible to create request with config :")
-		fmt.Println(c)
-		return nil, 1
-	}
-
-	n._headerConfig(req)
-
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -210,14 +238,6 @@ func (n *NETWORK) _send(c *config) (*http.Response, int) {
 	n._lastResponse = resp
 
 	return resp, 0
-}
-
-func (n *NETWORK) _headerConfig(req *http.Request) {
-	if n.method == 1 {
-		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	} else if n.method == 2 {
-		req.Header.Add(n.parameter, n.cmd)
-	}
 }
 
 func (n *NETWORK) GetResponse() *http.Response {

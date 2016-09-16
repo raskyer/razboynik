@@ -58,7 +58,7 @@ func (main *MainInterface) _buildChild(sub *cli.Commands, parent *readline.Prefi
 
 func _addInformation(app *cli.App) {
 	app.Name = "Fuzzer"
-	app.Version = "1.0.0"
+	app.Version = "2.0.0"
 	app.Compiled = time.Now()
 	app.Authors = []cli.Author{
 		cli.Author{

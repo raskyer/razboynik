@@ -73,6 +73,11 @@ func (main *MainInterface) _buildCommand() {
 							cli.BoolFlag{Name: "raw, send a raw ls"},
 						},
 					},
+					{
+						Name:   "upload",
+						Usage:  "Upload a file (by path) on server",
+						Action: main.SendUpload,
+					},
 				},
 			},
 			{
