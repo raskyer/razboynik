@@ -54,7 +54,7 @@ func (n *NETWORK) PrepareUpload(bytes *bytes.Buffer, bondary string) (*http.Requ
 		form:   bytes,
 	}
 
-	req, err := http.NewRequest("POST", n.host, bytes)
+	req, err := http.NewRequest(c.method, c.url, bytes)
 
 	req.Header.Set("Content-Type", bondary)
 
@@ -117,37 +117,19 @@ func (n *NETWORK) Send(req *http.Request) (*http.Response, bool) {
 
 	n._respBody = nil
 
-	httpResponse, err := n._send(req)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 
-	if err {
+	if err != nil {
+		fmt.Println("Error: Impossible to send request. Error msg : ")
+		fmt.Println(err)
+		fmt.Println(resp.Status)
 		return nil, true
 	}
 
-	return httpResponse, false
-}
+	n._lastResponse = resp
 
-func (n *NETWORK) SendTO(req *http.Request, f callback) {
-	if n.status != true {
-		fmt.Println("You havn't setup the required information, please refer to srv config")
-		return
-	}
-
-	n._respBody = nil
-
-	httpResponse, err := n._send(req)
-
-	if err {
-		return
-	}
-
-	buffer := n.GetBody(httpResponse)
-	response := string(buffer)
-
-	if httpResponse != nil && httpResponse.StatusCode < 400 {
-		f(response)
-	} else {
-		fmt.Println("Error with the response: " + httpResponse.Status)
-	}
+	return resp, false
 }
 
 func (n *NETWORK) postConfig(r string) *config {
@@ -192,19 +174,4 @@ func (n *NETWORK) headerConfig(r string) {
 }
 
 func (n *NETWORK) cookieConfig(r string) {
-}
-
-func (n *NETWORK) _send(req *http.Request) (*http.Response, bool) {
-	client := &http.Client{}
-	resp, err := client.Do(req)
-
-	if err != nil {
-		fmt.Println("Error: Impossible to send request. Error msg : ")
-		fmt.Println(err)
-		return nil, true
-	}
-
-	n._lastResponse = resp
-
-	return resp, false
 }
