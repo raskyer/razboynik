@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"fuzzer"
+	"fuzzer/src/commander"
 	"fuzzer/src/reader"
 	"strings"
 
@@ -11,19 +12,12 @@ import (
 
 func (main *MainInterface) SendRawPHP(c *cli.Context) {
 	cmd := strings.Join(c.Args(), " ")
-	req, err := fuzzer.NET.Prepare(cmd)
+	result, err := commander.Process(cmd)
 
 	if err {
 		return
 	}
 
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	result := fuzzer.NET.GetBodyStr(resp)
 	reader.Read(result)
 }
 
@@ -38,37 +32,22 @@ func (main *MainInterface) SendLs(c *cli.Context) {
 		ls = fuzzer.CMD.Ls(context)
 	}
 
-	req, err := fuzzer.NET.Prepare(ls)
+	result, err := commander.Process(ls)
 
 	if err {
 		return
 	}
 
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	result := fuzzer.NET.GetBodyStr(resp)
 	reader.ReadEncode(result)
 }
 
 func (main *MainInterface) SendTest(c *cli.Context) {
-	t := "echo 1;"
-	req, err := fuzzer.NET.Prepare(t)
+	result, err := commander.Process("echo 1;")
 
 	if err {
 		return
 	}
 
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	result := fuzzer.NET.GetBodyStr(resp)
 	main.ReceiveTest(result)
 }
 
