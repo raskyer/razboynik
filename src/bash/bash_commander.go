@@ -4,15 +4,8 @@ import (
 	"fmt"
 	"fuzzer"
 	"fuzzer/src/reader"
-	"io"
-	"net/http"
-	"os"
 	"strings"
 )
-
-func (b *BashInterface) Exit(str string) {
-	b.Stop()
-}
 
 func (b *BashInterface) SendRaw(str string) {
 	raw := fuzzer.CMD.Raw(str)
@@ -48,17 +41,6 @@ func (b *BashInterface) SendCd(str string) {
 
 	result := fuzzer.NET.GetBodyStr(resp)
 	b.ReceiveCd(result)
-}
-
-func (b *BashInterface) ReceiveCd(result string) {
-	body := fuzzer.Decode(result)
-	line := strings.TrimSpace(body)
-
-	if line != "" {
-		fuzzer.CMD.SetContext(line)
-		b.SetPrompt("\033[31m»\033[0m [Bash]:" + line + "$ ")
-		fmt.Println(body)
-	}
 }
 
 func (b *BashInterface) SendUpload(str string) {
@@ -100,15 +82,6 @@ func (b *BashInterface) SendUpload(str string) {
 	b.ReceiveUpload(result)
 }
 
-func (b *BashInterface) ReceiveUpload(result string) {
-	if result == "1" {
-		fmt.Println("File succeedly upload")
-		return
-	}
-
-	fmt.Println("An error occured")
-}
-
 func (b *BashInterface) SendDownload(str string) {
 	php := fuzzer.Download()
 	req, err := fuzzer.NET.Prepare(php)
@@ -124,21 +97,4 @@ func (b *BashInterface) SendDownload(str string) {
 	}
 
 	b.ReceiveDownload(resp)
-}
-
-func (b *BashInterface) ReceiveDownload(resp *http.Response) {
-	out, err := os.Create("output.txt")
-	defer out.Close()
-
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = io.Copy(out, resp.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Downloaded successfully")
 }

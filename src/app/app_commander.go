@@ -72,15 +72,6 @@ func (main *MainInterface) SendTest(c *cli.Context) {
 	main.ReceiveTest(result)
 }
 
-func (main *MainInterface) ReceiveTest(str string) {
-	if str == "1" {
-		fmt.Println("Connected")
-		return
-	}
-
-	fmt.Println("Error")
-}
-
 func (main *MainInterface) SendUpload(c *cli.Context) {
 	arr := c.Args()
 
@@ -117,16 +108,7 @@ func (main *MainInterface) SendUpload(c *cli.Context) {
 	}
 
 	result := fuzzer.NET.GetBodyStr(resp)
-	main.ReceiveDownload(result)
-}
-
-func (main *MainInterface) ReceiveDownload(result string) {
-	if result == "1" {
-		fmt.Println("File succeedly upload")
-		return
-	}
-
-	fmt.Println("An error occured")
+	main.ReceiveUpload(result)
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) {

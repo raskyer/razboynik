@@ -101,3 +101,7 @@ func (b *BashInterface) IsRunning() bool {
 func (b *BashInterface) SetPrompt(p string) {
 	b.readline.SetPrompt(p)
 }
+
+func (b *BashInterface) Exit(str string) {
+	b.Stop()
+}
