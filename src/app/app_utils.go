@@ -46,8 +46,8 @@ func responseInfo(c *cli.Context) {
 	}
 
 	if c.Bool("body") {
-		body := fuzzer.GetBody(r)
-		fmt.Println("body: " + string(body))
+		body := fuzzer.NET.GetBodyStr(r)
+		fmt.Println("body: " + body)
 
 		flag = true
 	}

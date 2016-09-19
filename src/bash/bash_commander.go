@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"fuzzer"
 	"fuzzer/src/reader"
+	"io"
+	"net/http"
+	"os"
 	"strings"
 )
 
@@ -19,7 +22,14 @@ func (b *BashInterface) SendRaw(str string) {
 		return
 	}
 
-	fuzzer.NET.Send(req, reader.ReadEncode)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	reader.ReadEncode(result)
 }
 
 func (b *BashInterface) SendCd(str string) {
@@ -30,7 +40,14 @@ func (b *BashInterface) SendCd(str string) {
 		return
 	}
 
-	fuzzer.NET.Send(req, b.ReceiveCd)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	b.ReceiveCd(result)
 }
 
 func (b *BashInterface) ReceiveCd(result string) {
@@ -53,7 +70,9 @@ func (b *BashInterface) SendUpload(str string) {
 	}
 
 	path := arr[1]
-	dir := "./titi.txt"
+	pathArr := strings.Split(path, "/")
+	lgt := len(pathArr) - 1
+	dir := pathArr[lgt]
 
 	if len(arr) > 2 {
 		dir = arr[2]
@@ -71,7 +90,14 @@ func (b *BashInterface) SendUpload(str string) {
 		return
 	}
 
-	fuzzer.NET.Send(req, b.ReceiveUpload)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	b.ReceiveUpload(result)
 }
 
 func (b *BashInterface) ReceiveUpload(result string) {
@@ -84,5 +110,35 @@ func (b *BashInterface) ReceiveUpload(result string) {
 }
 
 func (b *BashInterface) SendDownload(str string) {
+	php := fuzzer.Download()
+	req, err := fuzzer.NET.Prepare(php)
 
+	if err {
+		return
+	}
+
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	b.ReceiveDownload(resp)
+}
+
+func (b *BashInterface) ReceiveDownload(resp *http.Response) {
+	out, err := os.Create("output.txt")
+	defer out.Close()
+
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = io.Copy(out, resp.Body)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Downloaded successfully")
 }

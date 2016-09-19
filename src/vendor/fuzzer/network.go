@@ -8,6 +8,7 @@ import (
 )
 
 type callback func(string)
+type rawCallback func(*http.Response)
 
 var NET = NETWORK{
 	host:      "",
@@ -37,51 +38,6 @@ type NETWORK struct {
 	_body         url.Values
 	_respBody     []byte
 	_lastResponse *http.Response
-}
-
-func (n *NETWORK) GetUrl() string {
-	return n.host
-}
-
-func (n *NETWORK) GetMethod() int {
-	return n.method
-}
-
-func (n *NETWORK) GetMethodStr() string {
-	if n.method == 0 {
-		return "GET"
-	}
-
-	if n.method == 1 {
-		return "POST"
-	}
-
-	if n.method == 3 {
-		return "HEADER"
-	}
-
-	if n.method == 4 {
-		return "COOKIE"
-	}
-
-	return "ERROR"
-}
-
-func (n *NETWORK) GetParameter() string {
-	return n.parameter
-}
-
-func (n *NETWORK) IsSetup() bool {
-	return n.status
-}
-
-func (n *NETWORK) SetConfig(url string, method int, parameter string, crypt bool) {
-	n.host = url
-	n.method = method
-	n.parameter = parameter
-	n.crypt = crypt
-
-	n.status = true
 }
 
 func (n *NETWORK) PrepareUpload(bytes *bytes.Buffer, bondary string) (*http.Request, bool) {
@@ -153,26 +109,39 @@ func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
 	return req, false
 }
 
-func (n *NETWORK) Send(req *http.Request, f callback) {
+func (n *NETWORK) Send(req *http.Request) (*http.Response, bool) {
+	if n.status != true {
+		fmt.Println("You havn't setup the required information, please refer to srv config")
+		return nil, true
+	}
+
+	n._respBody = nil
+
+	httpResponse, err := n._send(req)
+
+	if err {
+		return nil, true
+	}
+
+	return httpResponse, false
+}
+
+func (n *NETWORK) SendTO(req *http.Request, f callback) {
 	if n.status != true {
 		fmt.Println("You havn't setup the required information, please refer to srv config")
 		return
 	}
 
-	var httpResponse *http.Response
-	var err int
-	var response string
-
 	n._respBody = nil
 
-	httpResponse, err = n._send(req)
+	httpResponse, err := n._send(req)
 
-	if err == 1 {
+	if err {
 		return
 	}
 
-	buffer := GetBody(httpResponse)
-	response = string(buffer)
+	buffer := n.GetBody(httpResponse)
+	response := string(buffer)
 
 	if httpResponse != nil && httpResponse.StatusCode < 400 {
 		f(response)
@@ -225,26 +194,17 @@ func (n *NETWORK) headerConfig(r string) {
 func (n *NETWORK) cookieConfig(r string) {
 }
 
-func (n *NETWORK) _send(req *http.Request) (*http.Response, int) {
+func (n *NETWORK) _send(req *http.Request) (*http.Response, bool) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 
 	if err != nil {
 		fmt.Println("Error: Impossible to send request. Error msg : ")
 		fmt.Println(err)
-		return nil, 1
+		return nil, true
 	}
 
 	n._lastResponse = resp
 
-	return resp, 0
-}
-
-func (n *NETWORK) GetResponse() *http.Response {
-	return n._lastResponse
-}
-
-func (n *NETWORK) GetRequest() *http.Request {
-	n._lastResponse.Request.PostForm = n._body
-	return n._lastResponse.Request
+	return resp, false
 }

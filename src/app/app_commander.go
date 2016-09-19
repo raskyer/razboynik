@@ -17,7 +17,14 @@ func (main *MainInterface) SendRawPHP(c *cli.Context) {
 		return
 	}
 
-	fuzzer.NET.Send(req, reader.Read)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	reader.Read(result)
 }
 
 func (main *MainInterface) SendLs(c *cli.Context) {
@@ -37,7 +44,14 @@ func (main *MainInterface) SendLs(c *cli.Context) {
 		return
 	}
 
-	fuzzer.NET.Send(req, reader.ReadEncode)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	reader.ReadEncode(result)
 }
 
 func (main *MainInterface) SendTest(c *cli.Context) {
@@ -48,7 +62,14 @@ func (main *MainInterface) SendTest(c *cli.Context) {
 		return
 	}
 
-	fuzzer.NET.Send(req, main.ReceiveTest)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	main.ReceiveTest(result)
 }
 
 func (main *MainInterface) ReceiveTest(str string) {
@@ -69,7 +90,9 @@ func (main *MainInterface) SendUpload(c *cli.Context) {
 	}
 
 	path := arr.First()
-	dir := "./titi.txt"
+	pathArr := strings.Split(path, "/")
+	lgt := len(pathArr) - 1
+	dir := pathArr[lgt]
 
 	if len(arr) > 1 {
 		dir = arr.Get(1)
@@ -87,7 +110,14 @@ func (main *MainInterface) SendUpload(c *cli.Context) {
 		return
 	}
 
-	fuzzer.NET.Send(req, main.ReceiveDownload)
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return
+	}
+
+	result := fuzzer.NET.GetBodyStr(resp)
+	main.ReceiveDownload(result)
 }
 
 func (main *MainInterface) ReceiveDownload(result string) {
