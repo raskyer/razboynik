@@ -1,11 +1,14 @@
 package app
 
 import (
+	"bytes"
 	"fmt"
 	"fuzzer"
 	"fuzzer/src/bash"
 	"io"
 	"log"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -19,6 +22,7 @@ type MainInterface struct {
 	commands    []cli.Command
 	isConnected bool
 	running     bool
+	readline    *readline.Instance
 }
 
 func CreateMainApp() *MainInterface {
@@ -93,7 +97,7 @@ func (main *MainInterface) GetCommand(line string) []string {
 
 func (main *MainInterface) GetPrompt() *readline.Instance {
 	l, err := readline.NewEx(&readline.Config{
-		Prompt:          "\033[31m»\033[0m ",
+		Prompt:          "\033[31m•\033[0m\033[31m»\033[0m ",
 		HistoryFile:     "/tmp/readline.tmp",
 		AutoComplete:    main.completer,
 		InterruptPrompt: "^C",
@@ -103,6 +107,8 @@ func (main *MainInterface) GetPrompt() *readline.Instance {
 	if err != nil {
 		panic(err)
 	}
+
+	main.readline = l
 
 	return l
 }
@@ -171,4 +177,30 @@ func (main *MainInterface) Decode(c *cli.Context) {
 func (main *MainInterface) StartBash(c *cli.Context) {
 	bsh := bash.CreateBashApp()
 	bsh.Start()
+}
+
+func (main *MainInterface) SetPrompt(str string) {
+	main.readline.SetPrompt(str)
+}
+
+func (main *MainInterface) Sys(c *cli.Context) {
+	arr := c.Args()
+
+	if !arr.Present() {
+		return
+	}
+
+	full := strings.Join(arr, " ")
+	cmd := exec.Command("bash", "-c", full)
+
+	cmdOutput := &bytes.Buffer{}
+	cmd.Stdout = cmdOutput
+
+	err := cmd.Run()
+
+	if err != nil {
+		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err))
+	}
+
+	fmt.Printf("%s\n", string(cmdOutput.Bytes()))
 }

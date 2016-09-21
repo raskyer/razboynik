@@ -14,12 +14,12 @@ func buildHeader(dir string) string {
 
 	headers[0] = "header('Content-Description: File Transfer');"
 	headers[1] = "header('Content-Type: application/octet-stream');"
-	headers[2] = "header('Content-Disposition: attachment; filename='.basename(" + dir + "));"
+	headers[2] = "header('Content-Disposition: attachment; filename='.basename('" + dir + "'));"
 	headers[3] = "header('Content-Transfer-Encoding: binary');"
 	headers[4] = "header('Expires: 0');"
 	headers[5] = "header('Cache-Control: must-revalidate, post-check=0, pre-check=0');"
 	headers[6] = "header('Pragma: public');"
-	headers[7] = "header('Content-Length: ' . filesize(" + dir + "));"
+	headers[7] = "header('Content-Length: ' . filesize('" + dir + "'));"
 
 	var str string
 
@@ -31,10 +31,10 @@ func buildHeader(dir string) string {
 }
 
 func Download(dir string) string {
-	c1 := "if (file_exists(" + dir + ")) {"
+	c1 := "if (file_exists('" + dir + "')) {"
 	c2 := "}"
 	headers := buildHeader(dir)
-	ob := "ob_clean();flush();readfile(" + dir + ");exit();"
+	ob := "ob_clean();flush();readfile('" + dir + "');exit();"
 
 	php := c1 + headers + ob + c2
 

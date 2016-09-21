@@ -1,8 +1,6 @@
 package app
 
-import (
-	"github.com/urfave/cli"
-)
+import "github.com/urfave/cli"
 
 func (main *MainInterface) _buildCommand() {
 	var helpDefinition = cli.Command{
@@ -39,6 +37,12 @@ func (main *MainInterface) _buildCommand() {
 		Name:   "decode",
 		Usage:  "Decode a base64 string",
 		Action: main.Decode,
+	}
+
+	var sysDefinition = cli.Command{
+		Name:   "sys",
+		Usage:  "Make a shell command on local env",
+		Action: main.Sys,
 	}
 
 	var srvDefinition = cli.Command{
@@ -117,6 +121,7 @@ func (main *MainInterface) _buildCommand() {
 	main.commands = []cli.Command{
 		generateDefinition,
 		srvDefinition,
+		sysDefinition,
 		encodeDefinition,
 		decodeDefinition,
 		helpDefinition,

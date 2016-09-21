@@ -115,6 +115,17 @@ func (main *MainInterface) ServerSetup(c *cli.Context) {
 	}
 
 	srv.SetConfig(url, method, parameter, crypt)
+
+	result, err := commander.Process("echo 1;")
+
+	if err || result != "1" {
+		fmt.Println("An error occured with the host")
+		fmt.Println(result)
+		return
+	}
+
+	prompt := "\033[32m•\033[0m\033[32m»\033[0m "
+	main.SetPrompt(prompt)
 }
 
 func (main *MainInterface) ServerInfo(c *cli.Context) {
