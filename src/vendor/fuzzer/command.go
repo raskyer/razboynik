@@ -1,10 +1,5 @@
 package fuzzer
 
-import (
-	"fmt"
-	"strings"
-)
-
 var CMD = COMMAND{}
 
 type COMMAND struct {
@@ -14,6 +9,10 @@ type COMMAND struct {
 
 func (c *COMMAND) SetContext(str string) {
 	c._context = str
+}
+
+func (c *COMMAND) GetContext() string {
+	return c._context
 }
 
 func (c *COMMAND) getSystemCMD(cmd, r string) string {
@@ -90,16 +89,4 @@ func (cmd *COMMAND) Raw(r string) string {
 	raw := r + cmd.getReturn()
 
 	return raw
-}
-
-func cdEnd(base64 string) {
-	body := Decode(base64)
-
-	line := strings.TrimSpace(body)
-
-	if line != "" {
-		CMD._context = line
-		//global.Global.BashReadline.SetPrompt("\033[31m»\033[0m [Bash]:" + line + "$ ")
-		fmt.Println(body)
-	}
 }

@@ -3,6 +3,8 @@ package app
 import (
 	"fmt"
 	"fuzzer"
+	"fuzzer/src/commander"
+	"fuzzer/src/common"
 	"fuzzer/src/reader"
 	"strings"
 
@@ -11,7 +13,13 @@ import (
 
 func (main *MainInterface) SendRawPHP(c *cli.Context) {
 	cmd := strings.Join(c.Args(), " ")
-	fuzzer.NET.Send(cmd, reader.Read)
+	result, err := commander.Process(cmd)
+
+	if err {
+		return
+	}
+
+	reader.Read(result)
 }
 
 func (main *MainInterface) SendLs(c *cli.Context) {
@@ -25,21 +33,61 @@ func (main *MainInterface) SendLs(c *cli.Context) {
 		ls = fuzzer.CMD.Ls(context)
 	}
 
-	fuzzer.NET.Send(ls, reader.ReadEncode)
-}
+	result, err := commander.Process(ls)
 
-func (main *MainInterface) SendTest(c *cli.Context) {
-	t := "echo 1;"
-	fuzzer.NET.Send(t, main.ReceiveTest)
-}
-
-func (main *MainInterface) ReceiveTest(str string) {
-	if str == "1" {
-		fmt.Println("Connected")
+	if err {
 		return
 	}
 
-	fmt.Println("Error")
+	reader.ReadEncode(result)
+}
+
+func (main *MainInterface) SendTest(c *cli.Context) {
+	result, err := commander.Process("echo 1;")
+
+	if err {
+		return
+	}
+
+	common.ReceiveOne(result, "Connected")
+}
+
+func (main *MainInterface) SendUpload(c *cli.Context) {
+	arr := c.Args()
+
+	if len(arr) < 1 {
+		fmt.Println("Please write the path of the local file to upload")
+		return
+	}
+
+	path := arr.First()
+	pathArr := strings.Split(path, "/")
+	lgt := len(pathArr) - 1
+	dir := pathArr[lgt]
+
+	if len(arr) > 1 {
+		dir = arr.Get(1)
+	}
+
+	common.Upload(path, dir)
+}
+
+func (main *MainInterface) SendDownload(c *cli.Context) {
+	arr := c.Args()
+
+	if len(arr) < 1 {
+		fmt.Println("Please write the path of the local file to upload")
+		return
+	}
+
+	path := arr[0]
+	loc := "output.txt"
+
+	if len(arr) > 1 {
+		loc = arr[1]
+	}
+
+	common.Download(path, loc)
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) {
@@ -72,6 +120,20 @@ func (main *MainInterface) ServerSetup(c *cli.Context) {
 	}
 
 	srv.SetConfig(url, method, parameter, crypt)
+
+	result, err := commander.Process("echo 1;")
+
+	if err || result != "1" {
+		fmt.Println("An error occured with the host")
+		fmt.Println(result)
+
+		prompt := "\033[31m•\033[0m\033[31m»\033[0m "
+		main.SetPrompt(prompt)
+		return
+	}
+
+	prompt := "\033[32m•\033[0m\033[32m»\033[0m "
+	main.SetPrompt(prompt)
 }
 
 func (main *MainInterface) ServerInfo(c *cli.Context) {
@@ -84,23 +146,11 @@ func (main *MainInterface) ServerInfo(c *cli.Context) {
 		fmt.Println("Request => ")
 		requestInfo(c)
 
+		fmt.Println("--- >< ---")
+
 		fmt.Println("Response => ")
 		responseInfo(c)
 
 		return
 	}
-
-	item := c.Args().Get(0)
-
-	if item == "request" {
-		requestInfo(c)
-		return
-	}
-
-	if item == "response" {
-		responseInfo(c)
-		return
-	}
-
-	fmt.Println("The item : " + item + " is not specified. Please refer to srv info -h for more information")
 }

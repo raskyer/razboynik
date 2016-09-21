@@ -8,6 +8,11 @@ import (
 )
 
 func requestInfo(c *cli.Context) {
+	if fuzzer.NET.GetResponse() == nil {
+		fmt.Println("You havn't made any request. You must make a request before being able to see information")
+		return
+	}
+
 	flag := false
 	r := fuzzer.NET.GetRequest()
 
@@ -37,6 +42,11 @@ func requestInfo(c *cli.Context) {
 }
 
 func responseInfo(c *cli.Context) {
+	if fuzzer.NET.GetResponse() == nil {
+		fmt.Println("You havn't made any request. You must make a request before being able to see information")
+		return
+	}
+
 	flag := false
 	r := fuzzer.NET.GetResponse()
 
@@ -46,8 +56,8 @@ func responseInfo(c *cli.Context) {
 	}
 
 	if c.Bool("body") {
-		body := fuzzer.GetBody(r)
-		fmt.Println("body: " + string(body))
+		body := fuzzer.NET.GetBodyStr(r)
+		fmt.Println("body: " + body)
 
 		flag = true
 	}

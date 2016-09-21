@@ -3,31 +3,89 @@ package bash
 import (
 	"fmt"
 	"fuzzer"
+	"fuzzer/src/commander"
+	"fuzzer/src/common"
 	"fuzzer/src/reader"
 	"strings"
 )
 
-func (b *BashInterface) Exit(str string) {
-	b.Stop()
-}
-
 func (b *BashInterface) SendRaw(str string) {
 	raw := fuzzer.CMD.Raw(str)
-	fuzzer.NET.Send(raw, reader.ReadEncode)
+	result, err := commander.Process(raw)
+
+	if err {
+		return
+	}
+
+	reader.ReadEncode(result)
 }
 
 func (b *BashInterface) SendCd(str string) {
 	cd := fuzzer.CMD.Cd(str)
-	fuzzer.NET.Send(cd, b.ReceiveCd)
+	result, err := commander.Process(cd)
+
+	if err {
+		return
+	}
+
+	b.ReceiveCd(result)
 }
 
-func (b *BashInterface) ReceiveCd(result string) {
-	body := fuzzer.Decode(result)
-	line := strings.TrimSpace(body)
+func (b *BashInterface) SendUpload(str string) {
+	arr := strings.Fields(str)
 
-	if line != "" {
-		fuzzer.CMD.SetContext(line)
-		b.SetPrompt("\033[31m»\033[0m [Bash]:" + line + "$ ")
-		fmt.Println(body)
+	if len(arr) < 2 {
+		fmt.Println("Please write the path of the local file to upload")
+		return
 	}
+
+	path := arr[1]
+	pathArr := strings.Split(path, "/")
+	lgt := len(pathArr) - 1
+	dir := pathArr[lgt]
+
+	if len(arr) > 2 {
+		dir = arr[2]
+	}
+
+	common.Upload(path, dir)
+}
+
+func (b *BashInterface) SendDownload(str string) {
+	arr := strings.Fields(str)
+
+	if len(arr) < 2 {
+		fmt.Println("Please write the path of the local file to upload")
+		return
+	}
+
+	path := arr[1]
+	loc := "output.txt"
+
+	if len(arr) > 2 {
+		loc = arr[2]
+	}
+
+	context := fuzzer.CMD.GetContext()
+
+	if context != "" {
+		context = context + "/"
+	}
+
+	path = context + path
+
+	common.Download(path, loc)
+}
+
+func (b *BashInterface) Sys(str string) {
+	arr := strings.Fields(str)
+
+	if len(arr) < 2 {
+		return
+	}
+
+	arr = append(arr[1:], arr[len(arr):]...)
+	full := strings.Join(arr, " ")
+
+	common.Syscall(full)
 }

@@ -21,17 +21,18 @@ type BashInterface struct {
 
 func CreateBashApp() *BashInterface {
 	app := BashInterface{
-		spCmd: []string{"exit", "cd", "vim"},
+		spCmd: []string{"exit", "cd", "-upload", "-download", "-sys"},
 	}
 
-	app.spCmdFunc = []spFunc{app.Exit, app.SendCd}
+	app.spCmdFunc = []spFunc{app.Exit, app.SendCd, app.SendUpload, app.SendDownload, app.Sys}
+	app._buildPrompt()
 
 	return &app
 }
 
-func (b *BashInterface) GetPrompt() *readline.Instance {
+func (b *BashInterface) _buildPrompt() {
 	config := &readline.Config{
-		Prompt:          "\033[31m»\033[0m [Bash]$ ",
+		Prompt:          "\033[32m•\033[0m\033[32m»\033[0m [Bash]$ ",
 		HistoryFile:     "/tmp/readlinebash.tmp",
 		InterruptPrompt: "^C",
 		EOFPrompt:       "exit",
@@ -44,17 +45,14 @@ func (b *BashInterface) GetPrompt() *readline.Instance {
 	}
 
 	b.readline = l
-
-	return l
 }
 
-func (b *BashInterface) Loop() {
-	prompt := b.GetPrompt()
-	defer prompt.Close()
-	log.SetOutput(prompt.Stderr())
+func (b *BashInterface) loop() {
+	defer b.readline.Close()
+	log.SetOutput(b.readline.Stderr())
 
 	for b.IsRunning() {
-		line, err := prompt.Readline()
+		line, err := b.readline.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
 			return
 		}
@@ -86,7 +84,7 @@ func (b *BashInterface) Start() {
 	}
 
 	b.running = true
-	b.Loop()
+	b.loop()
 }
 
 func (b *BashInterface) Stop() {
@@ -100,4 +98,8 @@ func (b *BashInterface) IsRunning() bool {
 
 func (b *BashInterface) SetPrompt(p string) {
 	b.readline.SetPrompt(p)
+}
+
+func (b *BashInterface) Exit(str string) {
+	b.Stop()
 }

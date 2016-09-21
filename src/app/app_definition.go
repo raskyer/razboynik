@@ -1,8 +1,6 @@
 package app
 
-import (
-	"github.com/urfave/cli"
-)
+import "github.com/urfave/cli"
 
 func (main *MainInterface) _buildCommand() {
 	var helpDefinition = cli.Command{
@@ -41,6 +39,12 @@ func (main *MainInterface) _buildCommand() {
 		Action: main.Decode,
 	}
 
+	var sysDefinition = cli.Command{
+		Name:   "sys",
+		Usage:  "Make a shell command on local env",
+		Action: main.Sys,
+	}
+
 	var srvDefinition = cli.Command{
 		Name:    "srv",
 		Aliases: []string{"s"},
@@ -73,6 +77,16 @@ func (main *MainInterface) _buildCommand() {
 							cli.BoolFlag{Name: "raw, send a raw ls"},
 						},
 					},
+					{
+						Name:   "upload",
+						Usage:  "Upload a file (by path) on server",
+						Action: main.SendUpload,
+					},
+					{
+						Name:   "download",
+						Usage:  "Download a file (by path) on server",
+						Action: main.SendDownload,
+					},
 				},
 			},
 			{
@@ -92,6 +106,16 @@ func (main *MainInterface) _buildCommand() {
 				Name:   "info",
 				Usage:  "Give information on the last specified item. Ex: srv info request",
 				Action: main.ServerInfo,
+				Subcommands: []cli.Command{
+					{
+						Name:   "response",
+						Action: responseInfo,
+					},
+					{
+						Name:   "request",
+						Action: requestInfo,
+					},
+				},
 				Flags: []cli.Flag{
 					cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
 					cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
@@ -107,6 +131,7 @@ func (main *MainInterface) _buildCommand() {
 	main.commands = []cli.Command{
 		generateDefinition,
 		srvDefinition,
+		sysDefinition,
 		encodeDefinition,
 		decodeDefinition,
 		helpDefinition,
