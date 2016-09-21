@@ -78,6 +78,11 @@ func (main *MainInterface) _buildCommand() {
 						Usage:  "Upload a file (by path) on server",
 						Action: main.SendUpload,
 					},
+					{
+						Name:   "download",
+						Usage:  "Download a file (by path) on server",
+						Action: main.SendDownload,
+					},
 				},
 			},
 			{

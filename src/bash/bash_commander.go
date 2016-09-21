@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"fuzzer"
 	"fuzzer/src/commander"
+	"fuzzer/src/common"
 	"fuzzer/src/reader"
 	"strings"
 )
@@ -47,26 +48,7 @@ func (b *BashInterface) SendUpload(str string) {
 		dir = arr[2]
 	}
 
-	bytes, bondary, err := fuzzer.Upload(path, dir)
-
-	if err {
-		return
-	}
-
-	req, err := fuzzer.NET.PrepareUpload(bytes, bondary)
-
-	if err {
-		return
-	}
-
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	result := fuzzer.NET.GetBodyStr(resp)
-	b.ReceiveUpload(result)
+	common.Upload(path, dir)
 }
 
 func (b *BashInterface) SendDownload(str string) {
@@ -79,18 +61,5 @@ func (b *BashInterface) SendDownload(str string) {
 
 	path := arr[1]
 
-	php := fuzzer.Download(path)
-	req, err := fuzzer.NET.Prepare(php)
-
-	if err {
-		return
-	}
-
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	b.ReceiveDownload(resp)
+	common.Download(path)
 }

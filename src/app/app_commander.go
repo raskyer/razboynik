@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"fuzzer"
 	"fuzzer/src/commander"
+	"fuzzer/src/common"
 	"fuzzer/src/reader"
 	"strings"
 
@@ -48,7 +49,7 @@ func (main *MainInterface) SendTest(c *cli.Context) {
 		return
 	}
 
-	main.ReceiveTest(result)
+	common.ReceiveOne(result, "Connected")
 }
 
 func (main *MainInterface) SendUpload(c *cli.Context) {
@@ -68,26 +69,20 @@ func (main *MainInterface) SendUpload(c *cli.Context) {
 		dir = arr.Get(1)
 	}
 
-	bytes, bondary, err := fuzzer.Upload(path, dir)
+	common.Upload(path, dir)
+}
 
-	if err {
+func (main *MainInterface) SendDownload(c *cli.Context) {
+	arr := c.Args()
+
+	if len(arr) < 1 {
+		fmt.Println("Please write the path of the local file to upload")
 		return
 	}
 
-	req, err := fuzzer.NET.PrepareUpload(bytes, bondary)
+	path := arr[0]
 
-	if err {
-		return
-	}
-
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	result := fuzzer.NET.GetBodyStr(resp)
-	main.ReceiveUpload(result)
+	common.Download(path)
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) {
