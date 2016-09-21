@@ -1,11 +1,13 @@
 package common
 
 import (
+	"bytes"
 	"fmt"
 	"fuzzer"
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 func Upload(path, dir string) {
@@ -73,4 +75,19 @@ func ReceiveOne(r, msg string) {
 	}
 
 	fmt.Println("An error occured")
+}
+
+func Syscall(str string) {
+	cmd := exec.Command("bash", "-c", str)
+
+	cmdOutput := &bytes.Buffer{}
+	cmd.Stdout = cmdOutput
+
+	err := cmd.Run()
+
+	if err != nil {
+		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err))
+	}
+
+	fmt.Printf("%s\n", string(cmdOutput.Bytes()))
 }

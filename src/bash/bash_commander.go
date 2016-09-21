@@ -76,3 +76,16 @@ func (b *BashInterface) SendDownload(str string) {
 
 	common.Download(path, loc)
 }
+
+func (b *BashInterface) Sys(str string) {
+	arr := strings.Fields(str)
+
+	if len(arr) < 2 {
+		return
+	}
+
+	arr = append(arr[1:], arr[len(arr):]...)
+	full := strings.Join(arr, " ")
+
+	common.Syscall(full)
+}

@@ -1,14 +1,12 @@
 package app
 
 import (
-	"bytes"
 	"fmt"
 	"fuzzer"
 	"fuzzer/src/bash"
+	"fuzzer/src/common"
 	"io"
 	"log"
-	"os"
-	"os/exec"
 	"strings"
 	"time"
 
@@ -189,16 +187,6 @@ func (main *MainInterface) Sys(c *cli.Context) {
 	}
 
 	full := strings.Join(arr, " ")
-	cmd := exec.Command("bash", "-c", full)
 
-	cmdOutput := &bytes.Buffer{}
-	cmd.Stdout = cmdOutput
-
-	err := cmd.Run()
-
-	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err))
-	}
-
-	fmt.Printf("%s\n", string(cmdOutput.Bytes()))
+	common.Syscall(full)
 }

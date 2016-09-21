@@ -106,6 +106,16 @@ func (main *MainInterface) _buildCommand() {
 				Name:   "info",
 				Usage:  "Give information on the last specified item. Ex: srv info request",
 				Action: main.ServerInfo,
+				Subcommands: []cli.Command{
+					{
+						Name:   "response",
+						Action: responseInfo,
+					},
+					{
+						Name:   "request",
+						Action: requestInfo,
+					},
+				},
 				Flags: []cli.Flag{
 					cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
 					cli.BoolFlag{Name: "method", Usage: "Shows request's method"},

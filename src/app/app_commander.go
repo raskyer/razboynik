@@ -146,23 +146,11 @@ func (main *MainInterface) ServerInfo(c *cli.Context) {
 		fmt.Println("Request => ")
 		requestInfo(c)
 
+		fmt.Println("--- >< ---")
+
 		fmt.Println("Response => ")
 		responseInfo(c)
 
 		return
 	}
-
-	item := c.Args().Get(0)
-
-	if item == "request" {
-		requestInfo(c)
-		return
-	}
-
-	if item == "response" {
-		responseInfo(c)
-		return
-	}
-
-	fmt.Println("The item : " + item + " is not specified. Please refer to srv info -h for more information")
 }

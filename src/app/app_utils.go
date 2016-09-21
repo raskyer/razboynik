@@ -8,6 +8,11 @@ import (
 )
 
 func requestInfo(c *cli.Context) {
+	if fuzzer.NET.GetResponse() == nil {
+		fmt.Println("You havn't made any request. You must make a request before being able to see information")
+		return
+	}
+
 	flag := false
 	r := fuzzer.NET.GetRequest()
 
@@ -37,6 +42,11 @@ func requestInfo(c *cli.Context) {
 }
 
 func responseInfo(c *cli.Context) {
+	if fuzzer.NET.GetResponse() == nil {
+		fmt.Println("You havn't made any request. You must make a request before being able to see information")
+		return
+	}
+
 	flag := false
 	r := fuzzer.NET.GetResponse()
 

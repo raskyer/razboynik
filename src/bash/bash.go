@@ -21,10 +21,10 @@ type BashInterface struct {
 
 func CreateBashApp() *BashInterface {
 	app := BashInterface{
-		spCmd: []string{"exit", "cd", "upload", "download", "vim"},
+		spCmd: []string{"exit", "cd", "-upload", "-download", "-sys"},
 	}
 
-	app.spCmdFunc = []spFunc{app.Exit, app.SendCd, app.SendUpload, app.SendDownload}
+	app.spCmdFunc = []spFunc{app.Exit, app.SendCd, app.SendUpload, app.SendDownload, app.Sys}
 	app._buildPrompt()
 
 	return &app
