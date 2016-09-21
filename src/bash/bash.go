@@ -66,6 +66,11 @@ func (b *BashInterface) loop() {
 }
 
 func (b *BashInterface) Run(l string) {
+	if strings.Contains(l, "&&") {
+		b.SendRaw(l)
+		return
+	}
+
 	arr := strings.Fields(l)
 	for i, item := range b.spCmd {
 		if item == arr[0] {
