@@ -11,6 +11,10 @@ func (c *COMMAND) SetContext(str string) {
 	c._context = str
 }
 
+func (c *COMMAND) GetContext() string {
+	return c._context
+}
+
 func (c *COMMAND) getSystemCMD(cmd, r string) string {
 	return "ob_start();system('" + cmd + "');$" + r + "=ob_get_contents();ob_end_clean();"
 }

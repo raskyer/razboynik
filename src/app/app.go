@@ -29,6 +29,7 @@ func CreateMainApp() *MainInterface {
 	c := MainInterface{}
 	c._buildCommand()
 	c._buildCompleter()
+	c._buildPrompt()
 	c.cmd = _createCli(&c.commands)
 
 	return &c
@@ -74,6 +75,22 @@ func _addInformation(app *cli.App) {
 	app.Usage = "File upload meterpreter"
 }
 
+func (main *MainInterface) _buildPrompt() {
+	l, err := readline.NewEx(&readline.Config{
+		Prompt:          "\033[31m•\033[0m\033[31m»\033[0m ",
+		HistoryFile:     "/tmp/readline.tmp",
+		AutoComplete:    main.completer,
+		InterruptPrompt: "^C",
+		EOFPrompt:       "exit",
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	main.readline = l
+}
+
 func _createCli(commands *[]cli.Command) *cli.App {
 	client := cli.NewApp()
 	client.Commands = *commands
@@ -95,31 +112,12 @@ func (main *MainInterface) GetCommand(line string) []string {
 	return command
 }
 
-func (main *MainInterface) GetPrompt() *readline.Instance {
-	l, err := readline.NewEx(&readline.Config{
-		Prompt:          "\033[31m•\033[0m\033[31m»\033[0m ",
-		HistoryFile:     "/tmp/readline.tmp",
-		AutoComplete:    main.completer,
-		InterruptPrompt: "^C",
-		EOFPrompt:       "exit",
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	main.readline = l
-
-	return l
-}
-
-func (main *MainInterface) Loop() {
-	prompt := main.GetPrompt()
-	defer prompt.Close()
-	log.SetOutput(prompt.Stderr())
+func (main *MainInterface) loop() {
+	defer main.readline.Close()
+	log.SetOutput(main.readline.Stderr())
 
 	for main.IsRunning() {
-		line, err := prompt.Readline()
+		line, err := main.readline.Readline()
 		if err == readline.ErrInterrupt || err == io.EOF {
 			return
 		}
@@ -151,7 +149,7 @@ func (main *MainInterface) Exit(c *cli.Context) {
 
 func (main *MainInterface) Start() {
 	main.running = true
-	main.Loop()
+	main.loop()
 }
 
 func (main *MainInterface) Stop() {

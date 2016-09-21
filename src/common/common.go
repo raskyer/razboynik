@@ -31,7 +31,7 @@ func Upload(path, dir string) {
 	ReceiveOne(result, "File upload successfully")
 }
 
-func Download(path string) {
+func Download(path, location string) {
 	php := fuzzer.Download(path)
 	req, err := fuzzer.NET.Prepare(php)
 
@@ -45,11 +45,11 @@ func Download(path string) {
 		return
 	}
 
-	ReceiveDownload(resp)
+	ReceiveDownload(resp, location)
 }
 
-func ReceiveDownload(resp *http.Response) {
-	out, err := os.Create("output.txt")
+func ReceiveDownload(resp *http.Response, location string) {
+	out, err := os.Create(location)
 	defer out.Close()
 
 	if err != nil {
@@ -62,7 +62,8 @@ func ReceiveDownload(resp *http.Response) {
 		panic(err)
 	}
 
-	fmt.Println("Downloaded successfully")
+	fmt.Println("Downloaded successfully those byte: ")
+	fmt.Println(resp.Body)
 }
 
 func ReceiveOne(r, msg string) {

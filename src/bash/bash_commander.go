@@ -60,6 +60,19 @@ func (b *BashInterface) SendDownload(str string) {
 	}
 
 	path := arr[1]
+	loc := "output.txt"
 
-	common.Download(path)
+	if len(arr) > 2 {
+		loc = arr[2]
+	}
+
+	context := fuzzer.CMD.GetContext()
+
+	if context != "" {
+		context = context + "/"
+	}
+
+	path = context + path
+
+	common.Download(path, loc)
 }

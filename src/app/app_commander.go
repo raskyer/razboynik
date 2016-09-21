@@ -81,8 +81,13 @@ func (main *MainInterface) SendDownload(c *cli.Context) {
 	}
 
 	path := arr[0]
+	loc := "output.txt"
 
-	common.Download(path)
+	if len(arr) > 1 {
+		loc = arr[1]
+	}
+
+	common.Download(path, loc)
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) {
@@ -121,6 +126,9 @@ func (main *MainInterface) ServerSetup(c *cli.Context) {
 	if err || result != "1" {
 		fmt.Println("An error occured with the host")
 		fmt.Println(result)
+
+		prompt := "\033[31m•\033[0m\033[31m»\033[0m "
+		main.SetPrompt(prompt)
 		return
 	}
 
