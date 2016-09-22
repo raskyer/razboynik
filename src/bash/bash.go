@@ -1,7 +1,6 @@
 package bash
 
 import (
-	"fmt"
 	"fuzzer"
 	"fuzzer/src/common"
 	"io"
@@ -85,7 +84,8 @@ func (b *BashInterface) Run(l string) {
 
 func (b *BashInterface) Start() {
 	if !fuzzer.NET.IsSetup() {
-		fmt.Println("You haven't setup the required information, please refer to srv config")
+		e := fuzzer.SetupErr()
+		e.Error()
 		return
 	}
 

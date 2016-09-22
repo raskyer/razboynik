@@ -2,7 +2,6 @@ package fuzzer
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -37,10 +36,12 @@ type NETWORK struct {
 	_lastResponse *http.Response
 }
 
-func (n *NETWORK) PrepareUpload(bytes *bytes.Buffer, bondary string) (*http.Request, bool) {
+func (n *NETWORK) PrepareUpload(bytes *bytes.Buffer, bondary string) (*http.Request, error) {
+	var ferr FuzzerError
+
 	if n.status != true {
-		fmt.Println("You havn't setup the required information, please refer to srv config")
-		return nil, true
+		ferr = SetupErr()
+		return nil, ferr
 	}
 
 	n.status = true
@@ -52,22 +53,23 @@ func (n *NETWORK) PrepareUpload(bytes *bytes.Buffer, bondary string) (*http.Requ
 	}
 
 	req, err := http.NewRequest(c.method, c.url, bytes)
-
 	req.Header.Set("Content-Type", bondary)
 
 	if err != nil {
-		fmt.Println("Error: Impossible to create request with config :")
-		fmt.Println(c)
-		return nil, true
+		ferr := BuildRequestErr(err, &c)
+		return nil, ferr
 	}
 
-	return req, false
+	return req, nil
 }
 
-func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
+func (n *NETWORK) Prepare(r string) (*http.Request, error) {
+	var ferr FuzzerError
+	ferr = NoMethodFoundErr()
+
 	if n.status != true {
-		fmt.Println("You havn't setup the required information, please refer to srv config")
-		return nil, true
+		ferr = SetupErr()
+		return nil, ferr
 	}
 
 	var config *config
@@ -79,12 +81,11 @@ func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
 		req, err = http.NewRequest(config.method, config.url, nil)
 
 		if err != nil {
-			fmt.Println("Error: Impossible to create request with config :")
-			fmt.Println(config)
-			return nil, true
+			ferr := BuildRequestErr(err, config)
+			return nil, ferr
 		}
 
-		return req, false
+		return req, nil
 	}
 
 	if n.method == 1 {
@@ -92,14 +93,13 @@ func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
 		req, err = http.NewRequest(config.method, config.url, config.form)
 
 		if err != nil {
-			fmt.Println("Error: Impossible to create request with config :")
-			fmt.Println(config)
-			return nil, true
+			ferr := BuildRequestErr(err, config)
+			return nil, ferr
 		}
 
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-		return req, false
+		return req, nil
 	}
 
 	if n.method == 2 {
@@ -107,26 +107,27 @@ func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
 		req, err = http.NewRequest(config.method, config.url, nil)
 
 		if err != nil {
-			fmt.Println("Error: Impossible to create request with config :")
-			fmt.Println(config)
-			return nil, true
+			ferr := BuildRequestErr(err, config)
+			return nil, ferr
 		}
 
 		req.Header.Add(n.parameter, n.cmd)
 
-		return req, false
+		return req, nil
 	}
 
 	if n.method == 3 {
 	}
 
-	return req, true
+	return req, ferr
 }
 
-func (n *NETWORK) Send(req *http.Request) (*http.Response, bool) {
+func (n *NETWORK) Send(req *http.Request) (*http.Response, error) {
+	var ferr FuzzerError
+
 	if n.status != true {
-		fmt.Println("You havn't setup the required information, please refer to srv config")
-		return nil, true
+		ferr = SetupErr()
+		return nil, ferr
 	}
 
 	n._respBody = nil
@@ -135,69 +136,11 @@ func (n *NETWORK) Send(req *http.Request) (*http.Response, bool) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		fmt.Println("Error: Impossible to send request. Error msg : ")
-		fmt.Println(err)
-		fmt.Println(resp.Status)
-		return nil, true
+		ferr = RequestErr(err, resp.StatusCode)
+		return nil, ferr
 	}
 
 	n._lastResponse = resp
 
-	return resp, false
-}
-
-func (n *NETWORK) postConfig(r string) *config {
-	n.status = true
-
-	request := Encode(r)
-	n.cmd = request
-
-	form := url.Values{}
-	form.Set(n.parameter, request)
-	n._body = form
-
-	data := bytes.NewBufferString(form.Encode())
-
-	c := config{
-		url:    n.host,
-		method: "POST",
-		form:   data,
-	}
-
-	return &c
-}
-
-func (n *NETWORK) getConfig(r string) *config {
-	n.status = true
-
-	request := Encode(r)
-	n.cmd = request
-
-	url := n.host + "?" + n.parameter + "=" + request
-
-	c := config{
-		url:    url,
-		method: "GET",
-		form:   nil,
-	}
-
-	return &c
-}
-
-func (n *NETWORK) headerConfig(r string) *config {
-	n.status = true
-
-	request := Encode(r)
-	n.cmd = request
-
-	c := config{
-		url:    n.host,
-		method: "GET",
-		form:   nil,
-	}
-
-	return &c
-}
-
-func (n *NETWORK) cookieConfig(r string) {
+	return resp, nil
 }

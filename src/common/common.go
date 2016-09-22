@@ -4,97 +4,37 @@ import (
 	"bytes"
 	"fmt"
 	"fuzzer"
-	"io"
 	"net/http"
 	"os"
 	"os/exec"
 )
 
-func Send(str string) (*http.Response, bool) {
+func Send(str string) (*http.Response, error) {
 	req, err := fuzzer.NET.Prepare(str)
 
-	if err {
-		return nil, true
+	if err != nil {
+		return nil, err
 	}
 
 	resp, err := fuzzer.NET.Send(req)
 
-	if err {
-		return nil, true
+	if err != nil {
+		return nil, err
 	}
 
-	return resp, false
+	return resp, nil
 }
 
-func Process(str string) (string, bool) {
+func Process(str string) (string, error) {
 	resp, err := Send(str)
 
-	if err {
-		return "", true
+	if err != nil {
+		return "", err
 	}
 
 	result := fuzzer.NET.GetResultStr(resp)
 
-	return result, false
-}
-
-func Upload(path, dir string) {
-	bytes, bondary, err := fuzzer.PHP.Upload(path, dir)
-
-	if err {
-		return
-	}
-
-	req, err := fuzzer.NET.PrepareUpload(bytes, bondary)
-
-	if err {
-		return
-	}
-
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	result := fuzzer.NET.GetBodyStr(resp)
-
-	ReadOne(result, "File upload successfully")
-}
-
-func Download(path, location string) {
-	php := fuzzer.PHP.Download(path)
-	req, err := fuzzer.NET.Prepare(php)
-
-	if err {
-		return
-	}
-
-	resp, err := fuzzer.NET.Send(req)
-
-	if err {
-		return
-	}
-
-	ReadDownload(resp, location)
-}
-
-func ReadDownload(resp *http.Response, location string) {
-	out, err := os.Create(location)
-	defer out.Close()
-
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = io.Copy(out, resp.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Downloaded successfully those byte: ")
-	fmt.Println(resp.Body)
+	return result, nil
 }
 
 func ReadOne(r, msg string) {

@@ -14,7 +14,8 @@ func (main *MainInterface) SendRawPHP(c *cli.Context) {
 	raw := fuzzer.PHP.Raw(cmd)
 	r, err := common.Send(raw)
 
-	if err {
+	if err != nil {
+		err.Error()
 		return
 	}
 
@@ -39,8 +40,8 @@ func (main *MainInterface) SendTest(c *cli.Context) {
 	t := fuzzer.PHP.Raw("$r=1;")
 	result, err := common.Process(t)
 
-	if err {
-		fmt.Println("An error occured with the host")
+	if err != nil {
+		err.Error()
 		return
 	}
 
@@ -84,7 +85,7 @@ func (main *MainInterface) SendDownload(c *cli.Context) {
 	arr := c.Args()
 
 	if len(arr) < 1 {
-		fmt.Println("Please write the path of the local file to upload")
+		fmt.Println("Please write the path of the local file to download")
 		return
 	}
 

@@ -11,7 +11,8 @@ func (b *BashInterface) SendRaw(str string) {
 	raw := fuzzer.CMD.Raw(str)
 	result, err := common.Process(raw)
 
-	if err {
+	if err != nil {
+		err.Error()
 		return
 	}
 
@@ -22,7 +23,8 @@ func (b *BashInterface) SendCd(str string) {
 	cd := fuzzer.CMD.Cd(str)
 	result, err := common.Process(cd)
 
-	if err {
+	if err != nil {
+		err.Error()
 		return
 	}
 

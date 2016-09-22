@@ -21,7 +21,8 @@ func (main *MainInterface) SendLs(c *cli.Context) {
 
 	result, err := common.Process(ls)
 
-	if err {
+	if err != nil {
+		err.Error()
 		return
 	}
 
