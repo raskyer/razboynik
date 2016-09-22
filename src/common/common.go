@@ -10,8 +10,26 @@ import (
 	"os/exec"
 )
 
+func Process(str string) (string, bool) {
+	req, err := fuzzer.NET.Prepare(str)
+
+	if err {
+		return "", true
+	}
+
+	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return "", true
+	}
+
+	result := fuzzer.NET.GetResultStr(resp)
+
+	return result, false
+}
+
 func Upload(path, dir string) {
-	bytes, bondary, err := fuzzer.Upload(path, dir)
+	bytes, bondary, err := fuzzer.PHP.Upload(path, dir)
 
 	if err {
 		return
@@ -30,11 +48,12 @@ func Upload(path, dir string) {
 	}
 
 	result := fuzzer.NET.GetBodyStr(resp)
-	ReceiveOne(result, "File upload successfully")
+
+	ReadOne(result, "File upload successfully")
 }
 
 func Download(path, location string) {
-	php := fuzzer.Download(path)
+	php := fuzzer.PHP.Download(path)
 	req, err := fuzzer.NET.Prepare(php)
 
 	if err {
@@ -47,10 +66,10 @@ func Download(path, location string) {
 		return
 	}
 
-	ReceiveDownload(resp, location)
+	ReadDownload(resp, location)
 }
 
-func ReceiveDownload(resp *http.Response, location string) {
+func ReadDownload(resp *http.Response, location string) {
 	out, err := os.Create(location)
 	defer out.Close()
 
@@ -68,13 +87,22 @@ func ReceiveDownload(resp *http.Response, location string) {
 	fmt.Println(resp.Body)
 }
 
-func ReceiveOne(r, msg string) {
+func ReadOne(r, msg string) {
 	if r == "1" {
 		fmt.Println(msg)
 		return
 	}
 
 	fmt.Println("An error occured")
+}
+
+func ReadEncode(str string) {
+	sDec := fuzzer.Decode(str)
+	fmt.Println(sDec)
+}
+
+func Read(str string) {
+	fmt.Println(str)
 }
 
 func Syscall(str string) {

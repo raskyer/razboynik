@@ -109,11 +109,11 @@ func (main *MainInterface) _buildCommand() {
 				Subcommands: []cli.Command{
 					{
 						Name:   "response",
-						Action: responseInfo,
+						Action: main.ResponseInfo,
 					},
 					{
 						Name:   "request",
-						Action: requestInfo,
+						Action: main.RequestInfo,
 					},
 				},
 				Flags: []cli.Flag{

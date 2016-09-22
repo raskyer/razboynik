@@ -7,13 +7,10 @@ import (
 	"net/url"
 )
 
-type callback func(string)
-type rawCallback func(*http.Response)
-
 var NET = NETWORK{
 	host:      "",
 	method:    0,
-	parameter: "fuzzer",
+	parameter: "Fuzzer",
 	crypt:     false,
 	status:    false,
 }
@@ -86,27 +83,44 @@ func (n *NETWORK) Prepare(r string) (*http.Request, bool) {
 			fmt.Println(config)
 			return nil, true
 		}
+
+		return req, false
 	}
 
 	if n.method == 1 {
 		config = n.postConfig(r)
 		req, err = http.NewRequest(config.method, config.url, config.form)
-		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 		if err != nil {
 			fmt.Println("Error: Impossible to create request with config :")
 			fmt.Println(config)
 			return nil, true
 		}
+
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+		return req, false
+	}
+
+	if n.method == 2 {
+		config = n.headerConfig(r)
+		req, err = http.NewRequest(config.method, config.url, nil)
+
+		if err != nil {
+			fmt.Println("Error: Impossible to create request with config :")
+			fmt.Println(config)
+			return nil, true
+		}
+
+		req.Header.Add(n.parameter, n.cmd)
+
+		return req, false
 	}
 
 	if n.method == 3 {
 	}
 
-	if n.method == 4 {
-	}
-
-	return req, false
+	return req, true
 }
 
 func (n *NETWORK) Send(req *http.Request) (*http.Response, bool) {
@@ -170,7 +184,19 @@ func (n *NETWORK) getConfig(r string) *config {
 	return &c
 }
 
-func (n *NETWORK) headerConfig(r string) {
+func (n *NETWORK) headerConfig(r string) *config {
+	n.status = true
+
+	request := Encode(r)
+	n.cmd = request
+
+	c := config{
+		url:    n.host,
+		method: "GET",
+		form:   nil,
+	}
+
+	return &c
 }
 
 func (n *NETWORK) cookieConfig(r string) {
