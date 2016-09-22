@@ -12,13 +12,27 @@ import (
 func (main *MainInterface) SendRawPHP(c *cli.Context) {
 	cmd := strings.Join(c.Args(), " ")
 	raw := fuzzer.PHP.Raw(cmd)
-	result, err := common.Process(raw)
+	r, err := common.Send(raw)
 
 	if err {
 		return
 	}
 
-	common.Read(result)
+	var resultStr string
+
+	m := c.Int("r")
+
+	if m != fuzzer.NET.GetMethod() && m < 4 {
+		resultStr = fuzzer.NET.GetResultStrByMethod(m, r)
+	} else {
+		resultStr = fuzzer.NET.GetResultStr(r)
+	}
+
+	if c.Bool("d") {
+		//Download logic
+	}
+
+	common.Read(resultStr)
 }
 
 func (main *MainInterface) SendTest(c *cli.Context) {

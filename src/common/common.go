@@ -10,14 +10,24 @@ import (
 	"os/exec"
 )
 
-func Process(str string) (string, bool) {
+func Send(str string) (*http.Response, bool) {
 	req, err := fuzzer.NET.Prepare(str)
 
 	if err {
-		return "", true
+		return nil, true
 	}
 
 	resp, err := fuzzer.NET.Send(req)
+
+	if err {
+		return nil, true
+	}
+
+	return resp, false
+}
+
+func Process(str string) (string, bool) {
+	resp, err := Send(str)
 
 	if err {
 		return "", true

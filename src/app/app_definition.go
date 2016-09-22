@@ -68,6 +68,10 @@ func (main *MainInterface) _buildCommand() {
 						Name:   "php",
 						Usage:  "Execute php on server",
 						Action: main.SendRawPHP,
+						Flags: []cli.Flag{
+							cli.IntFlag{Name: "r", Usage: "Define where to look for result", Value: 4},
+							cli.BoolFlag{Name: "d", Usage: "Download the result in download.txt"},
+						},
 					},
 					{
 						Name:   "ls",
@@ -110,17 +114,27 @@ func (main *MainInterface) _buildCommand() {
 					{
 						Name:   "response",
 						Action: main.ResponseInfo,
+						Flags: []cli.Flag{
+							cli.BoolFlag{Name: "status", Usage: "Shows response's status"},
+							cli.BoolFlag{Name: "body", Usage: "Shows item's body"},
+							cli.BoolFlag{Name: "headers", Usage: "Shows item's headers"},
+						},
 					},
 					{
 						Name:   "request",
 						Action: main.RequestInfo,
+						Flags: []cli.Flag{
+							cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
+							cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
+							cli.BoolFlag{Name: "body", Usage: "Shows item's body"},
+							cli.BoolFlag{Name: "headers", Usage: "Shows item's headers"},
+						},
 					},
 				},
 				Flags: []cli.Flag{
 					cli.BoolFlag{Name: "url", Usage: "Shows request's url"},
 					cli.BoolFlag{Name: "method", Usage: "Shows request's method"},
 					cli.BoolFlag{Name: "status", Usage: "Shows response's status"},
-					cli.BoolFlag{Name: "request", Usage: "Shows response's interpreted request"},
 					cli.BoolFlag{Name: "body", Usage: "Shows item's body"},
 					cli.BoolFlag{Name: "headers", Usage: "Shows item's headers"},
 				},

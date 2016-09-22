@@ -86,17 +86,21 @@ func (n *NETWORK) GetHeaderStr(r *http.Response) string {
 	return str
 }
 
-func (n *NETWORK) GetResultStr(r *http.Response) string {
-	if n.method == 0 || n.method == 1 {
+func (n *NETWORK) GetResultStrByMethod(m int, r *http.Response) string {
+	if m == 0 || m == 1 {
 		return n.GetBodyStr(r)
 	}
 
-	if n.method == 2 {
+	if m == 2 {
 		return n.GetHeaderStr(r)
 	}
 
-	if n.method == 3 {
+	if m == 3 {
 	}
 
 	return ""
+}
+
+func (n *NETWORK) GetResultStr(r *http.Response) string {
+	return n.GetResultStrByMethod(n.method, r)
 }
