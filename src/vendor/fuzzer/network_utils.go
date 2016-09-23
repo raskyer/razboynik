@@ -80,3 +80,27 @@ func (n *NETWORK) GetRequest() *http.Request {
 	n._lastResponse.Request.PostForm = n._body
 	return n._lastResponse.Request
 }
+
+func (n *NETWORK) GetHeaderStr(r *http.Response) string {
+	str := r.Header.Get(n.parameter)
+	return str
+}
+
+func (n *NETWORK) GetResultStrByMethod(m int, r *http.Response) string {
+	if m == 0 || m == 1 {
+		return n.GetBodyStr(r)
+	}
+
+	if m == 2 {
+		return n.GetHeaderStr(r)
+	}
+
+	if m == 3 {
+	}
+
+	return ""
+}
+
+func (n *NETWORK) GetResultStr(r *http.Response) string {
+	return n.GetResultStrByMethod(n.method, r)
+}

@@ -1,8 +1,8 @@
 package bash
 
 import (
-	"fmt"
 	"fuzzer"
+	"fuzzer/src/common"
 	"io"
 	"log"
 	"strings"
@@ -84,7 +84,8 @@ func (b *BashInterface) Run(l string) {
 
 func (b *BashInterface) Start() {
 	if !fuzzer.NET.IsSetup() {
-		fmt.Println("You haven't setup the required information, please refer to srv config")
+		e := fuzzer.SetupErr()
+		e.Error()
 		return
 	}
 
@@ -107,4 +108,17 @@ func (b *BashInterface) SetPrompt(p string) {
 
 func (b *BashInterface) Exit(str string) {
 	b.Stop()
+}
+
+func (b *BashInterface) Sys(str string) {
+	arr := strings.Fields(str)
+
+	if len(arr) < 2 {
+		return
+	}
+
+	arr = append(arr[1:], arr[len(arr):]...)
+	full := strings.Join(arr, " ")
+
+	common.Syscall(full)
 }
