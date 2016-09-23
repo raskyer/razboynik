@@ -34,6 +34,7 @@ func CreateBashApp() *BashInterface {
 			"-decode",
 			"-info",
 			"-php",
+			"-keep",
 		},
 	}
 
@@ -47,6 +48,7 @@ func CreateBashApp() *BashInterface {
 		bsh.Decode,
 		bsh.Info,
 		bsh.SendRawPHP,
+		bsh.Keep,
 	}
 
 	bsh._buildPrompt()
@@ -91,11 +93,12 @@ func (b *BashInterface) loop() {
 			return
 		}
 
+		CallClear()
+
 		if len(line) == 0 {
 			continue
 		}
 
-		CallClear()
 		fmt.Println(b.readline.Config.Prompt + line)
 
 		b.Run(line)
@@ -103,7 +106,7 @@ func (b *BashInterface) loop() {
 }
 
 func (b *BashInterface) Run(l string) {
-	if strings.Contains(l, "&&") {
+	if strings.Contains(l, "&&") && strings.Contains(l, "cd") {
 		b.SendRaw(l)
 		return
 	}
@@ -225,19 +228,19 @@ func (b *BashInterface) ResponseInfo(str string) {
 	flag := false
 	r := fuzzer.NET.GetResponse()
 
-	if strings.Contains(str, "status") {
+	if strings.Contains(str, "-status") {
 		fmt.Println(r.Status)
 		flag = true
 	}
 
-	if strings.Contains(str, "body") {
+	if strings.Contains(str, "-body") {
 		body := fuzzer.NET.GetBodyStr(r)
 		fmt.Println("body: " + body)
 
 		flag = true
 	}
 
-	if strings.Contains(str, "headers") {
+	if strings.Contains(str, "-headers") {
 		fmt.Println(r.Header)
 		flag = true
 	}
@@ -245,4 +248,24 @@ func (b *BashInterface) ResponseInfo(str string) {
 	if !flag {
 		fmt.Println(r)
 	}
+}
+
+func (b *BashInterface) Keep(str string) {
+	str, err := ParseStr(str)
+
+	if err != nil {
+		return
+	}
+
+	raw := fuzzer.CMD.Raw(str)
+	result, err := common.Process(raw)
+
+	if err != nil {
+		err.Error()
+		return
+	}
+
+	result = fuzzer.Decode(result)
+	SetKeeper(result)
+	CallClear()
 }

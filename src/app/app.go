@@ -26,7 +26,7 @@ func CreateMainApp() *MainInterface {
 
 func _addInformation(app *cli.App) {
 	app.Name = "Fuzzer"
-	app.Version = "2.0.0"
+	app.Version = "4.0.0"
 	app.Compiled = time.Now()
 	app.Authors = []cli.Author{
 		cli.Author{

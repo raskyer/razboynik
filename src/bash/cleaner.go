@@ -8,6 +8,7 @@ import (
 )
 
 var clear map[string]func()
+var keeper string
 
 func init() {
 	clear = make(map[string]func())
@@ -31,6 +32,13 @@ func CallClear() {
 	value, ok := clear[runtime.GOOS]
 	if ok {
 		value()
-		return
 	}
+
+	if keeper != "" {
+		fmt.Println(keeper)
+	}
+}
+
+func SetKeeper(str string) {
+	keeper = str
 }
