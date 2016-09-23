@@ -23,8 +23,18 @@ type BashInterface struct {
 
 func CreateBashApp() *BashInterface {
 	bsh := BashInterface{
-		commonCmd:  []string{"ls", "cat", "rm"},
-		specialCmd: []string{"exit", "cd", "-upload", "-download", "-sys", "-encode", "-decode", "-info"},
+		commonCmd: []string{"ls", "cat", "rm"},
+		specialCmd: []string{
+			"exit",
+			"cd",
+			"-upload",
+			"-download",
+			"-sys",
+			"-encode",
+			"-decode",
+			"-info",
+			"-php",
+		},
 	}
 
 	bsh.specialFunc = []spFunc{
@@ -36,6 +46,7 @@ func CreateBashApp() *BashInterface {
 		bsh.Encode,
 		bsh.Decode,
 		bsh.Info,
+		bsh.SendRawPHP,
 	}
 
 	bsh._buildPrompt()
@@ -137,37 +148,34 @@ func (b *BashInterface) Exit(str string) {
 }
 
 func (b *BashInterface) Sys(str string) {
-	arr := strings.Fields(str)
+	full, err := ParseStr(str)
 
-	if len(arr) < 2 {
+	if err != nil {
 		return
 	}
-
-	arr = append(arr[1:], arr[len(arr):]...)
-	full := strings.Join(arr, " ")
 
 	common.Syscall(full)
 }
 
 func (b *BashInterface) Encode(str string) {
-	strArr := strings.Fields(str)
+	str, err := ParseStr(str)
 
-	if len(strArr) < 2 {
+	if err != nil {
 		return
 	}
 
-	sEnc := fuzzer.Encode(strArr[1])
+	sEnc := fuzzer.Encode(str)
 	fmt.Println(sEnc)
 }
 
 func (b *BashInterface) Decode(str string) {
-	strArr := strings.Fields(str)
+	str, err := ParseStr(str)
 
-	if len(strArr) < 2 {
+	if err != nil {
 		return
 	}
 
-	sDec := fuzzer.Decode(strArr[1])
+	sDec := fuzzer.Decode(str)
 	fmt.Println(sDec)
 }
 
