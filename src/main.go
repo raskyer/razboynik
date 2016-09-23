@@ -1,8 +1,11 @@
 package main
 
-import "fuzzer/src/app"
+import (
+	"fuzzer/src/app"
+	"os"
+)
 
 func main() {
 	main := app.CreateMainApp()
-	main.Start()
+	main.Run(os.Args)
 }

@@ -12,7 +12,9 @@ func Decode(str string) string {
 	sDec, err := base64.StdEncoding.DecodeString(str)
 
 	if err != nil {
-		panic(err)
+		ferr := NormalizeErr(err)
+		ferr.Error()
+		return ""
 	}
 
 	return string(sDec)
