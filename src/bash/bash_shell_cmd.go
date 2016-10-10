@@ -2,13 +2,14 @@ package bash
 
 import (
 	"fmt"
-	"fuzzer"
 	"fuzzer/src/common"
 	"strings"
+
+	"github.com/eatbytes/fuzzcore"
 )
 
 func (b *BashInterface) SendRaw(str string) {
-	raw := fuzzer.CMD.Raw(str)
+	raw := fuzzcore.CMD.Raw(str)
 	result, err := common.Process(raw)
 
 	if err != nil {
@@ -20,7 +21,7 @@ func (b *BashInterface) SendRaw(str string) {
 }
 
 func (b *BashInterface) SendCd(str string) {
-	cd := fuzzer.CMD.Cd(str)
+	cd := fuzzcore.CMD.Cd(str)
 	result, err := common.Process(cd)
 
 	if err != nil {
@@ -32,11 +33,11 @@ func (b *BashInterface) SendCd(str string) {
 }
 
 func (b *BashInterface) ReceiveCd(result string) {
-	body := fuzzer.Decode(result)
+	body := fuzzcore.Decode(result)
 	line := strings.TrimSpace(body)
 
 	if line != "" {
-		fuzzer.CMD.SetContext(line)
+		fuzzcore.CMD.SetContext(line)
 		b.SetPrompt("\033[32m•\033[0m\033[32m»\033[0m [Bash]:" + line + "$ ")
 		fmt.Println(body)
 	}

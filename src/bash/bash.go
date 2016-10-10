@@ -2,12 +2,12 @@ package bash
 
 import (
 	"fmt"
-	"fuzzer"
 	"fuzzer/src/common"
 	"io"
 	"log"
 	"strings"
-
+	
+	"github.com/eatbytes/fuzzcore"
 	"github.com/chzyer/readline"
 )
 
@@ -123,8 +123,8 @@ func (b *BashInterface) Run(l string) {
 }
 
 func (b *BashInterface) Start() {
-	if !fuzzer.NET.IsSetup() {
-		e := fuzzer.SetupErr()
+	if !fuzzcore.NET.IsSetup() {
+		e := fuzzcore.SetupErr()
 		e.Error()
 		return
 	}
@@ -135,7 +135,7 @@ func (b *BashInterface) Start() {
 
 func (b *BashInterface) Stop() {
 	b.running = false
-	fuzzer.CMD.SetContext("")
+	fuzzcore.CMD.SetContext("")
 }
 
 func (b *BashInterface) IsRunning() bool {
@@ -167,7 +167,7 @@ func (b *BashInterface) Encode(str string) {
 		return
 	}
 
-	sEnc := fuzzer.Encode(str)
+	sEnc := fuzzcore.Encode(str)
 	fmt.Println(sEnc)
 }
 
@@ -178,12 +178,12 @@ func (b *BashInterface) Decode(str string) {
 		return
 	}
 
-	sDec := fuzzer.Decode(str)
+	sDec := fuzzcore.Decode(str)
 	fmt.Println(sDec)
 }
 
 func (b *BashInterface) Info(str string) {
-	if fuzzer.NET.GetResponse() == nil {
+	if fuzzcore.NET.GetResponse() == nil {
 		fmt.Println("You havn't made any request. You must make a request before being able to see information")
 		return
 	}
@@ -197,7 +197,7 @@ func (b *BashInterface) Info(str string) {
 
 func (b *BashInterface) RequestInfo(str string) {
 	flag := false
-	r := fuzzer.NET.GetRequest()
+	r := fuzzcore.NET.GetRequest()
 
 	if strings.Contains(str, "-url") {
 		fmt.Println(r.URL)
@@ -226,7 +226,7 @@ func (b *BashInterface) RequestInfo(str string) {
 
 func (b *BashInterface) ResponseInfo(str string) {
 	flag := false
-	r := fuzzer.NET.GetResponse()
+	r := fuzzcore.NET.GetResponse()
 
 	if strings.Contains(str, "-status") {
 		fmt.Println(r.Status)
@@ -234,7 +234,7 @@ func (b *BashInterface) ResponseInfo(str string) {
 	}
 
 	if strings.Contains(str, "-body") {
-		body := fuzzer.NET.GetBodyStr(r)
+		body := fuzzcore.NET.GetBodyStr(r)
 		fmt.Println("body: " + body)
 
 		flag = true
@@ -257,7 +257,7 @@ func (b *BashInterface) Keep(str string) {
 		return
 	}
 
-	raw := fuzzer.CMD.Raw(str)
+	raw := fuzzcore.CMD.Raw(str)
 	result, err := common.Process(raw)
 
 	if err != nil {
@@ -265,7 +265,7 @@ func (b *BashInterface) Keep(str string) {
 		return
 	}
 
-	result = fuzzer.Decode(result)
+	result = fuzzcore.Decode(result)
 	SetKeeper(result)
 	CallClear()
 }

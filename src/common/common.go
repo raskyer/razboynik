@@ -1,22 +1,21 @@
 package common
 
 import (
-	"bytes"
 	"fmt"
-	"fuzzer"
 	"net/http"
-	"os"
-	"os/exec"
+
+	"github.com/eatbytes/fuzzcore"
+	"github.com/eatbytes/sysgo"
 )
 
 func Send(str string) (*http.Response, error) {
-	req, err := fuzzer.NET.Prepare(str)
+	req, err := fuzzcore.NET.Prepare(str)
 
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := fuzzer.NET.Send(req)
+	resp, err := fuzzcore.NET.Send(req)
 
 	if err != nil {
 		return nil, err
@@ -32,7 +31,7 @@ func Process(str string) (string, error) {
 		return "", err
 	}
 
-	result := fuzzer.NET.GetResultStr(resp)
+	result := fuzzcore.NET.GetResultStr(resp)
 
 	return result, nil
 }
@@ -47,7 +46,7 @@ func ReadOne(r, msg string) {
 }
 
 func ReadEncode(str string) {
-	sDec := fuzzer.Decode(str)
+	sDec := fuzzcore.Decode(str)
 	fmt.Println(sDec)
 }
 
@@ -56,16 +55,12 @@ func Read(str string) {
 }
 
 func Syscall(str string) {
-	cmd := exec.Command("bash", "-c", str)
-
-	cmdOutput := &bytes.Buffer{}
-	cmd.Stdout = cmdOutput
-
-	err := cmd.Run()
-
+	result, err := sysgo.Call(str)
+	
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err))
+		fmt.Println(err)
+		return
 	}
 
-	fmt.Printf("%s\n", string(cmdOutput.Bytes()))
+	fmt.Println(result)
 }

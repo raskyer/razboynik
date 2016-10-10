@@ -2,11 +2,11 @@ package app
 
 import (
 	"fmt"
-	"fuzzer"
 	"fuzzer/src/bash"
 	"fuzzer/src/common"
 	"time"
 
+	"github.com/eatbytes/fuzzcore"
 	"github.com/urfave/cli"
 )
 
@@ -77,7 +77,7 @@ func (main *MainInterface) Start(c *cli.Context) {
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) bool {
-	srv := &fuzzer.NET
+	srv := &fuzzcore.NET
 
 	url := c.String("u")
 	method := c.Int("m")
@@ -104,7 +104,7 @@ func (main *MainInterface) ServerSetup(c *cli.Context) bool {
 }
 
 func (main *MainInterface) SendTest(c *cli.Context) bool {
-	t := fuzzer.PHP.Raw("$r=1;")
+	t := fuzzcore.PHP.Raw("$r=1;")
 	result, err := common.Process(t)
 
 	if err != nil {
@@ -112,7 +112,7 @@ func (main *MainInterface) SendTest(c *cli.Context) bool {
 		return false
 	}
 
-	result = fuzzer.Decode(result)
+	result = fuzzcore.Decode(result)
 
 	if result != "1" {
 		fmt.Println("An error occured with the host")

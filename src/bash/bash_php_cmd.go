@@ -2,9 +2,10 @@ package bash
 
 import (
 	"fmt"
-	"fuzzer"
 	"fuzzer/src/common"
 	"strings"
+
+	"github.com/eatbytes/fuzzcore"
 )
 
 func (b *BashInterface) SendUpload(str string) {
@@ -42,7 +43,7 @@ func (b *BashInterface) SendDownload(str string) {
 		loc = arr[1]
 	}
 
-	context := fuzzer.CMD.GetContext()
+	context := fuzzcore.CMD.GetContext()
 
 	if context != "" {
 		context = context + "/"
@@ -60,7 +61,7 @@ func (b *BashInterface) SendRawPHP(str string) {
 		return
 	}
 
-	raw := fuzzer.PHP.Raw(str)
+	raw := fuzzcore.PHP.Raw(str)
 	result, err := common.Process(raw)
 
 	if err != nil {

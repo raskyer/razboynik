@@ -2,22 +2,23 @@ package common
 
 import (
 	"fmt"
-	"fuzzer"
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/eatbytes/fuzzcore"
 )
 
 func Download(path, location string) {
-	php := fuzzer.PHP.Download(path)
-	req, err := fuzzer.NET.Prepare(php)
+	php := fuzzcore.PHP.Download(path)
+	req, err := fuzzcore.NET.Prepare(php)
 
 	if err != nil {
 		err.Error()
 		return
 	}
 
-	resp, err := fuzzer.NET.Send(req)
+	resp, err := fuzzcore.NET.Send(req)
 
 	if err != nil {
 		err.Error()
