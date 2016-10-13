@@ -1,4 +1,4 @@
-package bash
+package cleaner
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func init() {
 	}
 }
 
-func CallClear() {
+func Clear() {
 	fmt.Printf("\n\n\n\n\n")
 
 	value, ok := clear[runtime.GOOS]

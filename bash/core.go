@@ -2,13 +2,16 @@ package bash
 
 import (
 	"fmt"
-	"fuzzer/src/common"
 	"io"
 	"log"
 	"strings"
-	
-	"github.com/eatbytes/fuzzcore"
+
 	"github.com/chzyer/readline"
+	"github.com/eatbytes/fuzzcore"
+	"github.com/leaklessgfy/fuzzer/cleaner"
+	"github.com/leaklessgfy/fuzzer/networking"
+	"github.com/leaklessgfy/fuzzer/parser"
+	"github.com/leaklessgfy/fuzzer/syscall"
 )
 
 type spFunc func(string)
@@ -85,7 +88,7 @@ func (b *BashInterface) _buildPrompt() {
 func (b *BashInterface) loop() {
 	defer b.readline.Close()
 	log.SetOutput(b.readline.Stderr())
-	CallClear()
+	cleaner.Clear()
 
 	for b.IsRunning() {
 		line, err := b.readline.Readline()
@@ -93,7 +96,7 @@ func (b *BashInterface) loop() {
 			return
 		}
 
-		CallClear()
+		cleaner.Clear()
 
 		if len(line) == 0 {
 			continue
@@ -151,17 +154,17 @@ func (b *BashInterface) Exit(str string) {
 }
 
 func (b *BashInterface) Sys(str string) {
-	full, err := ParseStr(str)
+	full, err := parser.ParseStr(str)
 
 	if err != nil {
 		return
 	}
 
-	common.Syscall(full)
+	syscall.Syscall(full)
 }
 
 func (b *BashInterface) Encode(str string) {
-	str, err := ParseStr(str)
+	str, err := parser.ParseStr(str)
 
 	if err != nil {
 		return
@@ -172,7 +175,7 @@ func (b *BashInterface) Encode(str string) {
 }
 
 func (b *BashInterface) Decode(str string) {
-	str, err := ParseStr(str)
+	str, err := parser.ParseStr(str)
 
 	if err != nil {
 		return
@@ -182,83 +185,15 @@ func (b *BashInterface) Decode(str string) {
 	fmt.Println(sDec)
 }
 
-func (b *BashInterface) Info(str string) {
-	if fuzzcore.NET.GetResponse() == nil {
-		fmt.Println("You havn't made any request. You must make a request before being able to see information")
-		return
-	}
-
-	fmt.Println("Request => ")
-	b.RequestInfo(str)
-
-	fmt.Println("Response => ")
-	b.ResponseInfo(str)
-}
-
-func (b *BashInterface) RequestInfo(str string) {
-	flag := false
-	r := fuzzcore.NET.GetRequest()
-
-	if strings.Contains(str, "-url") {
-		fmt.Println(r.URL)
-		flag = true
-	}
-
-	if strings.Contains(str, "-method") {
-		fmt.Println(r.Method)
-		flag = true
-	}
-
-	if strings.Contains(str, "-body") {
-		fmt.Println(r.PostForm)
-		flag = true
-	}
-
-	if strings.Contains(str, "-header") {
-		fmt.Println(r.Header)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(r)
-	}
-}
-
-func (b *BashInterface) ResponseInfo(str string) {
-	flag := false
-	r := fuzzcore.NET.GetResponse()
-
-	if strings.Contains(str, "-status") {
-		fmt.Println(r.Status)
-		flag = true
-	}
-
-	if strings.Contains(str, "-body") {
-		body := fuzzcore.NET.GetBodyStr(r)
-		fmt.Println("body: " + body)
-
-		flag = true
-	}
-
-	if strings.Contains(str, "-headers") {
-		fmt.Println(r.Header)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(r)
-	}
-}
-
 func (b *BashInterface) Keep(str string) {
-	str, err := ParseStr(str)
+	str, err := parser.ParseStr(str)
 
 	if err != nil {
 		return
 	}
 
 	raw := fuzzcore.CMD.Raw(str)
-	result, err := common.Process(raw)
+	result, err := networking.Process(raw)
 
 	if err != nil {
 		err.Error()
@@ -266,6 +201,7 @@ func (b *BashInterface) Keep(str string) {
 	}
 
 	result = fuzzcore.Decode(result)
-	SetKeeper(result)
-	CallClear()
+
+	cleaner.SetKeeper(result)
+	cleaner.Clear()
 }

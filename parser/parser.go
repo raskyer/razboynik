@@ -1,4 +1,4 @@
-package bash
+package parser
 
 import "strings"
 

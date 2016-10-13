@@ -2,14 +2,16 @@ package bash
 
 import (
 	"fmt"
-	"fuzzer/src/common"
 	"strings"
 
 	"github.com/eatbytes/fuzzcore"
+	"github.com/leaklessgfy/fuzzer/bash/php"
+	"github.com/leaklessgfy/fuzzer/networking"
+	"github.com/leaklessgfy/fuzzer/parser"
 )
 
 func (b *BashInterface) SendUpload(str string) {
-	arr := Parse(str)
+	arr := parser.Parse(str)
 
 	if arr == nil {
 		fmt.Println("Please write the path of the local file to upload")
@@ -25,11 +27,11 @@ func (b *BashInterface) SendUpload(str string) {
 		dir = arr[1]
 	}
 
-	common.Upload(path, dir)
+	php.Upload(path, dir)
 }
 
 func (b *BashInterface) SendDownload(str string) {
-	arr := Parse(str)
+	arr := parser.Parse(str)
 
 	if arr == nil {
 		fmt.Println("Please write the path of the local file to upload")
@@ -51,18 +53,18 @@ func (b *BashInterface) SendDownload(str string) {
 
 	path = context + path
 
-	common.Download(path, loc)
+	php.Download(path, loc)
 }
 
 func (b *BashInterface) SendRawPHP(str string) {
-	str, err := ParseStr(str)
+	str, err := parser.ParseStr(str)
 
 	if err != nil {
 		return
 	}
 
 	raw := fuzzcore.PHP.Raw(str)
-	result, err := common.Process(raw)
+	result, err := networking.Process(raw)
 
 	if err != nil {
 		err.Error()

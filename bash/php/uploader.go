@@ -1,6 +1,9 @@
-package common
+package php
 
-import "github.com/eatbytes/fuzzcore"
+import (
+	"github.com/eatbytes/fuzzcore"
+	"github.com/leaklessgfy/fuzzer/reader"
+)
 
 func Upload(path, dir string) {
 	bytes, bondary, err := fuzzcore.PHP.Upload(path, dir)
@@ -25,5 +28,5 @@ func Upload(path, dir string) {
 	}
 
 	result := fuzzcore.NET.GetBodyStr(resp)
-	ReadOne(result, "File upload successfully")
+	reader.ReadOne(result, "File upload successfully")
 }

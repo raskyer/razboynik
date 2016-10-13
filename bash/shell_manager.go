@@ -1,29 +1,29 @@
-package shell
+package bash
 
 import (
 	"fmt"
-	"fuzzer/src/common"
 	"strings"
 
-	"fuzzer/src/bash"
 	"github.com/eatbytes/fuzzcore"
+	"github.com/leaklessgfy/fuzzer/networking"
+	"github.com/leaklessgfy/fuzzer/reader"
 )
 
 func (b *BashInterface) SendRaw(str string) {
 	raw := fuzzcore.CMD.Raw(str)
-	result, err := common.Process(raw)
+	result, err := networking.Process(raw)
 
 	if err != nil {
 		err.Error()
 		return
 	}
 
-	common.ReadEncode(result)
+	reader.ReadEncode(result)
 }
 
 func (b *BashInterface) SendCd(str string) {
 	cd := fuzzcore.CMD.Cd(str)
-	result, err := common.Process(cd)
+	result, err := networking.Process(cd)
 
 	if err != nil {
 		err.Error()

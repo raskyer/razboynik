@@ -2,7 +2,7 @@ package app
 
 import "github.com/urfave/cli"
 
-func _getCommands(main *MainInterface) []cli.Command {
+func getCommands(main *MainInterface) []cli.Command {
 	var helpDefinition = cli.Command{
 		Name:    "help",
 		Aliases: []string{"h"},
@@ -21,9 +21,10 @@ func _getCommands(main *MainInterface) []cli.Command {
 	}
 
 	var startDefinition = cli.Command{
-		Name:   "start",
-		Usage:  "Start bash",
-		Action: main.Start,
+		Name:    "start",
+		Aliases: []string{"s"},
+		Usage:   "Start bash",
+		Action:  main.Start,
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "u, url", Usage: "Url of the server. Ex: -u http://localhost"},
 			cli.IntFlag{Name: "m, method", Usage: "Method to use. Ex: -m 1"},

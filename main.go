@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fuzzer/src/app"
 	"os"
+
+	"github.com/leaklessgfy/fuzzer/app"
 )
 
 func main() {

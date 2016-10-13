@@ -2,9 +2,11 @@ package app
 
 import (
 	"fmt"
-	"fuzzer/src/bash"
-	"fuzzer/src/common"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/leaklessgfy/fuzzer/bash"
+	"github.com/leaklessgfy/fuzzer/networking"
 
 	"github.com/eatbytes/fuzzcore"
 	"github.com/urfave/cli"
@@ -16,36 +18,30 @@ type MainInterface struct {
 
 func CreateMainApp() *MainInterface {
 	main := MainInterface{}
-	commands := _getCommands(&main)
-	app := _createCli(&commands)
-
+	app := createCli(&main)
 	main.cmd = app
 
 	return &main
 }
 
-func _addInformation(app *cli.App) {
-	app.Name = "Fuzzer"
-	app.Version = "4.0.0"
-	app.Compiled = time.Now()
-	app.Authors = []cli.Author{
+func createCli(main *MainInterface) *cli.App {
+	client := cli.NewApp()
+	client.Commands = getCommands(main)
+	client.CommandNotFound = func(c *cli.Context, command string) {
+		cli.ShowAppHelp(c)
+	}
+
+	client.Name = "Fuzzer"
+	client.Version = "4.0.0"
+	client.Compiled = time.Now()
+	client.Authors = []cli.Author{
 		cli.Author{
 			Name:  "Kamikaze",
 			Email: "leakleass@protomail.com",
 		},
 	}
-	app.Copyright = "(c) 2016 Eat Bytes"
-	app.Usage = "File upload meterpreter"
-}
-
-func _createCli(commands *[]cli.Command) *cli.App {
-	client := cli.NewApp()
-	client.Commands = *commands
-	client.CommandNotFound = func(c *cli.Context, command string) {
-		cli.ShowAppHelp(c)
-	}
-
-	_addInformation(client)
+	client.Copyright = "(c) 2016 Eat Bytes"
+	client.Usage = "File upload meterpreter"
 
 	return client
 }
@@ -59,21 +55,20 @@ func (main *MainInterface) Help(c *cli.Context) {
 }
 
 func (main *MainInterface) Generate(c *cli.Context) {
-	fmt.Println("generate")
-}
-
-func (main *MainInterface) StartBash(c *cli.Context) {
-	bsh := bash.CreateBashApp()
-	bsh.Start()
+	color.Yellow("Generating...")
 }
 
 func (main *MainInterface) Start(c *cli.Context) {
+	color.Green("Starting...")
+	color.Yellow("Trying to communicate with server\n")
+
 	connect := main.ServerSetup(c)
 	if !connect {
 		return
 	}
 
-	main.StartBash(c)
+	bsh := bash.CreateBashApp()
+	bsh.Start()
 }
 
 func (main *MainInterface) ServerSetup(c *cli.Context) bool {
@@ -85,12 +80,15 @@ func (main *MainInterface) ServerSetup(c *cli.Context) bool {
 	crypt := false
 
 	if url == "" {
-		fmt.Println("Flag -u (url) is required")
+		color.Red("Flag -u (url) is required")
+
 		return false
 	}
 
 	if method > 3 {
-		fmt.Println("Method is between 0 (default) and 3. [0 => GET, 1 => POST, 2 => HEADER, 3 => COOKIE]")
+		color.Red("Method is between 0 (default) and 3.")
+		color.Red("[0 => GET, 1 => POST, 2 => HEADER, 3 => COOKIE]")
+
 		return false
 	}
 
@@ -105,7 +103,7 @@ func (main *MainInterface) ServerSetup(c *cli.Context) bool {
 
 func (main *MainInterface) SendTest(c *cli.Context) bool {
 	t := fuzzcore.PHP.Raw("$r=1;")
-	result, err := common.Process(t)
+	result, err := networking.Process(t)
 
 	if err != nil {
 		err.Error()
@@ -115,12 +113,12 @@ func (main *MainInterface) SendTest(c *cli.Context) bool {
 	result = fuzzcore.Decode(result)
 
 	if result != "1" {
-		fmt.Println("An error occured with the host")
+		color.Red("An error occured with the host")
 		fmt.Println(result)
 
 		return false
 	}
 
-	fmt.Println("Connected")
+	color.Green("Successfull connexion")
 	return true
 }
