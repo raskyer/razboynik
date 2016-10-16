@@ -1,20 +1,14 @@
 package bash
 
 import (
-	"fmt"
 	"io"
 	"log"
-	"strings"
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/fuzzcore"
-	"github.com/eatbytes/fuzzer/bash/cleaner"
-	"github.com/eatbytes/fuzzer/bash/networking"
-	"github.com/eatbytes/fuzzer/bash/parser"
-	"github.com/eatbytes/fuzzer/bash/syscall"
 )
 
-type spFunc func(string)
+type spFunc func(*BashCommand)
 
 type BashInterface struct {
 	commonCmd   []string
@@ -28,7 +22,7 @@ func CreateBashApp() *BashInterface {
 	bsh := BashInterface{
 		commonCmd: []string{"ls", "cat", "rm"},
 		specialCmd: []string{
-			"exit",
+			"-raw",
 			"cd",
 			"-upload",
 			"-download",
@@ -37,12 +31,12 @@ func CreateBashApp() *BashInterface {
 			"-decode",
 			"-info",
 			"-php",
-			"-keep",
+			"-exit",
 		},
 	}
 
 	bsh.specialFunc = []spFunc{
-		bsh.Exit,
+		bsh.SendRawShell,
 		bsh.SendCd,
 		bsh.SendUpload,
 		bsh.SendDownload,
@@ -51,7 +45,7 @@ func CreateBashApp() *BashInterface {
 		bsh.Decode,
 		bsh.Info,
 		bsh.SendRawPHP,
-		bsh.Keep,
+		bsh.Exit,
 	}
 
 	bsh.buildPrompt()
@@ -85,12 +79,25 @@ func (b *BashInterface) buildPrompt() {
 	b.readline = l
 }
 
-func (b *BashInterface) loop() {
+func (b *BashInterface) Start() {
+	if !fuzzcore.NET.IsSetup() {
+		e := fuzzcore.SetupErr()
+		e.Error()
+		return
+	}
+
+	b.running = true
+
 	defer b.readline.Close()
 	log.SetOutput(b.readline.Stderr())
 
-	for b.IsRunning() {
+	b.loop()
+}
+
+func (b *BashInterface) loop() {
+	for b.running {
 		line, err := b.readline.Readline()
+
 		if err == readline.ErrInterrupt || err == io.EOF {
 			return
 		}
@@ -104,31 +111,8 @@ func (b *BashInterface) loop() {
 }
 
 func (b *BashInterface) Run(l string) {
-	if strings.Contains(l, "&&") && strings.Contains(l, "cd") {
-		b.SendRaw(l)
-		return
-	}
-
-	arr := strings.Fields(l)
-	for i, item := range b.specialCmd {
-		if item == arr[0] {
-			b.specialFunc[i](l)
-			return
-		}
-	}
-
-	b.SendRaw(l)
-}
-
-func (b *BashInterface) Start() {
-	if !fuzzcore.NET.IsSetup() {
-		e := fuzzcore.SetupErr()
-		e.Error()
-		return
-	}
-
-	b.running = true
-	b.loop()
+	cmd := b.CreateCommand(l)
+	cmd.Fn(cmd)
 }
 
 func (b *BashInterface) Stop() {
@@ -136,78 +120,6 @@ func (b *BashInterface) Stop() {
 	fuzzcore.CMD.SetContext("")
 }
 
-func (b *BashInterface) IsRunning() bool {
-	return b.running
-}
-
 func (b *BashInterface) SetPrompt(p string) {
 	b.readline.SetPrompt(p)
-}
-
-func (b *BashInterface) Exit(str string) {
-	b.Stop()
-}
-
-func (b *BashInterface) Sys(str string) {
-	full, err := parser.ParseStr(str)
-
-	if err != nil {
-		return
-	}
-
-	syscall.Syscall(full)
-}
-
-func (b *BashInterface) Encode(str string) {
-	str, err := parser.ParseStr(str)
-
-	if err != nil {
-		return
-	}
-
-	sEnc := fuzzcore.Encode(str)
-	fmt.Println(sEnc)
-}
-
-func (b *BashInterface) Decode(str string) {
-	str, err := parser.ParseStr(str)
-
-	if err != nil {
-		return
-	}
-
-	sDec, err := fuzzcore.Decode(str)
-
-	if err != nil {
-		err.Error()
-		return
-	}
-
-	fmt.Println(sDec)
-}
-
-func (b *BashInterface) Keep(str string) {
-	str, err := parser.ParseStr(str)
-
-	if err != nil {
-		return
-	}
-
-	raw := fuzzcore.CMD.Raw(str)
-	result, err := networking.Process(raw)
-
-	if err != nil {
-		err.Error()
-		return
-	}
-
-	result, err = fuzzcore.Decode(result)
-
-	if err != nil {
-		err.Error()
-		return
-	}
-
-	cleaner.SetKeeper(result)
-	cleaner.Clear()
 }

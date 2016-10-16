@@ -1,51 +1,51 @@
 package bash
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/eatbytes/fuzzcore"
 	"github.com/eatbytes/fuzzer/bash/networking"
-	"github.com/eatbytes/fuzzer/bash/reader"
 )
 
-func (b *BashInterface) SendRaw(str string) {
-	raw := fuzzcore.CMD.Raw(str)
+func (b *BashInterface) SendRawShell(cmd *BashCommand) {
+	raw := fuzzcore.CMD.Raw(cmd.raw)
 	result, err := networking.Process(raw)
 
 	if err != nil {
-		err.Error()
+		cmd.WriteError(err)
 		return
 	}
 
-	reader.ReadEncode(result)
+	result, err = fuzzcore.Decode(result)
+
+	cmd.Write(result, err)
 }
 
-func (b *BashInterface) SendCd(str string) {
-	cd := fuzzcore.CMD.Cd(str)
+func (b *BashInterface) SendCd(cmd *BashCommand) {
+	if strings.Contains(cmd.raw, "&&") {
+		b.SendRawShell(cmd)
+		return
+	}
+
+	cd := fuzzcore.CMD.Cd(cmd.raw)
 	result, err := networking.Process(cd)
 
 	if err != nil {
-		err.Error()
+		cmd.WriteError(err)
 		return
 	}
 
-	b.ReceiveCd(result)
-}
-
-func (b *BashInterface) ReceiveCd(result string) {
-	body, err := fuzzcore.Decode(result)
+	result, err = fuzzcore.Decode(result)
 
 	if err != nil {
-		err.Error()
+		cmd.WriteError(err)
 		return
 	}
 
-	line := strings.TrimSpace(body)
-
+	line := strings.TrimSpace(result)
 	if line != "" {
 		fuzzcore.CMD.SetContext(line)
 		b.SetPrompt("\033[32m•\033[0m\033[32m» [Bash]:" + line + "$\033[0m ")
-		fmt.Println(body)
+		cmd.WriteSuccess(result)
 	}
 }

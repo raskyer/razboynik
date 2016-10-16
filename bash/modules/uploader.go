@@ -1,8 +1,9 @@
 package modules
 
 import (
+	"fmt"
+
 	"github.com/eatbytes/fuzzcore"
-	"github.com/eatbytes/fuzzer/bash/reader"
 )
 
 func Upload(path, dir string) {
@@ -28,5 +29,5 @@ func Upload(path, dir string) {
 	}
 
 	result := fuzzcore.NET.GetBodyStr(resp)
-	reader.ReadOne(result, "File upload successfully")
+	fmt.Println(result)
 }

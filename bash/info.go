@@ -8,15 +8,15 @@ import (
 	"github.com/fatih/color"
 )
 
-func (b *BashInterface) Info(str string) {
+func (b *BashInterface) Info(cmd *BashCommand) {
 	if fuzzcore.NET.GetResponse() == nil {
 		color.Red("You havn't made any request.")
 		color.Red("You must make a request before seing any information")
 		return
 	}
 
-	b.RequestInfo(str)
-	b.ResponseInfo(str)
+	b.RequestInfo(cmd.str)
+	b.ResponseInfo(cmd.str)
 }
 
 func (b *BashInterface) RequestInfo(str string) {

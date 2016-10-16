@@ -7,46 +7,42 @@ import (
 	"github.com/eatbytes/fuzzcore"
 	"github.com/eatbytes/fuzzer/bash/modules"
 	"github.com/eatbytes/fuzzer/bash/networking"
-	"github.com/eatbytes/fuzzer/bash/parser"
 )
 
-func (b *BashInterface) SendUpload(str string) {
-	arr := parser.Parse(str)
-
-	if arr == nil {
+func (b *BashInterface) SendUpload(cmd *BashCommand) {
+	if len(cmd.arr) < 2 {
 		fmt.Println("Please write the path of the local file to upload")
 		return
 	}
 
-	path := arr[0]
-	pathArr := strings.Split(path, "/")
-	lgt := len(pathArr) - 1
-	dir := pathArr[lgt]
+	path := cmd.arr[1]
+	var dir string
 
-	if len(arr) > 1 {
-		dir = arr[1]
+	if len(cmd.arr) > 2 {
+		dir = cmd.arr[3]
+	} else {
+		pathArr := strings.Split(path, "/")
+		lgt := len(pathArr) - 1
+		dir = pathArr[lgt]
 	}
 
 	modules.Upload(path, dir)
 }
 
-func (b *BashInterface) SendDownload(str string) {
-	arr := parser.Parse(str)
-
-	if arr == nil {
+func (b *BashInterface) SendDownload(cmd *BashCommand) {
+	if len(cmd.arr) < 2 {
 		fmt.Println("Please write the path of the local file to upload")
 		return
 	}
 
-	path := arr[0]
+	path := cmd.arr[1]
 	loc := "output.txt"
 
-	if len(arr) > 1 {
-		loc = arr[1]
+	if len(cmd.arr) > 3 {
+		loc = cmd.arr[2]
 	}
 
 	context := fuzzcore.CMD.GetContext()
-
 	if context != "" {
 		context = context + "/"
 	}
@@ -56,20 +52,8 @@ func (b *BashInterface) SendDownload(str string) {
 	modules.Download(path, loc)
 }
 
-func (b *BashInterface) SendRawPHP(str string) {
-	str, err := parser.ParseStr(str)
-
-	if err != nil {
-		return
-	}
-
-	raw := fuzzcore.PHP.Raw(str)
+func (b *BashInterface) SendRawPHP(cmd *BashCommand) {
+	raw := fuzzcore.PHP.Raw(cmd.str)
 	result, err := networking.Process(raw)
-
-	if err != nil {
-		err.Error()
-		return
-	}
-
-	fmt.Println(result)
+	cmd.Write(result, err)
 }

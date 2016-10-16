@@ -47,13 +47,15 @@ func Start() {
 	intro()
 	color.Green(SPACE + "### STARTING ###")
 	color.Green(SPACE + "----------------")
-	color.White(SPACE + "Trying to communicate with server...\n")
+	color.White(SPACE + "Trying to communicate with server...")
+	fmt.Print("\n")
 }
 
 func Generating() {
 	intro()
 	color.Green(SPACE + "### GENERATING ###")
 	color.Green(SPACE + "------------------")
+	fmt.Print("\n")
 }
 
 func SetupError(i int) {
@@ -77,6 +79,8 @@ func Test(i bool, result string) {
 		suc_intro()
 		color.White(SPACE + "Successfull connexion")
 	}
+
+	fmt.Print("\n")
 }
 
 func Error(err error) {
