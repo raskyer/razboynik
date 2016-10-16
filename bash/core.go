@@ -176,7 +176,13 @@ func (b *BashInterface) Decode(str string) {
 		return
 	}
 
-	sDec := fuzzcore.Decode(str)
+	sDec, err := fuzzcore.Decode(str)
+
+	if err != nil {
+		err.Error()
+		return
+	}
+
 	fmt.Println(sDec)
 }
 
@@ -195,7 +201,12 @@ func (b *BashInterface) Keep(str string) {
 		return
 	}
 
-	result = fuzzcore.Decode(result)
+	result, err = fuzzcore.Decode(result)
+
+	if err != nil {
+		err.Error()
+		return
+	}
 
 	cleaner.SetKeeper(result)
 	cleaner.Clear()

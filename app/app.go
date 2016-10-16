@@ -106,7 +106,12 @@ func (main *MainInterface) SendTest(c *cli.Context) bool {
 		return false
 	}
 
-	result = fuzzcore.Decode(result)
+	result, err = fuzzcore.Decode(result)
+
+	if err != nil {
+		printer.Error(err)
+		return false
+	}
 
 	if result != "1" {
 		printer.Test(false, result)

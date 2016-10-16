@@ -16,7 +16,12 @@ func ReadOne(r, msg string) {
 }
 
 func ReadEncode(str string) {
-	sDec := fuzzcore.Decode(str)
+	sDec, err := fuzzcore.Decode(str)
+
+	if err != nil {
+		err.Error()
+	}
+
 	fmt.Println(sDec)
 }
 

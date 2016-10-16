@@ -34,7 +34,13 @@ func (b *BashInterface) SendCd(str string) {
 }
 
 func (b *BashInterface) ReceiveCd(result string) {
-	body := fuzzcore.Decode(result)
+	body, err := fuzzcore.Decode(result)
+
+	if err != nil {
+		err.Error()
+		return
+	}
+
 	line := strings.TrimSpace(body)
 
 	if line != "" {
