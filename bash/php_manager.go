@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/eatbytes/fuzzcore"
-	"github.com/leaklessgfy/fuzzer/bash/php"
-	"github.com/leaklessgfy/fuzzer/networking"
-	"github.com/leaklessgfy/fuzzer/parser"
+	"github.com/eatbytes/fuzzer/bash/modules"
+	"github.com/eatbytes/fuzzer/bash/networking"
+	"github.com/eatbytes/fuzzer/bash/parser"
 )
 
 func (b *BashInterface) SendUpload(str string) {
@@ -27,7 +27,7 @@ func (b *BashInterface) SendUpload(str string) {
 		dir = arr[1]
 	}
 
-	php.Upload(path, dir)
+	modules.Upload(path, dir)
 }
 
 func (b *BashInterface) SendDownload(str string) {
@@ -53,7 +53,7 @@ func (b *BashInterface) SendDownload(str string) {
 
 	path = context + path
 
-	php.Download(path, loc)
+	modules.Download(path, loc)
 }
 
 func (b *BashInterface) SendRawPHP(str string) {

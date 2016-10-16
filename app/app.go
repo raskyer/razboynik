@@ -1,14 +1,12 @@
 package app
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/fatih/color"
-	"github.com/leaklessgfy/fuzzer/bash"
-	"github.com/leaklessgfy/fuzzer/networking"
-
 	"github.com/eatbytes/fuzzcore"
+	"github.com/eatbytes/fuzzer/bash"
+	"github.com/eatbytes/fuzzer/bash/networking"
+	"github.com/eatbytes/fuzzer/printer"
 	"github.com/urfave/cli"
 )
 
@@ -55,17 +53,18 @@ func (main *MainInterface) Help(c *cli.Context) {
 }
 
 func (main *MainInterface) Generate(c *cli.Context) {
-	color.Yellow("Generating...")
+	printer.Generating()
 }
 
 func (main *MainInterface) Start(c *cli.Context) {
-	color.Green("Starting...")
-	color.Yellow("Trying to communicate with server\n")
+	printer.Start()
 
 	connect := main.ServerSetup(c)
 	if !connect {
 		return
 	}
+
+	printer.End()
 
 	bsh := bash.CreateBashApp()
 	bsh.Start()
@@ -80,15 +79,12 @@ func (main *MainInterface) ServerSetup(c *cli.Context) bool {
 	crypt := false
 
 	if url == "" {
-		color.Red("Flag -u (url) is required")
-
+		printer.SetupError(0)
 		return false
 	}
 
 	if method > 3 {
-		color.Red("Method is between 0 (default) and 3.")
-		color.Red("[0 => GET, 1 => POST, 2 => HEADER, 3 => COOKIE]")
-
+		printer.SetupError(1)
 		return false
 	}
 
@@ -106,19 +102,17 @@ func (main *MainInterface) SendTest(c *cli.Context) bool {
 	result, err := networking.Process(t)
 
 	if err != nil {
-		err.Error()
+		printer.Error(err)
 		return false
 	}
 
 	result = fuzzcore.Decode(result)
 
 	if result != "1" {
-		color.Red("An error occured with the host")
-		fmt.Println(result)
-
+		printer.Test(false, result)
 		return false
 	}
 
-	color.Green("Successfull connexion")
+	printer.Test(true, result)
 	return true
 }

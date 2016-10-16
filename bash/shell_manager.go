@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/eatbytes/fuzzcore"
-	"github.com/leaklessgfy/fuzzer/networking"
-	"github.com/leaklessgfy/fuzzer/reader"
+	"github.com/eatbytes/fuzzer/bash/networking"
+	"github.com/eatbytes/fuzzer/bash/reader"
 )
 
 func (b *BashInterface) SendRaw(str string) {
@@ -39,7 +39,7 @@ func (b *BashInterface) ReceiveCd(result string) {
 
 	if line != "" {
 		fuzzcore.CMD.SetContext(line)
-		b.SetPrompt("\033[32m•\033[0m\033[32m»\033[0m [Bash]:" + line + "$ ")
+		b.SetPrompt("\033[32m•\033[0m\033[32m» [Bash]:" + line + "$\033[0m ")
 		fmt.Println(body)
 	}
 }

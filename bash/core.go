@@ -8,10 +8,10 @@ import (
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/fuzzcore"
-	"github.com/leaklessgfy/fuzzer/cleaner"
-	"github.com/leaklessgfy/fuzzer/networking"
-	"github.com/leaklessgfy/fuzzer/parser"
-	"github.com/leaklessgfy/fuzzer/syscall"
+	"github.com/eatbytes/fuzzer/bash/cleaner"
+	"github.com/eatbytes/fuzzer/bash/networking"
+	"github.com/eatbytes/fuzzer/bash/parser"
+	"github.com/eatbytes/fuzzer/bash/syscall"
 )
 
 type spFunc func(string)
@@ -54,12 +54,12 @@ func CreateBashApp() *BashInterface {
 		bsh.Keep,
 	}
 
-	bsh._buildPrompt()
+	bsh.buildPrompt()
 
 	return &bsh
 }
 
-func (b *BashInterface) _buildPrompt() {
+func (b *BashInterface) buildPrompt() {
 	autocompleter := readline.NewPrefixCompleter()
 	allCmd := append(b.commonCmd, b.specialCmd...)
 
@@ -69,7 +69,7 @@ func (b *BashInterface) _buildPrompt() {
 	}
 
 	config := &readline.Config{
-		Prompt:          "\033[32m•\033[0m\033[32m»\033[0m [Bash]$ ",
+		Prompt:          "\033[32m•\033[0m\033[32m» [Bash]$\033[0m ",
 		HistoryFile:     "/tmp/readlinebash.tmp",
 		AutoComplete:    autocompleter,
 		InterruptPrompt: "^C",
@@ -88,7 +88,6 @@ func (b *BashInterface) _buildPrompt() {
 func (b *BashInterface) loop() {
 	defer b.readline.Close()
 	log.SetOutput(b.readline.Stderr())
-	cleaner.Clear()
 
 	for b.IsRunning() {
 		line, err := b.readline.Readline()
@@ -96,13 +95,9 @@ func (b *BashInterface) loop() {
 			return
 		}
 
-		cleaner.Clear()
-
 		if len(line) == 0 {
 			continue
 		}
-
-		fmt.Println(b.readline.Config.Prompt + line)
 
 		b.Run(line)
 	}

@@ -1,8 +1,8 @@
-package php
+package modules
 
 import (
 	"github.com/eatbytes/fuzzcore"
-	"github.com/leaklessgfy/fuzzer/reader"
+	"github.com/eatbytes/fuzzer/bash/reader"
 )
 
 func Upload(path, dir string) {

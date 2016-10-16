@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/leaklessgfy/fuzzer/app"
+	"github.com/eatbytes/fuzzer/app"
 )
 
 func main() {
