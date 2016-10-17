@@ -1,15 +1,36 @@
-package modules
+package phpmodule
 
 import (
 	"fmt"
 	"io"
 	"net/http"
 	"os"
-
-	"github.com/eatbytes/fuzzcore"
 )
 
-func Download(path, location string) {
+func (b *BashInterface) DownloadInit(bc *BashCommand) {
+	if len(bc.arr) < 2 {
+		fmt.Println("Please write the path of the local file to upload")
+		return
+	}
+
+	path := bc.arr[1]
+	loc := "output.txt"
+
+	if len(bc.arr) > 3 {
+		loc = bc.arr[2]
+	}
+
+	context := fuzzcore.CMD.GetContext()
+	if context != "" {
+		context = context + "/"
+	}
+
+	path = context + path
+
+	SendDownload(path, loc)
+}
+
+func SendDownload(path, location string) {
 	php := fuzzcore.PHP.Download(path)
 	req, err := fuzzcore.NET.Prepare(php)
 

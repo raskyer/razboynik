@@ -70,19 +70,6 @@ func SetupError(i int) {
 	}
 }
 
-func Test(i bool, result string) {
-	if !i {
-		err_intro()
-		color.White(SPACE + "An error occured with the host")
-		fmt.Println(result)
-	} else {
-		suc_intro()
-		color.White(SPACE + "Successfull connexion")
-	}
-
-	fmt.Print("\n")
-}
-
 func Error(err error) {
 	err_intro()
 	color.White(SPACE + err.Error())

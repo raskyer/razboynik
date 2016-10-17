@@ -1,29 +1,35 @@
-package bash
+package modules
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
-	"github.com/eatbytes/fuzzcore"
+	"github.com/eatbytes/fuzzer/bash"
 	"github.com/fatih/color"
 )
 
-func (b *BashInterface) Info(cmd *BashCommand) {
-	if fuzzcore.NET.GetResponse() == nil {
+func Info(bc *bash.BashCommand) {
+	if bc.GetServer().GetResponse() == nil {
 		color.Red("You havn't made any request.")
 		color.Red("You must make a request before seing any information")
 		return
 	}
 
-	b.RequestInfo(cmd.str)
-	b.ResponseInfo(cmd.str)
+	RequestInfo(bc)
+	ResponseInfo(bc)
 }
 
-func (b *BashInterface) RequestInfo(str string) {
+func RequestInfo(bc *bash.BashCommand) {
+	var flag bool
+	var str string
+	var r *http.Request
+
 	color.Yellow("--- Request ---")
 
-	flag := false
-	r := fuzzcore.NET.GetRequest()
+	flag = false
+	r = bc.GetServer().GetRequest()
+	str = bc.GetStr()
 
 	if strings.Contains(str, "-url") {
 		color.Cyan("Url: ")
@@ -56,11 +62,16 @@ func (b *BashInterface) RequestInfo(str string) {
 	color.Unset()
 }
 
-func (b *BashInterface) ResponseInfo(str string) {
+func ResponseInfo(bc *bash.BashCommand) {
+	var flag bool
+	var str string
+	var r *http.Response
+
 	color.Yellow("--- Response ---")
 
-	flag := false
-	r := fuzzcore.NET.GetResponse()
+	flag = false
+	r = bc.GetServer().GetResponse()
+	str = bc.GetStr()
 
 	if strings.Contains(str, "-status") {
 		color.Cyan("Status:")
@@ -70,7 +81,7 @@ func (b *BashInterface) ResponseInfo(str string) {
 
 	if strings.Contains(str, "-body") {
 		color.Cyan("Body:")
-		body := fuzzcore.NET.GetBodyStr(r)
+		body := bc.GetServer().GetBodyStr(r)
 		fmt.Println(body)
 		flag = true
 	}

@@ -3,15 +3,21 @@ package bash
 import (
 	"fmt"
 	"strings"
+
+	"github.com/eatbytes/fuzz/network"
+	"github.com/eatbytes/fuzz/shell"
 )
 
 type BashCommand struct {
-	raw string
-	arr []string
-	str string
-	out string
-	err string
-	Fn  spFunc
+	raw    string
+	arr    []string
+	str    string
+	out    string
+	err    string
+	fn     spFunc
+	res    string
+	code   int
+	parent *BashInterface
 }
 
 func (bc *BashCommand) Write(str string, err error) {
@@ -35,31 +41,31 @@ func (bc *BashCommand) WriteError(err error) {
 	}
 }
 
-func (b *BashInterface) CreateCommand(raw string) *BashCommand {
-	arr := strings.Fields(raw)
-
-	fnInt := findFunc(arr[0], b.specialCmd)
-	fn := b.specialFunc[fnInt]
-
-	strArr := append(arr[1:], arr[len(arr):]...)
-	str := strings.Join(strArr, " ")
-
-	out := findOut(raw, arr)
-	err := findErr(raw, arr)
-
-	cmd := BashCommand{
-		raw: raw,
-		arr: arr,
-		str: str,
-		out: out,
-		err: err,
-		Fn:  fn,
-	}
-
-	return &cmd
+func (bc *BashCommand) Exec() {
+	bc.fn(bc)
 }
 
-func findOut(str string, arr []string) string {
+func (bc *BashCommand) GetParent() *BashInterface {
+	return bc.parent
+}
+
+func (bc *BashCommand) GetServer() *network.NETWORK {
+	return bc.parent.server
+}
+
+func (bc *BashCommand) GetShell() *shell.SHELL {
+	return bc.parent.shell
+}
+
+func (bc *BashCommand) GetRaw() string {
+	return bc.raw
+}
+
+func (bc *BashCommand) GetStr() string {
+	return bc.str
+}
+
+func defineOutput(str string, arr []string) string {
 	if strings.Contains(str, ">") {
 
 	}
@@ -67,7 +73,7 @@ func findOut(str string, arr []string) string {
 	return "1"
 }
 
-func findErr(str string, arr []string) string {
+func defineErrput(str string, arr []string) string {
 	if strings.Contains(str, "2>") {
 
 	}
@@ -75,7 +81,7 @@ func findErr(str string, arr []string) string {
 	return "2"
 }
 
-func findFunc(str string, cmds []string) int {
+func defineFunc(str string, cmds []string) int {
 	for i, item := range cmds {
 		if str == item {
 			return i
