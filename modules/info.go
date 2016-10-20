@@ -16,8 +16,13 @@ func Info(bc *bash.BashCommand) {
 		return
 	}
 
-	RequestInfo(bc)
-	ResponseInfo(bc)
+	if !strings.Contains(bc.GetStr(), "response") {
+		RequestInfo(bc)
+	}
+
+	if !strings.Contains(bc.GetStr(), "request") {
+		ResponseInfo(bc)
+	}
 }
 
 func RequestInfo(bc *bash.BashCommand) {

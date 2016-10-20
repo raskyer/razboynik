@@ -1,70 +1,78 @@
 package phpmodule
 
 import (
-	"fmt"
+	"errors"
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/eatbytes/fuzz/network"
+	"github.com/eatbytes/fuzz/php"
+	"github.com/eatbytes/fuzz/shell"
+	"github.com/eatbytes/fuzzer/bash"
 )
 
-func (b *BashInterface) DownloadInit(bc *BashCommand) {
-	if len(bc.arr) < 2 {
-		fmt.Println("Please write the path of the local file to upload")
+func DownloadInit(bc *bash.BashCommand) {
+	var path string
+	var req string
+	var err error
+	var resp *http.Response
+	var srv *network.NETWORK
+	var shl *shell.SHELL
+	var ph *php.PHP
+
+	if bc.GetArrLgt() < 2 {
+		err = errors.New("Please write the path of the file to download")
+		bc.WriteError(err)
 		return
 	}
 
-	path := bc.arr[1]
-	loc := "output.txt"
+	srv = bc.GetServer()
+	shl = bc.GetShell()
+	ph = bc.GetPHP()
 
-	if len(bc.arr) > 3 {
-		loc = bc.arr[2]
+	path = getPath(bc.GetArr(), shl.GetContext())
+	req = ph.Download(path)
+
+	resp, err = srv.PrepareSend(req)
+
+	if err != nil {
+		bc.WriteError(err)
+		return
 	}
 
-	context := fuzzcore.CMD.GetContext()
+	ReadDownload(resp, bc)
+}
+
+func getPath(arr []string, context string) string {
+	var path string
+	path = arr[1]
+
 	if context != "" {
-		context = context + "/"
+		path = context + "/" + path
 	}
 
-	path = context + path
-
-	SendDownload(path, loc)
+	return path
 }
 
-func SendDownload(path, location string) {
-	php := fuzzcore.PHP.Download(path)
-	req, err := fuzzcore.NET.Prepare(php)
+func ReadDownload(resp *http.Response, bc *bash.BashCommand) {
+	var location string
+	location = bc.GetArrItem(2, "output.txt")
 
-	if err != nil {
-		err.Error()
-		return
-	}
-
-	resp, err := fuzzcore.NET.Send(req)
-
-	if err != nil {
-		err.Error()
-		return
-	}
-
-	ReadDownload(resp, location)
-}
-
-func ReadDownload(resp *http.Response, location string) {
 	out, err := os.Create(location)
 	defer out.Close()
 
 	if err != nil {
-		err.Error()
+		bc.WriteError(err)
 		return
 	}
 
 	_, err = io.Copy(out, resp.Body)
 
 	if err != nil {
-		err.Error()
+		bc.WriteError(err)
 		return
 	}
 
-	fmt.Println("Downloaded successfully those byte: ")
-	fmt.Println(resp.Body)
+	bc.Write("Downloaded successfully to "+location, nil)
 }

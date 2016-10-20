@@ -1,16 +1,15 @@
 package app
 
 import (
+	"errors"
 	"time"
 
 	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzz/normalizer"
 	"github.com/eatbytes/fuzz/php"
 	"github.com/eatbytes/fuzz/shell"
 	"github.com/eatbytes/fuzzer/bash"
 	"github.com/eatbytes/fuzzer/modules"
 	"github.com/eatbytes/fuzzer/printer"
-	"github.com/eatbytes/fuzzer/processor"
 	"github.com/urfave/cli"
 )
 
@@ -19,7 +18,7 @@ type MainInterface struct {
 	server *network.NETWORK
 }
 
-func CreateMainApp() *MainInterface {
+func CreateApp() *MainInterface {
 	var main MainInterface
 	var app *cli.App
 
@@ -67,10 +66,15 @@ func (main *MainInterface) Generate(c *cli.Context) {
 }
 
 func (main *MainInterface) Start(c *cli.Context) {
-	var err error
 	var srv *network.NETWORK
 	var shl *shell.SHELL
 	var bsh *bash.BashInterface
+	var ph *php.PHP
+	var err error
+	var status bool
+
+	ph = &php.PHP{}
+	shl = &shell.SHELL{}
 
 	printer.Start()
 
@@ -81,10 +85,16 @@ func (main *MainInterface) Start(c *cli.Context) {
 		return
 	}
 
+	status, err = srv.Test()
+
+	if err != nil || status != true {
+		printer.Error(err)
+		return
+	}
+
 	printer.End()
 
-	shl = &shell.SHELL{}
-	bsh = bash.CreateBashApp(srv, shl)
+	bsh = bash.CreateApp(srv, shl, ph)
 	modules.Boot(bsh)
 
 	bsh.Start()
@@ -93,61 +103,29 @@ func (main *MainInterface) Start(c *cli.Context) {
 func (main *MainInterface) ServerSetup(c *cli.Context) (*network.NETWORK, error) {
 	var url, parameter string
 	var method int
-	var result bool
 	var err error
 	var srv *network.NETWORK
 
+	srv = &network.NETWORK{}
 	url = c.String("u")
 	method = c.Int("m")
 	parameter = c.String("p")
 
 	if url == "" {
-		//printer.SetupError(0)
-		return nil, nil
+		err = errors.New("Flag -u (url) is required")
+		return nil, err
 	}
 
 	if method > 3 {
-		//printer.SetupError(1)
-		return nil, nil
+		err = errors.New("Method is between 0 (default) and 3.")
+		return nil, err
 	}
 
 	if parameter == "" {
 		parameter = "fuzzer"
 	}
 
-	result, err = main.SendTest(c)
-
-	if err != nil {
-		return nil, err
-	}
-
 	srv.Setup(url, parameter, method)
 
 	return srv, nil
-}
-
-func (main *MainInterface) SendTest(c *cli.Context) (bool, error) {
-	var r string
-	var result string
-	var err error
-
-	r = php.Raw("$r=1;")
-	result, err = processor.Process(r)
-
-	if err != nil {
-		return false, err
-	}
-
-	result, err = normalizer.Decode(result)
-
-	if err != nil {
-		return false, err
-	}
-
-	if result != "1" {
-		//printer.Test(false, result)
-		return false, nil
-	}
-
-	return true, result
 }

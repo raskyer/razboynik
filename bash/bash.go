@@ -9,6 +9,7 @@ import (
 	"github.com/eatbytes/fuzz/ferror"
 	"github.com/eatbytes/fuzz/network"
 	"github.com/eatbytes/fuzz/normalizer"
+	"github.com/eatbytes/fuzz/php"
 	"github.com/eatbytes/fuzz/shell"
 	"github.com/eatbytes/sysgo"
 )
@@ -19,33 +20,22 @@ type BashInterface struct {
 	commonCmd   []string
 	specialCmd  []string
 	specialFunc []spFunc
+	defaultFunc spFunc
 	readline    *readline.Instance
 	running     bool
 	server      *network.NETWORK
 	shell       *shell.SHELL
-	history     []BashCommand
+	php         *php.PHP
+	history     []*BashCommand
 }
 
-func CreateBashApp(srv *network.NETWORK, shl *shell.SHELL) *BashInterface {
+func CreateApp(srv *network.NETWORK, shl *shell.SHELL, php *php.PHP) *BashInterface {
 	bsh := BashInterface{
 		commonCmd: []string{"ls", "cat", "rm"},
-		specialCmd: []string{
-			"-raw",
-			"cd",
-			"-upload",
-			"-download",
-			"-sys",
-			"-encode",
-			"-decode",
-			"-info",
-			"-php",
-			"-exit",
-		},
-		server: srv,
-		shell:  shl,
+		server:    srv,
+		shell:     shl,
+		php:       php,
 	}
-
-	bsh.buildPrompt()
 
 	return &bsh
 }
@@ -83,6 +73,8 @@ func (b *BashInterface) Start() {
 		return
 	}
 
+	b.buildPrompt()
+
 	b.running = true
 
 	defer b.readline.Close()
@@ -104,7 +96,7 @@ func (b *BashInterface) loop() {
 		}
 
 		bc := b.CreateCommand(line)
-		b.history = append(b.history, *bc)
+		b.history = append(b.history, bc)
 		bc.Exec()
 	}
 }
@@ -122,29 +114,37 @@ func (b *BashInterface) SetPrompt(p string) {
 	b.readline.SetPrompt(p)
 }
 
-func (b *BashInterface) Exit(cmd *BashCommand) {
+func (b *BashInterface) Exit(bc *BashCommand) {
 	b.Stop()
 }
 
-func (b *BashInterface) Sys(cmd *BashCommand) {
-	result, err := sysgo.Call(cmd.str)
-	cmd.Write(result, err)
+func (b *BashInterface) Sys(bc *BashCommand) {
+	result, err := sysgo.Call(bc.str)
+	bc.Write(result, err)
 }
 
-func (b *BashInterface) Encode(cmd *BashCommand) {
-	sEnc := normalizer.Encode(cmd.str)
-	cmd.WriteSuccess(sEnc)
+func (b *BashInterface) Encode(bc *BashCommand) {
+	str := bc.str
+
+	if str == "" {
+		lastC := bc.parent.GetFormerCommand()
+		str = lastC.res
+	}
+
+	sEnc := normalizer.Encode(str)
+	bc.Write(sEnc, nil)
 }
 
-func (b *BashInterface) Decode(cmd *BashCommand) {
-	str := cmd.str
+func (b *BashInterface) Decode(bc *BashCommand) {
+	str := bc.str
 
-	if cmd.str != "" {
-		str = ""
+	if str == "" {
+		lastC := bc.parent.GetFormerCommand()
+		str = lastC.res
 	}
 
 	sDec, err := normalizer.Decode(str)
-	cmd.Write(sDec, err)
+	bc.Write(sDec, err)
 }
 
 func (b *BashInterface) AddSpCmd(name string, function spFunc) {
@@ -152,19 +152,51 @@ func (b *BashInterface) AddSpCmd(name string, function spFunc) {
 	b.specialFunc = append(b.specialFunc, function)
 }
 
+func (b *BashInterface) SetDefaultFunc(fn spFunc) {
+	b.defaultFunc = fn
+}
+
+func (b *BashInterface) GetFormerCommand() *BashCommand {
+	var lgt int
+	lgt = len(b.history)
+
+	if lgt < 2 {
+		return b.history[0]
+	}
+
+	return b.history[lgt-2]
+}
+
+func (b *BashInterface) FlushHistory(bc *BashCommand) {
+	b.history = nil
+}
+
 func (b *BashInterface) CreateCommand(raw string) *BashCommand {
-	arr := strings.Fields(raw)
+	var arr []string
+	var fnInt int
+	var fn spFunc
+	var strArr []string
+	var str string
+	var out string
+	var err string
 
-	fnInt := defineFunc(arr[0], b.specialCmd)
-	fn := b.specialFunc[fnInt]
+	arr = strings.Fields(raw)
 
-	strArr := append(arr[1:], arr[len(arr):]...)
-	str := strings.Join(strArr, " ")
+	fnInt = defineFunc(arr[0], b.specialCmd)
 
-	out := defineOutput(raw, arr)
-	err := defineErrput(raw, arr)
+	if fnInt == -1 {
+		fn = b.defaultFunc
+	} else {
+		fn = b.specialFunc[fnInt]
+	}
 
-	cmd := BashCommand{
+	strArr = append(arr[1:], arr[len(arr):]...)
+	str = strings.Join(strArr, " ")
+
+	out = defineOutput(raw, arr)
+	err = defineErrput(raw, arr)
+
+	return &BashCommand{
 		raw:    raw,
 		arr:    arr,
 		str:    str,
@@ -173,6 +205,4 @@ func (b *BashInterface) CreateCommand(raw string) *BashCommand {
 		fn:     fn,
 		parent: b,
 	}
-
-	return &cmd
 }

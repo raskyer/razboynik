@@ -4,28 +4,24 @@ import (
 	"strings"
 
 	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzz/normalizer"
 	"github.com/eatbytes/fuzz/shell"
 	"github.com/eatbytes/fuzzer/bash"
-	"github.com/eatbytes/fuzzer/processor"
 )
 
 func Cd(bc *bash.BashCommand) {
 	var srv *network.NETWORK
 	var shl *shell.SHELL
+	var result string
+	var raw string
+	var cd string
+	var err error
 
 	srv = bc.GetServer()
 	shl = bc.GetShell()
+	raw = bc.GetRaw()
 
-	cd := shl.Cd(bc.GetRaw())
-	result, err := processor.Process(srv, cd)
-
-	if err != nil {
-		bc.WriteError(err)
-		return
-	}
-
-	result, err = normalizer.Decode(result)
+	cd = shl.Cd(raw) + srv.Response()
+	result, err = srv.QuickProcess(cd)
 
 	if err != nil {
 		bc.WriteError(err)

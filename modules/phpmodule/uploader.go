@@ -1,52 +1,62 @@
 package phpmodule
 
 import (
-	"fmt"
+	"errors"
 	"strings"
+
+	"github.com/eatbytes/fuzz/network"
+	"github.com/eatbytes/fuzz/php"
+	"github.com/eatbytes/fuzzer/bash"
 )
 
-func UploadInit(cmd *BashCommand) {
-	if len(cmd.arr) < 2 {
-		fmt.Println("Please write the path of the local file to upload")
+func UploadInit(bc *bash.BashCommand) {
+	var path string
+	var dir string
+	var arr []string
+	var err error
+	var srv *network.NETWORK
+	var ph *php.PHP
+
+	if bc.GetArrLgt() < 2 {
+		err = errors.New("Please write the path of the local file to upload")
+		bc.WriteError(err)
 		return
 	}
 
-	path := cmd.arr[1]
-	var dir string
+	arr = bc.GetArr()
+	path = arr[1]
+	srv = bc.GetServer()
+	ph = bc.GetPHP()
 
-	if len(cmd.arr) > 2 {
-		dir = cmd.arr[3]
+	if bc.GetArrLgt() > 2 {
+		dir = arr[3]
 	} else {
 		pathArr := strings.Split(path, "/")
 		lgt := len(pathArr) - 1
 		dir = pathArr[lgt]
 	}
 
-	modules.Upload(path, dir)
-}
-
-func SendUpload(path, dir string) {
-	bytes, bondary, err := fuzzcore.PHP.Upload(path, dir)
+	bytes, bondary, err := ph.Upload(path, dir)
 
 	if err != nil {
-		err.Error()
+		bc.WriteError(err)
 		return
 	}
 
-	req, err := fuzzcore.NET.PrepareUpload(bytes, bondary)
+	req, err := srv.PrepareUpload(bytes, bondary)
 
 	if err != nil {
-		err.Error()
+		bc.WriteError(err)
 		return
 	}
 
-	resp, err := fuzzcore.NET.Send(req)
+	resp, err := srv.Send(req)
 
 	if err != nil {
-		err.Error()
+		bc.WriteError(err)
 		return
 	}
 
-	result := fuzzcore.NET.GetBodyStr(resp)
-	fmt.Println(result)
+	result := srv.GetBodyStr(resp)
+	bc.Write(result, nil)
 }

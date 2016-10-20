@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	main := app.CreateMainApp()
+	main := app.CreateApp()
 	main.Run(os.Args)
 }

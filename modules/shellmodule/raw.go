@@ -1,22 +1,26 @@
 package shellmodule
 
 import (
-	"github.com/eatbytes/fuzz/normalizer"
+	"github.com/eatbytes/fuzz/network"
+	"github.com/eatbytes/fuzz/shell"
 	"github.com/eatbytes/fuzzer/bash"
-	"github.com/eatbytes/fuzzer/processor"
 )
 
 func Raw(bc *bash.BashCommand) {
-	raw := bc.GetShell().Raw(bc.GetRaw())
-	srv := bc.GetServer()
-	result, err := processor.Process(srv, raw)
+	var shl *shell.SHELL
+	var srv *network.NETWORK
+	var raw string
+	var result string
+	var r string
+	var err error
 
-	if err != nil {
-		bc.WriteError(err)
-		return
-	}
+	srv = bc.GetServer()
+	shl = bc.GetShell()
 
-	result, err = normalizer.Decode(result)
+	raw = bc.GetRaw()
+	r = shl.Raw(raw) + srv.Response()
+
+	result, err = srv.QuickProcess(r)
 
 	bc.Write(result, err)
 }

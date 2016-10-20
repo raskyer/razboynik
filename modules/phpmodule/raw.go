@@ -1,9 +1,19 @@
 package phpmodule
 
-import "github.com/eatbytes/fuzzer/bash/networking"
+import (
+	"github.com/eatbytes/fuzz/network"
+	"github.com/eatbytes/fuzzer/bash"
+)
 
-func Raw(bc *BashCommand) {
-	raw := bc.parent.PHP.Raw(cmd.str)
-	result, err := networking.Process(raw)
-	cmd.Write(result, err)
+func Raw(bc *bash.BashCommand) {
+	var srv *network.NETWORK
+	var str string
+	var result string
+	var err error
+
+	srv = bc.GetServer()
+	str = bc.GetStr()
+
+	result, err = srv.QuickSend(str)
+	bc.Write(result, err)
 }
