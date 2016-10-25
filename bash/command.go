@@ -89,7 +89,7 @@ func (bc *BashCommand) GetArrLgt() int {
 }
 
 func (bc *BashCommand) GetArrItem(i int, def string) string {
-	if len(bc.arr) > i+1 {
+	if len(bc.arr) > i {
 		return bc.arr[i]
 	}
 

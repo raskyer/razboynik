@@ -29,7 +29,7 @@ func UploadInit(bc *bash.BashCommand) {
 	ph = bc.GetPHP()
 
 	if bc.GetArrLgt() > 2 {
-		dir = arr[3]
+		dir = arr[2]
 	} else {
 		pathArr := strings.Split(path, "/")
 		lgt := len(pathArr) - 1

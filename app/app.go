@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/eatbytes/fuzz/core"
 	"github.com/eatbytes/fuzz/network"
 	"github.com/eatbytes/fuzz/php"
 	"github.com/eatbytes/fuzz/shell"
@@ -26,6 +27,8 @@ func CreateApp() *MainInterface {
 	app = createCli(&main)
 	main.cmd = app
 
+	printer.Intro()
+
 	return &main
 }
 
@@ -33,12 +36,10 @@ func createCli(main *MainInterface) *cli.App {
 	var client *cli.App
 
 	client = cli.NewApp()
-	client.Commands = getCommands(main)
-	client.CommandNotFound = func(c *cli.Context, command string) {
-		cli.ShowAppHelp(c)
-	}
 
+	client.Commands = getCommands(main)
 	client.Name = "Fuzzer"
+	client.Usage = "File upload meterpreter"
 	client.Version = "4.0.0"
 	client.Compiled = time.Now()
 	client.Authors = []cli.Author{
@@ -48,7 +49,12 @@ func createCli(main *MainInterface) *cli.App {
 		},
 	}
 	client.Copyright = "(c) 2016 Eat Bytes"
-	client.Usage = "File upload meterpreter"
+	client.EnableBashCompletion = true
+	client.BashComplete = func(c *cli.Context) {
+		//To edit
+		//dm.Fprintf(c.App.Writer, "lipstick\nkiss\nme\nlipstick\nringo\n")
+	}
+	client.Action = main.Default
 
 	return client
 }
@@ -66,47 +72,55 @@ func (main *MainInterface) Generate(c *cli.Context) {
 }
 
 func (main *MainInterface) Start(c *cli.Context) {
-	var srv *network.NETWORK
-	var shl *shell.SHELL
-	var bsh *bash.BashInterface
-	var ph *php.PHP
+	var cf *core.Config
 	var err error
-	var status bool
 
-	ph = &php.PHP{}
-	shl = &shell.SHELL{}
-
-	printer.Start()
-
-	srv, err = main.ServerSetup(c)
+	cf, err = main.GetConfig(c)
 
 	if err != nil {
 		printer.Error(err)
 		return
 	}
 
+	err = main.startProcess(cf)
+
+	if err != nil {
+		printer.Error(err)
+	}
+}
+
+func (main *MainInterface) startProcess(cf *core.Config) error {
+	var srv *network.NETWORK
+	var shl *shell.SHELL
+	var ph *php.PHP
+	var bsh *bash.BashInterface
+	var status bool
+
+	srv = &network.NETWORK{}
+	ph = &php.PHP{}
+	shl = &shell.SHELL{}
+
+	srv.Setup(cf)
+
 	status, err = srv.Test()
 
 	if err != nil || status != true {
-		printer.Error(err)
-		return
+		return err
 	}
 
-	printer.End()
+	printer.PrintSection("Reverse shell", "Reverse shell ready!")
 
 	bsh = bash.CreateApp(srv, shl, ph)
 	modules.Boot(bsh)
-
 	bsh.Start()
 }
 
-func (main *MainInterface) ServerSetup(c *cli.Context) (*network.NETWORK, error) {
+func (main *MainInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 	var url, parameter string
-	var method int
+	var method, shmethod int
+	var cf core.Config
 	var err error
-	var srv *network.NETWORK
 
-	srv = &network.NETWORK{}
 	url = c.String("u")
 	method = c.Int("m")
 	parameter = c.String("p")
@@ -125,7 +139,13 @@ func (main *MainInterface) ServerSetup(c *cli.Context) (*network.NETWORK, error)
 		parameter = "fuzzer"
 	}
 
-	srv.Setup(url, parameter, method)
+	cf = core.Config{
+		url,
+		method,
+		parameter,
+		shmethod,
+		false,
+	}
 
-	return srv, nil
+	return &cf, nil
 }
