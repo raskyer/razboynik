@@ -58,25 +58,14 @@ func Generating() {
 	fmt.Print("\n")
 }
 
-func SetupError(i int) {
-	err_intro()
-	color.White("An error occured during configuration")
-
-	if i == 0 {
-		color.White("Flag -u (url) is required")
-	} else if i == 1 {
-		color.White("Method is between 0 (default) and 3.")
-		color.White("[0 => GET, 1 => POST, 2 => HEADER, 3 => COOKIE]")
-	}
-}
-
 func Error(err error) {
 	err_intro()
 	color.White(SPACE + err.Error())
+	fmt.Print("\n")
 }
 
 func End() {
 	det_intro("BASH", "----")
 	color.White(SPACE + "Meterpreter ready !")
-	fmt.Print("\n\n\n")
+	fmt.Print("\n\n")
 }
