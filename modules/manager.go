@@ -9,6 +9,7 @@ import (
 func Boot(b *bash.BashInterface) {
 	b.SetDefaultFunc(shellmodule.Raw)
 	b.AddSpCmd("cd", shellmodule.Cd)
+	b.AddSpCmd("pwd", shellmodule.Pwd)
 	b.AddSpCmd("-raw", shellmodule.Raw)
 	b.AddSpCmd("-php", phpmodule.Raw)
 	b.AddSpCmd("-info", Info)

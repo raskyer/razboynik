@@ -14,8 +14,7 @@ func Raw(bc *bash.BashCommand) {
 	var r string
 	var err error
 
-	srv = bc.GetServer()
-	shl = bc.GetShell()
+	srv, shl, _ = bc.GetObjects()
 
 	raw = bc.GetRaw()
 	r = shl.Raw(raw) + srv.Response()

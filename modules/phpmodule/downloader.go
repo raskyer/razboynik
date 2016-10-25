@@ -27,9 +27,7 @@ func DownloadInit(bc *bash.BashCommand) {
 		return
 	}
 
-	srv = bc.GetServer()
-	shl = bc.GetShell()
-	ph = bc.GetPHP()
+	srv, shl, ph = bc.GetObjects()
 
 	path = getPath(bc.GetArr(), shl.GetContext())
 	req = ph.Download(path)

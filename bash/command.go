@@ -68,6 +68,10 @@ func (bc *BashCommand) GetPHP() *php.PHP {
 	return bc.parent.php
 }
 
+func (bc *BashCommand) GetObjects() (*network.NETWORK, *shell.SHELL, *php.PHP) {
+	return bc.parent.server, bc.parent.shell, bc.parent.php
+}
+
 func (bc *BashCommand) GetRaw() string {
 	return bc.raw
 }
