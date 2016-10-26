@@ -19,6 +19,15 @@ func Cd(bc *bash.BashCommand) {
 	srv, shl, _ = bc.GetObjects()
 	raw = bc.GetRaw()
 
+	if bc.GetArrItem(1, "") == "-" {
+		raw = "cd"
+	}
+
+	if strings.Contains(raw, "&&") {
+		Raw(bc)
+		return
+	}
+
 	cd = shl.Cd(raw) + srv.Response()
 	result, err = srv.QuickProcess(cd)
 

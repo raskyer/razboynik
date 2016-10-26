@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/eatbytes/fuzz/network"
 	"github.com/eatbytes/fuzzer/bash"
 	"github.com/fatih/color"
 )
@@ -33,7 +34,7 @@ func RequestInfo(bc *bash.BashCommand) {
 	color.Yellow("--- Request ---")
 
 	flag = false
-	r = bc.GetServer().GetRequest()
+	r = bc.GetServer().GetRequest().Http
 	str = bc.GetStr()
 
 	if strings.Contains(str, "-url") {
@@ -70,7 +71,7 @@ func RequestInfo(bc *bash.BashCommand) {
 func ResponseInfo(bc *bash.BashCommand) {
 	var flag bool
 	var str string
-	var r *http.Response
+	var r *network.Response
 
 	color.Yellow("--- Response ---")
 
@@ -80,20 +81,19 @@ func ResponseInfo(bc *bash.BashCommand) {
 
 	if strings.Contains(str, "-status") {
 		color.Cyan("Status:")
-		fmt.Println(r.Status)
+		fmt.Println(r.Http.Status)
 		flag = true
 	}
 
 	if strings.Contains(str, "-body") {
 		color.Cyan("Body:")
-		body := bc.GetServer().GetBodyStr(r)
-		fmt.Println(body)
+		fmt.Println(r.GetBodyStr())
 		flag = true
 	}
 
 	if strings.Contains(str, "-headers") {
 		color.Cyan("Headers:")
-		fmt.Println(r.Header)
+		fmt.Println(r.Http.Header)
 		flag = true
 	}
 

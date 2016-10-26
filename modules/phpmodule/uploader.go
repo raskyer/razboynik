@@ -57,6 +57,5 @@ func UploadInit(bc *bash.BashCommand) {
 		return
 	}
 
-	result := srv.GetBodyStr(resp)
-	bc.Write(result, nil)
+	bc.Write(resp.GetBodyStr(), nil)
 }

@@ -9,10 +9,10 @@ import (
 func (main *MainInterface) Default(c *cli.Context) {
 	printer.PrintSection("Configuration", "Configure the option of the remote server")
 
-	url := read("Url")
-	method := readInt("Method")
-	parameter := read("Parameter")
-	shmethod := read("PHP Method")
+	url := read("Url*", true)
+	method := read("Method", false)
+	parameter := read("Parameter", false)
+	shmethod := readInt("PHP Method")
 
 	cf := core.Config{
 		url,
@@ -22,10 +22,14 @@ func (main *MainInterface) Default(c *cli.Context) {
 		false,
 	}
 
-	main.startProcess(&cf)
+	err := main.startProcess(&cf)
+
+	if err != nil {
+		printer.Error(err)
+	}
 }
 
-func read(str string) string {
+func read(str string, required bool) string {
 	var input string
 	var err error
 
@@ -35,7 +39,11 @@ func read(str string) string {
 
 	if err != nil {
 		printer.Error(err)
-		return read(str)
+		return read(str, required)
+	}
+
+	if required && input == "\n" {
+		return read(str, required)
 	}
 
 	return input

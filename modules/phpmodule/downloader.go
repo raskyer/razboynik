@@ -3,7 +3,6 @@ package phpmodule
 import (
 	"errors"
 	"io"
-	"net/http"
 	"os"
 
 	"github.com/eatbytes/fuzz/network"
@@ -16,7 +15,7 @@ func DownloadInit(bc *bash.BashCommand) {
 	var path string
 	var req string
 	var err error
-	var resp *http.Response
+	var resp *network.Response
 	var srv *network.NETWORK
 	var shl *shell.SHELL
 	var ph *php.PHP
@@ -53,7 +52,7 @@ func getPath(arr []string, context string) string {
 	return path
 }
 
-func ReadDownload(resp *http.Response, bc *bash.BashCommand) {
+func ReadDownload(resp *network.Response, bc *bash.BashCommand) {
 	var location string
 	location = bc.GetArrItem(2, "output.txt")
 
@@ -65,7 +64,7 @@ func ReadDownload(resp *http.Response, bc *bash.BashCommand) {
 		return
 	}
 
-	_, err = io.Copy(out, resp.Body)
+	_, err = io.Copy(out, resp.Http.Body)
 
 	if err != nil {
 		bc.WriteError(err)

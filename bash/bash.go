@@ -50,7 +50,7 @@ func (b *BashInterface) buildPrompt() {
 	}
 
 	config := &readline.Config{
-		Prompt:          " (" + b.server.GetUrl() + ")$ ",
+		Prompt:          "(" + b.server.GetUrl() + ")$ ",
 		HistoryFile:     "/tmp/readlinebash.tmp",
 		AutoComplete:    autocompleter,
 		InterruptPrompt: "^C",
@@ -115,7 +115,7 @@ func (b *BashInterface) SetPrompt(p string) {
 }
 
 func (b *BashInterface) UpdatePrompt(p string) {
-	b.readline.SetPrompt(" (" + b.server.GetUrl() + "):" + p + "$ ")
+	b.readline.SetPrompt("(" + b.server.GetUrl() + "):" + p + "$ ")
 }
 
 func (b *BashInterface) Exit(bc *BashCommand) {

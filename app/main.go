@@ -95,12 +95,17 @@ func (main *MainInterface) startProcess(cf *core.Config) error {
 	var ph *php.PHP
 	var bsh *bash.BashInterface
 	var status bool
+	var err error
 
 	srv = &network.NETWORK{}
 	ph = &php.PHP{}
 	shl = &shell.SHELL{}
 
-	srv.Setup(cf)
+	err = srv.Setup(cf)
+
+	if err != nil {
+		return err
+	}
 
 	status, err = srv.Test()
 
@@ -113,25 +118,22 @@ func (main *MainInterface) startProcess(cf *core.Config) error {
 	bsh = bash.CreateApp(srv, shl, ph)
 	modules.Boot(bsh)
 	bsh.Start()
+
+	return nil
 }
 
 func (main *MainInterface) GetConfig(c *cli.Context) (*core.Config, error) {
-	var url, parameter string
-	var method, shmethod int
+	var url, parameter, method string
+	var shmethod int
 	var cf core.Config
 	var err error
 
 	url = c.String("u")
-	method = c.Int("m")
+	method = c.String("m")
 	parameter = c.String("p")
 
 	if url == "" {
 		err = errors.New("Flag -u (url) is required")
-		return nil, err
-	}
-
-	if method > 3 {
-		err = errors.New("Method is between 0 (default) and 3.")
 		return nil, err
 	}
 

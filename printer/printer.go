@@ -111,7 +111,11 @@ func ReadInt() (int, error) {
 	var input int
 
 	s, err := Read()
-	input, err = strconv.Atoi(s)
+	s = strings.TrimSpace(s)
+
+	if s != "" {
+		input, err = strconv.Atoi(s)
+	}
 
 	return input, err
 }
