@@ -82,10 +82,13 @@ func (main *MainInterface) Start(c *cli.Context) {
 		return
 	}
 
+	printer.Start()
+
 	err = main.startProcess(cf)
 
 	if err != nil {
 		printer.Error(err)
+		return
 	}
 }
 

@@ -27,9 +27,9 @@ func getCommands(main *MainInterface) []cli.Command {
 		Action:  main.Start,
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "u, url", Usage: "Url of the server. Ex: -u http://localhost"},
-			cli.IntFlag{Name: "m, method", Usage: "Method to use. Ex: -m 1"},
+			cli.StringFlag{Name: "m, method", Usage: "Method to use. Ex: -m POST"},
 			cli.StringFlag{Name: "p, parameter", Usage: "Parameter to use. Ex: -p test"},
-			cli.BoolFlag{Name: "f, file", Usage: "Use a config from file (default path : ./config)"},
+			cli.IntFlag{Name: "sh, shellmethod", Usage: "Shellmethod to use."},
 			cli.BoolFlag{Name: "c, crypt", Usage: "Use a crypt"},
 			cli.BoolFlag{Name: "i, info", Usage: "Give info on actual config"},
 		},
