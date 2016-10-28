@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	"github.com/eatbytes/fuzzer/app"
+	"github.com/eatbytes/razboynik/app"
 )
 
 func main() {
-	var main *app.MainInterface
+	var appli *app.AppInterface
 
-	main = app.CreateApp()
-	main.Run(os.Args)
+	appli = app.CreateApp()
+	appli.Run(os.Args)
 }

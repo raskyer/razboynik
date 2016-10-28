@@ -1,12 +1,12 @@
-package modules
+package bashmodule
 
 import (
 	"fmt"
 	"net/http"
 	"strings"
 
-	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzzer/bash"
+	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboynik/bash"
 	"github.com/fatih/color"
 )
 

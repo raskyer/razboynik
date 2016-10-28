@@ -3,9 +3,9 @@ package shellmodule
 import (
 	"strings"
 
-	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzz/shell"
-	"github.com/eatbytes/fuzzer/bash"
+	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboy/shell"
+	"github.com/eatbytes/razboynik/bash"
 )
 
 func Cd(bc *bash.BashCommand) {

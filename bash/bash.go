@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/chzyer/readline"
-	"github.com/eatbytes/fuzz/ferror"
-	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzz/normalizer"
-	"github.com/eatbytes/fuzz/php"
-	"github.com/eatbytes/fuzz/shell"
+	"github.com/eatbytes/razboy/ferror"
+	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboy/normalizer"
+	"github.com/eatbytes/razboy/php"
+	"github.com/eatbytes/razboy/shell"
 	"github.com/eatbytes/sysgo"
 )
 
@@ -26,7 +26,6 @@ type BashInterface struct {
 	server      *network.NETWORK
 	shell       *shell.SHELL
 	php         *php.PHP
-	history     []*BashCommand
 }
 
 func CreateApp(srv *network.NETWORK, shl *shell.SHELL, php *php.PHP) *BashInterface {
@@ -96,7 +95,6 @@ func (b *BashInterface) loop() {
 		}
 
 		bc := b.CreateCommand(line)
-		b.history = append(b.history, bc)
 		bc.Exec()
 	}
 }
@@ -128,26 +126,16 @@ func (b *BashInterface) Sys(bc *BashCommand) {
 }
 
 func (b *BashInterface) Encode(bc *BashCommand) {
-	str := bc.str
-
-	if str == "" {
-		lastC := bc.parent.GetFormerCommand()
-		str = lastC.res
-	}
-
-	sEnc := normalizer.Encode(str)
+	sEnc := normalizer.Encode(bc.str)
 	bc.Write(sEnc, nil)
 }
 
 func (b *BashInterface) Decode(bc *BashCommand) {
-	str := bc.str
-
-	if str == "" {
-		lastC := bc.parent.GetFormerCommand()
-		str = lastC.res
+	if bc.str == "" {
+		return
 	}
 
-	sDec, err := normalizer.Decode(str)
+	sDec, err := normalizer.Decode(bc.str)
 	bc.Write(sDec, err)
 }
 
@@ -158,21 +146,6 @@ func (b *BashInterface) AddSpCmd(name string, function spFunc) {
 
 func (b *BashInterface) SetDefaultFunc(fn spFunc) {
 	b.defaultFunc = fn
-}
-
-func (b *BashInterface) GetFormerCommand() *BashCommand {
-	var lgt int
-	lgt = len(b.history)
-
-	if lgt < 2 {
-		return b.history[0]
-	}
-
-	return b.history[lgt-2]
-}
-
-func (b *BashInterface) FlushHistory(bc *BashCommand) {
-	b.history = nil
 }
 
 func (b *BashInterface) CreateCommand(raw string) *BashCommand {

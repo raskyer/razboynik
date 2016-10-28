@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzz/php"
-	"github.com/eatbytes/fuzzer/bash"
+	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboy/php"
+	"github.com/eatbytes/razboynik/bash"
 )
 
 func UploadInit(bc *bash.BashCommand) {

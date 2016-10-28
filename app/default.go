@@ -1,18 +1,21 @@
 package app
 
 import (
-	"github.com/eatbytes/fuzz/core"
-	"github.com/eatbytes/fuzzer/printer"
+	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services"
 	"github.com/urfave/cli"
 )
 
-func (main *MainInterface) Default(c *cli.Context) {
-	printer.PrintSection("Configuration", "Configure the option of the remote server")
+func (app *AppInterface) Default(c *cli.Context) {
+	var url, method, parameter string
+	var shmethod int
 
-	url := read("Url*", true)
-	method := read("Method", false)
-	parameter := read("Parameter", false)
-	shmethod := readInt("PHP Method")
+	services.PrintSection("Configuration", "Configure the option of the remote server")
+
+	url = read("URL*", true)
+	method = read("METHOD", false)
+	parameter = read("PARAMETER", false)
+	shmethod = readInt("PHP METHOD")
 
 	cf := core.Config{
 		url,
@@ -22,10 +25,10 @@ func (main *MainInterface) Default(c *cli.Context) {
 		false,
 	}
 
-	err := main.startProcess(&cf)
+	err := app.startProcess(&cf)
 
 	if err != nil {
-		printer.Error(err)
+		services.PrintError(err)
 	}
 }
 
@@ -33,12 +36,12 @@ func read(str string, required bool) string {
 	var input string
 	var err error
 
-	printer.Println(str + " : ")
-	printer.Print("-> ")
-	input, err = printer.Read()
+	services.Println(str + " : ")
+	services.Print("-> ")
+	input, err = services.Read()
 
 	if err != nil {
-		printer.Error(err)
+		services.PrintError(err)
 		return read(str, required)
 	}
 
@@ -53,12 +56,12 @@ func readInt(str string) int {
 	var input int
 	var err error
 
-	printer.Println(str + " : ")
-	printer.Print("-> ")
-	input, err = printer.ReadInt()
+	services.Println(str + " : ")
+	services.Print("-> ")
+	input, err = services.ReadInt()
 
 	if err != nil {
-		printer.Error(err)
+		services.PrintError(err)
 		return readInt(str)
 	}
 

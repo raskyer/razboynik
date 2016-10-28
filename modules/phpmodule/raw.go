@@ -1,8 +1,8 @@
 package phpmodule
 
 import (
-	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzzer/bash"
+	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboynik/bash"
 )
 
 func Raw(bc *bash.BashCommand) {

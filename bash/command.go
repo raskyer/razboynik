@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/eatbytes/fuzz/network"
-	"github.com/eatbytes/fuzz/php"
-	"github.com/eatbytes/fuzz/shell"
+	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboy/php"
+	"github.com/eatbytes/razboy/shell"
 )
 
 type BashCommand struct {
