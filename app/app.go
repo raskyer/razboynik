@@ -114,6 +114,8 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 		return err
 	}
 
+	ph.Setup(cf.Parameter)
+
 	status, err = srv.Test()
 
 	if err != nil || status != true {

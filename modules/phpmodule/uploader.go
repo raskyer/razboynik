@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy/network"
+	"github.com/eatbytes/razboy/normalizer"
 	"github.com/eatbytes/razboy/php"
 	"github.com/eatbytes/razboynik/bash"
 )
@@ -51,8 +52,15 @@ func UploadInit(bc *bash.BashCommand) {
 	}
 
 	resp, err := srv.Send(req)
+	body := resp.GetBodyStr()
 
 	if err != nil {
+		bc.WriteError(err)
+		return
+	}
+
+	if body == normalizer.Encode("1") {
+		err = errors.New("Server havn't upload the file")
 		bc.WriteError(err)
 		return
 	}
