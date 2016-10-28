@@ -20,6 +20,7 @@ func getCommands(app *AppInterface) []cli.Command {
 			cli.StringFlag{Name: "m, method", Usage: "Method to use. Ex: -m POST", Value: "GET"},
 			cli.StringFlag{Name: "p, parameter", Usage: "Parameter to use. Ex: -p test", Value: "fuzzer"},
 			cli.IntFlag{Name: "sh, shellmethod", Usage: "Shellmethod to use.", Value: 0},
+			cli.StringFlag{Name: "k, key", Usage: "Key to unlock small protection", Value: "FromRussiaWithLove<3"},
 			cli.BoolFlag{Name: "c, crypt", Usage: "Use a crypt"},
 		},
 	}

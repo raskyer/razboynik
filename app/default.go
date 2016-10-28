@@ -7,7 +7,7 @@ import (
 )
 
 func (app *AppInterface) Default(c *cli.Context) {
-	var url, method, parameter string
+	var url, method, parameter, key string
 	var shmethod int
 
 	services.PrintSection("Configuration", "Configure the option of the remote server")
@@ -16,12 +16,14 @@ func (app *AppInterface) Default(c *cli.Context) {
 	method = read("METHOD", false)
 	parameter = read("PARAMETER", false)
 	shmethod = readInt("PHP METHOD")
+	key = read("KEY", false)
 
 	cf := core.Config{
 		url,
 		method,
 		parameter,
 		shmethod,
+		key,
 		false,
 	}
 

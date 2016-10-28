@@ -55,6 +55,7 @@ func createCli(app *AppInterface) *cli.App {
 		fmt.Fprintf(c.App.Writer, "start\ngenerate\n")
 	}
 	client.Action = app.Default
+
 	client.Flags = []cli.Flag{
 		cli.BoolFlag{Name: "help, h", Usage: "Help"},
 	}
@@ -129,7 +130,7 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 }
 
 func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
-	var url, parameter, method string
+	var url, parameter, method, key string
 	var shmethod int
 	var cf core.Config
 	var err error
@@ -137,14 +138,11 @@ func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 	url = c.String("u")
 	method = c.String("m")
 	parameter = c.String("p")
+	key = c.String("k")
 
 	if url == "" {
 		err = errors.New("Flag -u (url) is required")
 		return nil, err
-	}
-
-	if parameter == "" {
-		parameter = "fuzzer"
 	}
 
 	cf = core.Config{
@@ -152,6 +150,7 @@ func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 		method,
 		parameter,
 		shmethod,
+		key,
 		false,
 	}
 
