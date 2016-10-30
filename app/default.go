@@ -24,6 +24,7 @@ func (app *AppInterface) Default(c *cli.Context) {
 		parameter,
 		shmethod,
 		key,
+		true,
 		false,
 	}
 
