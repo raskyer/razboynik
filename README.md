@@ -52,5 +52,24 @@ Instructions to build the app:
 
 (Makefile on the way)
 
+##Demo
+(Video coming soon)
+Let's suppose you find out a file upload vulnerability in a website and you upload the script available in `res/backdoor`.
+Now the url of your script could be : http://{website}/uploads/script.php
+
+With this statement we can use razboynik as it follow :
+`./razboynik run -u http://{website}/uploads/script.php`
+or 
+`./razboynik r -u http://{website}/uploads/script.php`
+
+If you want to change the parameter sent, add -p flag and precise it. Like : `./razboynik r -u ... -p myParameter`.
+By default the parameter is "razboynik". Parameter is the name of the field or header or cookie (depand on methods) sent to server. If the method is get, razboynik will simply add at the and of the url = ?razboynik={request}.
+
+If you want to change the method, add -m flag as : `./razboynik r -u ... -m POST`.
+By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE (not available for now).
+
+For more option you can add -h flag.
+If you want a step by step configuration just run `./razboynik`.
+
 ##API
 You will find the API of all the business logic in the appropriate repository `razboy`
