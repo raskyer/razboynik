@@ -64,7 +64,7 @@ or (shortcut)
 - `./razboynik r -u http://{website}/uploads/script.php`
 
 If you want to change the parameter sent, add -p flag and precise it. Like : `./razboynik r -u ... -p myParameter`.
-By default the parameter is "razboynik". Parameter is the name of the field or header or cookie (depends on method) sent to server. If the method is GET, razboynik will simply add at the and of the url = ?razboynik={request}.
+By default the parameter is "razboynik". Parameter is the name of the field or header or cookie (depends on method) sent to server. If the method is GET, razboynik will simply add at the end of the url = ?razboynik={request}.
 
 If you want to change the method, add -m flag as : `./razboynik r -u ... -m POST`.
 By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE (not available for now).
