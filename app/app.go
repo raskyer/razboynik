@@ -20,20 +20,18 @@ type AppInterface struct {
 	server *network.NETWORK
 }
 
-func CreateApp() *AppInterface {
+func Create() *AppInterface {
 	var app *AppInterface
-	var cli *cli.App
 
 	services.PrintIntro()
 
 	app = &AppInterface{}
-	cli = createCli(app)
-	app.cmd = cli
+	app.createCli()
 
 	return app
 }
 
-func createCli(app *AppInterface) *cli.App {
+func (app *AppInterface) createCli() {
 	var client *cli.App
 
 	client = cli.NewApp()
@@ -41,11 +39,11 @@ func createCli(app *AppInterface) *cli.App {
 	client.Commands = getCommands(app)
 	client.Name = "RazBOYNiK"
 	client.Usage = "Reverse shell via file upload exploit"
-	client.Version = "1.4.0"
+	client.Version = "1.5.0"
 	client.Compiled = time.Now()
 	client.Authors = []cli.Author{
 		cli.Author{
-			Name:  "Kamikaze",
+			Name:  "EatBytes",
 			Email: "leakleass@protomail.com",
 		},
 	}
@@ -54,13 +52,12 @@ func createCli(app *AppInterface) *cli.App {
 	client.BashComplete = func(c *cli.Context) {
 		fmt.Fprintf(c.App.Writer, "start\ngenerate\n")
 	}
-	client.Action = app.Default
 
 	client.Flags = []cli.Flag{
 		cli.BoolFlag{Name: "help, h", Usage: "Help"},
 	}
 
-	return client
+	app.cmd = client
 }
 
 func (app *AppInterface) Run(command []string) {
@@ -97,26 +94,22 @@ func (app *AppInterface) Start(c *cli.Context) {
 }
 
 func (app *AppInterface) startProcess(cf *core.Config) error {
-	var srv *network.NETWORK
-	var shl *shell.SHELL
-	var ph *php.PHP
+	var n *network.NETWORK
+	var s *shell.SHELL
+	var p *php.PHP
 	var bsh *bash.BashInterface
 	var status bool
 	var err error
 
-	srv = &network.NETWORK{}
-	ph = &php.PHP{}
-	shl = &shell.SHELL{}
-
-	err = srv.Setup(cf)
+	n, err = network.Create(cf)
+	p = php.Create(cf)
+	s = shell.Create(cf)
 
 	if err != nil {
 		return err
 	}
 
-	ph.Setup(cf.Parameter, cf.Base64)
-
-	status, err = srv.Test()
+	status, err = n.Test()
 
 	if err != nil || status != true {
 		return err
@@ -124,7 +117,7 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 
 	services.PrintSection("Reverse shell", "Reverse shell ready!")
 
-	bsh = bash.CreateApp(srv, shl, ph)
+	bsh = bash.CreateApp(n, s, p)
 	modules.Boot(bsh)
 	bsh.Start()
 
@@ -134,15 +127,16 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 	var url, parameter, method, key string
 	var shmethod int
-	var base64 bool
+	var raw bool
 	var cf core.Config
 	var err error
 
 	url = c.String("u")
 	method = c.String("m")
 	parameter = c.String("p")
+	shmethod = c.Int("s")
 	key = c.String("k")
-	base64 = c.Bool("b")
+	raw = c.Bool("r")
 
 	if url == "" {
 		err = errors.New("Flag -u (url) is required")
@@ -155,7 +149,7 @@ func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {
 		parameter,
 		shmethod,
 		key,
-		base64,
+		raw,
 		false,
 	}
 
