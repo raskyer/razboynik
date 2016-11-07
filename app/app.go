@@ -12,6 +12,7 @@ import (
 	"github.com/eatbytes/razboynik/bash"
 	"github.com/eatbytes/razboynik/modules"
 	"github.com/eatbytes/razboynik/services"
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -35,7 +36,6 @@ func (app *AppInterface) createCli() {
 	var client *cli.App
 
 	client = cli.NewApp()
-
 	client.Commands = getCommands(app)
 	client.Name = "RazBOYNiK"
 	client.Usage = "Reverse shell via file upload exploit"
@@ -85,25 +85,24 @@ func (app *AppInterface) Start(c *cli.Context) {
 
 	services.PrintStart()
 
-	err = app.startProcess(cf)
+	err = app.testing(cf)
 
 	if err != nil {
 		services.PrintError(err)
 		return
 	}
+
+	services.PrintSection("Reverse shell", "Reverse shell ready!")
+
+	app.startBash(cf)
 }
 
-func (app *AppInterface) startProcess(cf *core.Config) error {
+func (app *AppInterface) testing(cf *core.Config) error {
 	var n *network.NETWORK
-	var s *shell.SHELL
-	var p *php.PHP
-	var bsh *bash.BashInterface
 	var status bool
 	var err error
 
 	n, err = network.Create(cf)
-	p = php.Create(cf)
-	s = shell.Create(cf)
 
 	if err != nil {
 		return err
@@ -115,13 +114,22 @@ func (app *AppInterface) startProcess(cf *core.Config) error {
 		return err
 	}
 
-	services.PrintSection("Reverse shell", "Reverse shell ready!")
+	return nil
+}
+
+func (app *AppInterface) startBash(cf *core.Config) {
+	var n *network.NETWORK
+	var s *shell.SHELL
+	var p *php.PHP
+	var bsh *bash.BashInterface
+
+	n, _ = network.Create(cf)
+	p = php.Create(cf)
+	s = shell.Create(cf)
 
 	bsh = bash.CreateApp(n, s, p)
 	modules.Boot(bsh)
 	bsh.Start()
-
-	return nil
 }
 
 func (app *AppInterface) GetConfig(c *cli.Context) (*core.Config, error) {

