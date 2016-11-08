@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/eatbytes/razboy/core"
@@ -23,6 +24,12 @@ func (app *AppInterface) Scan(c *cli.Context) {
 	url = c.String("u")
 	parameter = c.String("p")
 	key = c.String("k")
+
+	if url == "" {
+		err = errors.New("Flag -u (url) is required")
+		services.PrintError(err)
+		return
+	}
 
 	services.PrintSection("Scanning", "Scan target: "+url+", parameter: "+parameter)
 

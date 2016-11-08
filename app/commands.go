@@ -38,6 +38,17 @@ func getCommands(app *AppInterface) []cli.Command {
 		},
 	}
 
+	var invisibleDefinition = cli.Command{
+		Name:    "invisible",
+		Aliases: []string{"i"},
+		Usage:   "Invisible usage",
+		Action:  app.Invisible,
+		Flags: []cli.Flag{
+			cli.StringFlag{Name: "u, url", Usage: "Url of the server. Ex: -u http://localhost"},
+			cli.StringFlag{Name: "r, referer", Usage: "Url the server will call"},
+		},
+	}
+
 	var helpDefinition = cli.Command{
 		Name:    "help",
 		Aliases: []string{"h"},
@@ -49,6 +60,7 @@ func getCommands(app *AppInterface) []cli.Command {
 		runDefinition,
 		generateDefinition,
 		scanDefinition,
+		invisibleDefinition,
 		helpDefinition,
 	}
 }

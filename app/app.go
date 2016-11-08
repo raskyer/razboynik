@@ -28,7 +28,7 @@ func (app *AppInterface) createCli() {
 
 	client = cli.NewApp()
 	client.Commands = getCommands(app)
-	client.Name = "RazBOYNiK"
+	client.Name = "Razboynik"
 	client.Usage = "Reverse shell via file upload exploit"
 	client.Version = "1.5.0"
 	client.Compiled = time.Now()
@@ -41,7 +41,7 @@ func (app *AppInterface) createCli() {
 	client.Copyright = "(c) 2016 EatBytes. из России с любовью <3"
 	client.EnableBashCompletion = true
 	client.BashComplete = func(c *cli.Context) {
-		fmt.Fprintf(c.App.Writer, "start\ngenerate\n")
+		fmt.Fprintf(c.App.Writer, "run\nscan\ngenerate\n")
 	}
 
 	client.Flags = []cli.Flag{
