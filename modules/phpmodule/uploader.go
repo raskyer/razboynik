@@ -10,12 +10,13 @@ import (
 )
 
 func UploadInit(bc *bash.BashCommand) {
-	var path string
-	var dir string
-	var arr []string
-	var err error
-	var n *network.NETWORK
-	var p *php.PHP
+	var (
+		path, dir string
+		arr       []string
+		err       error
+		n         *network.NETWORK
+		p         *php.PHP
+	)
 
 	if bc.GetArrLgt() < 2 {
 		err = errors.New("Please write the path of the local file to upload")

