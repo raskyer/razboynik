@@ -67,7 +67,7 @@ If you want to change the parameter sent, add -p flag and precise it. Like : `./
 By default the parameter is "razboynik". Parameter is the name of the field or header or cookie (depends on method) sent to server. If the method is GET, razboynik will simply add at the end of the url = ?razboynik={request}.
 
 If you want to change the method, add -m flag as : `./razboynik r -u ... -m POST`.
-By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE (not available for now).
+By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE.
 
 For more option you can add -h flag. Or type `./razboynik help run`.
 If you want a step by step configuration just run `./razboynik`.
@@ -75,20 +75,34 @@ If you want a step by step configuration just run `./razboynik`.
 ##API
 You will find the API of all the business logic in the appropriate repository `razboy`
 
+###run
+
+###generate
+
+###scan
+
+###invisible
+
+###encode / decode
+
+###help
+
 ##Roadmap
 ###1.5.0
-- Better base64 gesture (Think of getting raw request for debugging)
+- Raw request
 - Better error in razboy (core)
 - Add more information when run fail
 - Add cookie method
-- Add asciinema video
-- Add `./bin` folder with binaries
+- Implement optional key protection
+- Add base64 encoding and decoding to root
+- Add invisible method
 
 ###1.6.0
 - Add web server (FurezApi legacy)
-- Implement key ?
+- Add `./bin` folder with binaries
 - More documentation
+- Add asciinema video (in progress)
 - Create a botnet ? Handle multiple server at the same time
-- Config file ?
+- Config file
 - Proxied tunnel
 - Crypto
