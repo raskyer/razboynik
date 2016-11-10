@@ -5,18 +5,18 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy/network"
-	"github.com/eatbytes/razboy/normalizer"
 	"github.com/eatbytes/razboy/php"
 	"github.com/eatbytes/razboynik/bash"
 )
 
 func UploadInit(bc *bash.BashCommand) {
-	var path string
-	var dir string
-	var arr []string
-	var err error
-	var srv *network.NETWORK
-	var ph *php.PHP
+	var (
+		path, dir string
+		arr       []string
+		err       error
+		n         *network.NETWORK
+		p         *php.PHP
+	)
 
 	if bc.GetArrLgt() < 2 {
 		err = errors.New("Please write the path of the local file to upload")
@@ -24,10 +24,11 @@ func UploadInit(bc *bash.BashCommand) {
 		return
 	}
 
+	n = bc.GetServer()
+	p = bc.GetPHP()
+
 	arr = bc.GetArr()
 	path = arr[1]
-	srv = bc.GetServer()
-	ph = bc.GetPHP()
 
 	if bc.GetArrLgt() > 2 {
 		dir = arr[2]
@@ -37,29 +38,29 @@ func UploadInit(bc *bash.BashCommand) {
 		dir = pathArr[lgt]
 	}
 
-	bytes, bondary, err := ph.Upload(path, dir)
+	bytes, bondary, err := p.Upload(path, dir)
 
 	if err != nil {
 		bc.WriteError(err)
 		return
 	}
 
-	req, err := srv.PrepareUpload(bytes, bondary)
+	req, err := n.PrepareUpload(bytes, bondary)
 
 	if err != nil {
 		bc.WriteError(err)
 		return
 	}
 
-	resp, err := srv.Send(req)
-	body := resp.GetBodyStr()
+	resp, err := n.Send(req)
+	body := resp.GetResult()
 
 	if err != nil {
 		bc.WriteError(err)
 		return
 	}
 
-	if body == normalizer.Encode("1") {
+	if body == "1" {
 		err = errors.New("Server havn't upload the file")
 		bc.WriteError(err)
 		return

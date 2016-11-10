@@ -7,8 +7,6 @@ import (
 )
 
 func main() {
-	var appli *app.AppInterface
-
-	appli = app.CreateApp()
-	appli.Run(os.Args)
+	a := app.Create()
+	a.Run(os.Args)
 }

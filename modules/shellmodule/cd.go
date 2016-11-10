@@ -9,39 +9,35 @@ import (
 )
 
 func Cd(bc *bash.BashCommand) {
-	var srv *network.NETWORK
-	var shl *shell.SHELL
-	var result string
-	var raw string
-	var cd string
-	var err error
+	var (
+		result, raw, cd, line string
+		err                   error
+		n                     *network.NETWORK
+		s                     *shell.SHELL
+	)
 
-	srv, shl, _ = bc.GetObjects()
+	n, s, _ = bc.GetObjects()
 	raw = bc.GetRaw()
 
-	if bc.GetArrItem(1, "") == "-" {
-		raw = "cd"
-	}
-
-	if strings.Contains(raw, "&&") {
+	if strings.Contains(raw, "&&") || bc.GetArrItem(1, "") == "-" {
 		Raw(bc)
 		return
 	}
 
-	cd = shl.Cd(raw) + srv.Response()
-	result, err = srv.QuickProcess(cd)
+	cd = s.Cd(raw) + n.Response()
+	result, err = n.QuickProcess(cd)
 
 	if err != nil {
 		bc.WriteError(err)
 		return
 	}
 
-	line := strings.TrimSpace(result)
+	line = strings.TrimSpace(result)
 
 	if line != "" {
-		shl.SetContext(line)
-
+		s.SetContext(line)
 		bc.GetParent().UpdatePrompt(line)
+
 		bc.WriteSuccess(result)
 	}
 }

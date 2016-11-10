@@ -28,15 +28,13 @@ type BashInterface struct {
 	php         *php.PHP
 }
 
-func CreateApp(srv *network.NETWORK, shl *shell.SHELL, php *php.PHP) *BashInterface {
-	bsh := BashInterface{
+func Create(srv *network.NETWORK, shl *shell.SHELL, php *php.PHP) *BashInterface {
+	return &BashInterface{
 		commonCmd: []string{"ls", "cat", "rm"},
 		server:    srv,
 		shell:     shl,
 		php:       php,
 	}
-
-	return &bsh
 }
 
 func (b *BashInterface) buildPrompt() {
@@ -149,13 +147,15 @@ func (b *BashInterface) SetDefaultFunc(fn spFunc) {
 }
 
 func (b *BashInterface) CreateCommand(raw string) *BashCommand {
-	var arr []string
-	var fnInt int
-	var fn spFunc
-	var strArr []string
-	var str string
-	var out string
-	var err string
+	var (
+		arr    []string
+		fnInt  int
+		fn     spFunc
+		strArr []string
+		str    string
+		out    string
+		err    string
+	)
 
 	arr = strings.Fields(raw)
 

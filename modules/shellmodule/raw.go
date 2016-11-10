@@ -7,19 +7,17 @@ import (
 )
 
 func Raw(bc *bash.BashCommand) {
-	var shl *shell.SHELL
-	var srv *network.NETWORK
-	var raw string
-	var result string
-	var r string
-	var err error
+	var (
+		result, raw, r string
+		err            error
+		n              *network.NETWORK
+		s              *shell.SHELL
+	)
 
-	srv, shl, _ = bc.GetObjects()
-
+	n, s, _ = bc.GetObjects()
 	raw = bc.GetRaw()
-	r = shl.Raw(raw) + srv.Response()
-
-	result, err = srv.QuickProcess(r)
+	r = s.Raw(raw) + n.Response()
+	result, err = n.QuickProcess(r)
 
 	bc.Write(result, err)
 }

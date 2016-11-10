@@ -1,0 +1,2090 @@
+{
+  "version": 1,
+  "stdout": [
+    [
+      0.040149,
+      "\u001b]0;vrasquier@php-18: ~/go/src/github.com/eatbytes/razboynik\u0007\u001b[01;32mvrasquier@php-18\u001b[00m:\u001b[01;34m~/go/src/github.com/eatbytes/razboynik\u001b[00m$ "
+    ],
+    [
+      0.774379,
+      "g"
+    ],
+    [
+      0.098328,
+      "o"
+    ],
+    [
+      0.202408,
+      " "
+    ],
+    [
+      0.195247,
+      "i"
+    ],
+    [
+      0.162869,
+      "n"
+    ],
+    [
+      0.066006,
+      "s"
+    ],
+    [
+      0.228058,
+      "t"
+    ],
+    [
+      0.225961,
+      "a"
+    ],
+    [
+      0.156816,
+      "l"
+    ],
+    [
+      0.142369,
+      "l"
+    ],
+    [
+      0.190546,
+      "\r\n"
+    ],
+    [
+      0.107775,
+      "\u001b]0;vrasquier@php-18: ~/go/src/github.com/eatbytes/razboynik\u0007\u001b[01;32mvrasquier@php-18\u001b[00m:\u001b[01;34m~/go/src/github.com/eatbytes/razboynik\u001b[00m$ "
+    ],
+    [
+      0.411711,
+      "c"
+    ],
+    [
+      0.195657,
+      "d"
+    ],
+    [
+      0.205801,
+      " "
+    ],
+    [
+      0.406704,
+      "~"
+    ],
+    [
+      0.189282,
+      "\r\n"
+    ],
+    [
+      0.00104,
+      "\u001b]0;vrasquier@php-18: ~\u0007\u001b[01;32mvrasquier@php-18\u001b[00m:\u001b[01;34m~\u001b[00m$ "
+    ],
+    [
+      0.413915,
+      "r"
+    ],
+    [
+      0.589205,
+      "a"
+    ],
+    [
+      0.214088,
+      "z"
+    ],
+    [
+      0.280433,
+      "b"
+    ],
+    [
+      0.130908,
+      "o"
+    ],
+    [
+      0.156592,
+      "ynik "
+    ],
+    [
+      1.944011,
+      "r"
+    ],
+    [
+      0.125835,
+      "u"
+    ],
+    [
+      0.213634,
+      "n"
+    ],
+    [
+      0.162956,
+      " "
+    ],
+    [
+      0.137471,
+      "-"
+    ],
+    [
+      0.123084,
+      "u"
+    ],
+    [
+      0.178958,
+      " "
+    ],
+    [
+      0.176308,
+      "h"
+    ],
+    [
+      0.220759,
+      "t"
+    ],
+    [
+      0.156196,
+      "t"
+    ],
+    [
+      0.128165,
+      "p"
+    ],
+    [
+      0.216384,
+      ":"
+    ],
+    [
+      0.360339,
+      "/"
+    ],
+    [
+      0.169137,
+      "/"
+    ],
+    [
+      0.375941,
+      "l"
+    ],
+    [
+      0.205369,
+      "o"
+    ],
+    [
+      0.107887,
+      "c"
+    ],
+    [
+      0.212677,
+      "a"
+    ],
+    [
+      0.101215,
+      "l"
+    ],
+    [
+      0.275594,
+      "h"
+    ],
+    [
+      0.277987,
+      "o"
+    ],
+    [
+      0.118489,
+      "s"
+    ],
+    [
+      0.261672,
+      "y"
+    ],
+    [
+      0.471441,
+      "\b\u001b[K"
+    ],
+    [
+      0.096724,
+      "t"
+    ],
+    [
+      0.369176,
+      "/"
+    ],
+    [
+      0.409051,
+      "r"
+    ],
+    [
+      0.226016,
+      "a"
+    ],
+    [
+      0.246336,
+      "z"
+    ],
+    [
+      0.312338,
+      "b"
+    ],
+    [
+      0.150988,
+      "o"
+    ],
+    [
+      0.23859,
+      "y"
+    ],
+    [
+      0.277119,
+      "n"
+    ],
+    [
+      0.239144,
+      "i"
+    ],
+    [
+      0.21594,
+      "k"
+    ],
+    [
+      0.482241,
+      "."
+    ],
+    [
+      0.004617,
+      "/"
+    ],
+    [
+      0.431347,
+      "\b\u001b[K"
+    ],
+    [
+      0.143308,
+      "\b\u001b[K"
+    ],
+    [
+      0.310509,
+      "."
+    ],
+    [
+      0.43051,
+      "\b\u001b[K"
+    ],
+    [
+      0.414871,
+      "/"
+    ],
+    [
+      0.794723,
+      "h"
+    ],
+    [
+      0.288241,
+      "."
+    ],
+    [
+      0.254781,
+      "p"
+    ],
+    [
+      0.135721,
+      "h"
+    ],
+    [
+      0.110444,
+      "p"
+    ],
+    [
+      0.403677,
+      "\r\n"
+    ],
+    [
+      0.008697,
+      "\r\n\u001b[36m     ########\r\n\u001b[0m\u001b[36m     #       #\r\n\u001b[0m"
+    ],
+    [
+      3.3e-05,
+      "\u001b[36m     #      #\r\n\u001b[0m\u001b[36m     #######         #    #####    #####     ####    #   #   #   #   #   #   #\r\n\u001b[0m\u001b[36m     #     #        # #       #    #    #   #    #    # #    ##  #   #   #  # \r\n\u001b[0m\u001b[36m     #      #      #####     #     #####    #    #     #     # # #   #   ###  \r\n\u001b[0m\u001b[36m     #       #     #   #    #      #    #   #    #     #     #  ##   #   #  # \r\n\u001b[0m\u001b[36m     #        #    #   #   #####   #####     ####      #     #   #   #   #   #\r\n"
+    ],
+    [
+      2.8e-05,
+      "\u001b[0m\u001b[35m     #########################################################################\r\n\u001b[0m\r\n\u001b[37m     из России с любовью <3 !\r\n"
+    ],
+    [
+      1.7e-05,
+      "\u001b[0m\r\n"
+    ],
+    [
+      0.000228,
+      "\u001b[32m     ### STARTING ###\r\n\u001b[0m"
+    ],
+    [
+      1.3e-05,
+      "\u001b[32m     ----------------\r\n\u001b[0m\u001b[37m     Trying to communicate with server...\r\n\u001b[0m"
+    ],
+    [
+      1.3e-05,
+      "\r\n"
+    ],
+    [
+      0.001329,
+      "\r\n\u001b[36m     ### REVERSE SHELL ###\r\n\u001b[0m     "
+    ],
+    [
+      3.3e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      2.1e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      1.8e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      2.1e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      1.9e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      1.9e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m\r\n\u001b[37m     Reverse shell ready!\r\n"
+    ],
+    [
+      2e-05,
+      "\u001b[0m\r\n"
+    ],
+    [
+      0.000238,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php)$  \b"
+    ],
+    [
+      1.645864,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000208,
+      "(http://localhost/razboynik/h.php)$ p"
+    ],
+    [
+      0.135224,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php)$ pw"
+    ],
+    [
+      0.228123,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php)$ pwd"
+    ],
+    [
+      0.255823,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000105,
+      "(http://localhost/razboynik/h.php)$ pwd\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php)$ pwd\r\n"
+    ],
+    [
+      0.01127,
+      "/var/www/html/razboynik\r\n\r\n\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000113,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      1.391928,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ w"
+    ],
+    [
+      0.095526,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ wh"
+    ],
+    [
+      0.263805,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ who"
+    ],
+    [
+      0.225313,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ whoa"
+    ],
+    [
+      0.093554,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ whoam"
+    ],
+    [
+      0.228463,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ whoami"
+    ],
+    [
+      0.21445,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ whoami"
+    ],
+    [
+      0.000143,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ whoami\r\n"
+    ],
+    [
+      0.019658,
+      "www-data"
+    ],
+    [
+      0.000238,
+      "\r\n"
+    ],
+    [
+      0.000706,
+      "\r\n\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000111,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      1.346749,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.8e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ l"
+    ],
+    [
+      0.12249,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls"
+    ],
+    [
+      0.148414,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls\r\n"
+    ],
+    [
+      0.023368,
+      "h.php\r\ni.php\r\ntiti\r\ntyty\r\n\r\n"
+    ],
+    [
+      9.7e-05,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      1.191223,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ r"
+    ],
+    [
+      0.144654,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm"
+    ],
+    [
+      0.227578,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000112,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm "
+    ],
+    [
+      0.143053,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm t"
+    ],
+    [
+      0.141307,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000118,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm ti"
+    ],
+    [
+      0.115869,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm tit"
+    ],
+    [
+      0.171516,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000132,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm titi"
+    ],
+    [
+      0.559371,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm titi"
+    ],
+    [
+      0.000131,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm titi\r\n"
+    ],
+    [
+      0.016512,
+      "\r\n\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.563419,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.2e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ r"
+    ],
+    [
+      0.133728,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000105,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm"
+    ],
+    [
+      0.224981,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm "
+    ],
+    [
+      0.347067,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm t"
+    ],
+    [
+      0.169056,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm ty"
+    ],
+    [
+      0.195251,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000112,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm tyt"
+    ],
+    [
+      0.141892,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm tyty"
+    ],
+    [
+      0.308572,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000118,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm tyty\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ rm tyty\r\n"
+    ],
+    [
+      0.00928,
+      "\r\n\u001b[J\u001b[2K\r"
+    ],
+    [
+      4.3e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.69008,
+      "\u001b[H"
+    ],
+    [
+      0.000123,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.4e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      1.08112,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000127,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ t"
+    ],
+    [
+      0.128426,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ to"
+    ],
+    [
+      0.209531,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.0002,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ tou"
+    ],
+    [
+      0.392894,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000132,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ to"
+    ],
+    [
+      0.161346,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ t"
+    ],
+    [
+      0.138586,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.178855,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000136,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ l"
+    ],
+    [
+      0.115958,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls"
+    ],
+    [
+      0.092051,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls"
+    ],
+    [
+      0.000103,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls\r\n"
+    ],
+    [
+      0.020306,
+      "h.php\r\ni.php\r\n\r\n"
+    ],
+    [
+      0.000108,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.74973,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.00011,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ t"
+    ],
+    [
+      0.144738,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ to"
+    ],
+    [
+      0.203971,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ tou"
+    ],
+    [
+      0.181385,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touc"
+    ],
+    [
+      0.097923,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch"
+    ],
+    [
+      0.231222,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch "
+    ],
+    [
+      0.894556,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch t"
+    ],
+    [
+      0.118113,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.2e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch ty"
+    ],
+    [
+      0.09057,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000122,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch tyt"
+    ],
+    [
+      0.073211,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch tyty"
+    ],
+    [
+      0.257972,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch tyty"
+    ],
+    [
+      0.000204,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ touch tyty\r\n"
+    ],
+    [
+      0.018013,
+      "\r\n\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000106,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.810927,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000109,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ l"
+    ],
+    [
+      0.09187,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls"
+    ],
+    [
+      0.109254,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls"
+    ],
+    [
+      0.000103,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls\r\n"
+    ],
+    [
+      0.01999,
+      "h.php\r\ni.php\r\ntyty\r\n\r\n"
+    ],
+    [
+      0.000109,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.952367,
+      "\u001b[H"
+    ],
+    [
+      0.000114,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.718479,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ e"
+    ],
+    [
+      0.207789,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ec"
+    ],
+    [
+      0.083144,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.00021,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ech"
+    ],
+    [
+      0.214407,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo"
+    ],
+    [
+      0.142833,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000105,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo "
+    ],
+    [
+      0.573608,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.1e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \""
+    ],
+    [
+      0.487522,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.5e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"t"
+    ],
+    [
+      0.279797,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tu"
+    ],
+    [
+      0.611582,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      3.3e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"t"
+    ],
+    [
+      0.386122,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.8e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"ty"
+    ],
+    [
+      0.280306,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyt"
+    ],
+    [
+      0.120197,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty"
+    ],
+    [
+      0.286441,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\""
+    ],
+    [
+      0.34761,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" "
+    ],
+    [
+      0.296605,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" >"
+    ],
+    [
+      0.261917,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.7e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > "
+    ],
+    [
+      0.448802,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > t"
+    ],
+    [
+      0.135459,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000123,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > ty"
+    ],
+    [
+      0.092915,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > tyt"
+    ],
+    [
+      0.089436,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > tyty"
+    ],
+    [
+      0.409523,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > tyty"
+    ],
+    [
+      0.000223,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ echo \"tyty\" > tyty\r\n"
+    ],
+    [
+      0.012557,
+      "\r\n\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000112,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.767136,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.8e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ l"
+    ],
+    [
+      0.112137,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000121,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ls"
+    ],
+    [
+      0.39292,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ l"
+    ],
+    [
+      0.161541,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.2e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.14058,
+      "\u0007"
+    ],
+    [
+      0.114154,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.7e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ c"
+    ],
+    [
+      0.210094,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.6e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ ca"
+    ],
+    [
+      0.236378,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat"
+    ],
+    [
+      0.158638,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat "
+    ],
+    [
+      0.512493,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000116,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat t"
+    ],
+    [
+      0.128187,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000105,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat ty"
+    ],
+    [
+      0.08179,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.7e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat tyt"
+    ],
+    [
+      0.089985,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.8e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat tyty"
+    ],
+    [
+      0.254353,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.6e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat tyty"
+    ],
+    [
+      6.7e-05,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      6.5e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ cat tyty\r\n"
+    ],
+    [
+      0.017594,
+      "tyty\r\n\r\n"
+    ],
+    [
+      9.2e-05,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      2.216924,
+      "\u001b[H"
+    ],
+    [
+      0.000181,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.488298,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000129,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.000106,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.710554,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000259,
+      "\r\n\u001b[J\u001b[30;47mls         \u001b[0mcat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      6.8e-05,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000222,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      0.000117,
+      "\r\n\u001b[J\u001b[30;47mls         \u001b[0mcat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.22314,
+      "\r\n\u001b[Jls         \u001b[30;47mcat        \u001b[0mrm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000106,
+      "\r\n\u001b[Jls         \u001b[30;47mcat        \u001b[0mrm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.198485,
+      "\r\n\u001b[Jls         cat        \u001b[30;47mrm         \u001b[0mcd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000253,
+      "\r\n\u001b[Jls         cat        \u001b[30;47mrm         \u001b[0mcd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.216237,
+      "\r\n\u001b[Jls         cat        rm         \u001b[30;47mcd         \u001b[0mpwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000132,
+      "\r\n\u001b[Jls         cat        rm         \u001b[30;47mcd         \u001b[0mpwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.204944,
+      "\r\n\u001b[Jls         cat        rm         cd         \u001b[30;47mpwd        \u001b[0m-raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000261,
+      "\r\n\u001b[Jls         cat        rm         cd         \u001b[30;47mpwd        \u001b[0m-raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.204892,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        \u001b[30;47m-raw       \u001b[0m-php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      9.7e-05,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        \u001b[30;47m-raw       \u001b[0m-php       \r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.214713,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       \u001b[30;47m-php       \u001b[0m\r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000228,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       \u001b[30;47m-php       \u001b[0m\r\n-info      -sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.291183,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n\u001b[30;47m-info      \u001b[0m-sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000133,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n\u001b[30;47m-info      \u001b[0m-sys       -encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.2284,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      \u001b[30;47m-sys       \u001b[0m-encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.00011,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      \u001b[30;47m-sys       \u001b[0m-encode    -decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.22169,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       \u001b[30;47m-encode    \u001b[0m-decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.00031,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       \u001b[30;47m-encode    \u001b[0m-decode    -upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.202601,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    \u001b[30;47m-decode    \u001b[0m-upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      8.9e-05,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    \u001b[30;47m-decode    \u001b[0m-upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.472213,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    \u001b[30;47m-upload    \u001b[0m-download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      8.5e-05,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    \u001b[30;47m-upload    \u001b[0m-download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.565439,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    \u001b[30;47m-download  \u001b[0m-exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000155,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    \u001b[30;47m-download  \u001b[0m-exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.674228,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  \u001b[30;47m-exit      \u001b[0m\r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000281,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    -download  \u001b[30;47m-exit      \u001b[0m\r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      1.380547,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    \u001b[30;47m-download  \u001b[0m-exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.16734,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    \u001b[30;47m-upload    \u001b[0m-download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.146237,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    \u001b[30;47m-decode    \u001b[0m-upload    -download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      2.724634,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    \u001b[30;47m-upload    \u001b[0m-download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000132,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    \u001b[30;47m-upload    \u001b[0m-download  -exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.17108,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    \u001b[30;47m-download  \u001b[0m-exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.000129,
+      "\r\n\u001b[Jls         cat        rm         cd         pwd        -raw       -php       \r\n-info      -sys       -encode    -decode    -upload    \u001b[30;47m-download  \u001b[0m-exit      \r\n\u001b[3A\r\u001b[60C"
+    ],
+    [
+      0.870057,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download "
+    ],
+    [
+      0.000133,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download "
+    ],
+    [
+      1.374734,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.2e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download t"
+    ],
+    [
+      0.131683,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      3.5e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download ty"
+    ],
+    [
+      0.1086,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download tyt"
+    ],
+    [
+      0.074963,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download tyty"
+    ],
+    [
+      0.582242,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000204,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download tyty\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.5e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -download tyty\r\n"
+    ],
+    [
+      0.005868,
+      "Downloaded successfully to output.txt\r\n\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000126,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      2.338485,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -"
+    ],
+    [
+      0.270058,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      8.1e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -s"
+    ],
+    [
+      0.146426,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.00015,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sy"
+    ],
+    [
+      0.090674,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.7e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys"
+    ],
+    [
+      0.726614,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000126,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys "
+    ],
+    [
+      0.266266,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys l"
+    ],
+    [
+      0.13696,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys ls"
+    ],
+    [
+      0.313516,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys ls"
+    ],
+    [
+      0.000108,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.1e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys ls\r\n"
+    ],
+    [
+      0.010451,
+      "Bureau\r\nDocuments\r\nDownloads\r\nDropbox\r\nexamples.desktop\r\nGNUstep\r\ngo\r\nImages\r\nmetadata\r\nModèles\r\nMusique\r\nngrok\r\noutput.txt\r\nPictures\r\nPublic\r\nTéléchargements\r\nTorrents\r\nVidéos\r\nVirtualBox VMs\r\nwww\r\n\r\n"
+    ],
+    [
+      4e-05,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      2.705209,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -"
+    ],
+    [
+      0.246833,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -s"
+    ],
+    [
+      0.148671,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sy"
+    ],
+    [
+      0.11063,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys"
+    ],
+    [
+      0.383264,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys "
+    ],
+    [
+      0.646316,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys c"
+    ],
+    [
+      0.215116,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys ca"
+    ],
+    [
+      0.215503,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat"
+    ],
+    [
+      0.148764,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000108,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat "
+    ],
+    [
+      0.219023,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000121,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat t"
+    ],
+    [
+      0.129376,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat ty"
+    ],
+    [
+      0.140043,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.5e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat tyt"
+    ],
+    [
+      0.304298,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.00015,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat ty"
+    ],
+    [
+      0.168592,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000116,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat t"
+    ],
+    [
+      0.137691,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat "
+    ],
+    [
+      0.196031,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.3e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat o"
+    ],
+    [
+      0.211354,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      7.6e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat ou"
+    ],
+    [
+      0.153914,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat out"
+    ],
+    [
+      0.316715,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat outp"
+    ],
+    [
+      0.333894,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000167,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat outpu"
+    ],
+    [
+      0.216383,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output"
+    ],
+    [
+      0.353541,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      9.1e-05,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output."
+    ],
+    [
+      0.159971,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output.t"
+    ],
+    [
+      0.248507,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.0001,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output.tx"
+    ],
+    [
+      0.241296,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000153,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output.txt"
+    ],
+    [
+      0.301846,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output.txt"
+    ],
+    [
+      0.00012,
+      "\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$ -sys cat output.txt\r\n"
+    ],
+    [
+      0.008652,
+      "tyty\r\n\r\n\u001b[J\u001b[2K\r(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      1.649935,
+      "\u001b[H"
+    ],
+    [
+      9.1e-05,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000325,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$  \b"
+    ],
+    [
+      3.633098,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.000109,
+      "(http://localhost/razboynik/h.php):/var/www/html/razboynik$ exit\r\n"
+    ],
+    [
+      0.000186,
+      "\u001b[J\u001b[2K\r"
+    ],
+    [
+      0.003576,
+      "\u001b]0;vrasquier@php-18: ~\u0007\u001b[01;32mvrasquier@php-18\u001b[00m:\u001b[01;34m~\u001b[00m$ "
+    ],
+    [
+      1.213429,
+      "\u001b[H\u001b[2J\u001b]0;vrasquier@php-18: ~\u0007\u001b[01;32mvrasquier@php-18\u001b[00m:\u001b[01;34m~\u001b[00m$ "
+    ],
+    [
+      0.506594,
+      "r"
+    ],
+    [
+      0.235454,
+      "a"
+    ],
+    [
+      0.391435,
+      "\u0007"
+    ],
+    [
+      0.353405,
+      "z"
+    ],
+    [
+      0.365228,
+      "b"
+    ],
+    [
+      0.147132,
+      "o"
+    ],
+    [
+      0.283667,
+      "y"
+    ],
+    [
+      0.236052,
+      "n"
+    ],
+    [
+      0.228342,
+      "i"
+    ],
+    [
+      0.183811,
+      "k"
+    ],
+    [
+      0.200909,
+      " "
+    ],
+    [
+      0.383543,
+      "s"
+    ],
+    [
+      0.212157,
+      "\u0007"
+    ],
+    [
+      0.835701,
+      "c"
+    ],
+    [
+      0.295965,
+      "a"
+    ],
+    [
+      0.147238,
+      "n"
+    ],
+    [
+      0.245596,
+      " "
+    ],
+    [
+      0.860714,
+      "-"
+    ],
+    [
+      0.128772,
+      "u"
+    ],
+    [
+      0.207631,
+      " "
+    ],
+    [
+      0.20759,
+      "h"
+    ],
+    [
+      0.09698,
+      "t"
+    ],
+    [
+      0.172095,
+      "t"
+    ],
+    [
+      0.167693,
+      "t"
+    ],
+    [
+      0.397001,
+      "\b\u001b[K"
+    ],
+    [
+      0.202015,
+      "p"
+    ],
+    [
+      0.258398,
+      ":"
+    ],
+    [
+      0.479181,
+      "/"
+    ],
+    [
+      0.167597,
+      "/"
+    ],
+    [
+      0.756761,
+      "l"
+    ],
+    [
+      0.198918,
+      "o"
+    ],
+    [
+      0.415651,
+      "c"
+    ],
+    [
+      0.200338,
+      "a"
+    ],
+    [
+      0.126261,
+      "l"
+    ],
+    [
+      0.284724,
+      "h"
+    ],
+    [
+      0.249652,
+      "o"
+    ],
+    [
+      0.123801,
+      "s"
+    ],
+    [
+      0.273225,
+      "y"
+    ],
+    [
+      0.466078,
+      "\b\u001b[K"
+    ],
+    [
+      0.115328,
+      "t"
+    ],
+    [
+      0.32643,
+      "/"
+    ],
+    [
+      1.050132,
+      "r"
+    ],
+    [
+      0.262057,
+      "a"
+    ],
+    [
+      0.204815,
+      "z"
+    ],
+    [
+      0.259495,
+      "b"
+    ],
+    [
+      0.11041,
+      "o"
+    ],
+    [
+      0.231992,
+      "y"
+    ],
+    [
+      0.201159,
+      "n"
+    ],
+    [
+      0.206567,
+      "i"
+    ],
+    [
+      0.175377,
+      "k"
+    ],
+    [
+      0.341635,
+      "/"
+    ],
+    [
+      1.084746,
+      "h"
+    ],
+    [
+      0.279977,
+      "."
+    ],
+    [
+      0.262064,
+      "p"
+    ],
+    [
+      0.155586,
+      "h"
+    ],
+    [
+      0.109795,
+      "p"
+    ],
+    [
+      0.432319,
+      "\r\n"
+    ],
+    [
+      0.013172,
+      "\r\n\u001b[36m     ########\r\n\u001b[0m\u001b[36m     #       #\r\n"
+    ],
+    [
+      0.000105,
+      "\u001b[0m\u001b[36m     #      #\r\n\u001b[0m\u001b[36m     #######         #    #####    #####     ####    #   #   #   #   #   #   #\r\n\u001b[0m\u001b[36m     #     #        # #       #    #    #   #    #    # #    ##  #   #   #  # \r\n\u001b[0m"
+    ],
+    [
+      7.5e-05,
+      "\u001b[36m     #      #      #####     #     #####    #    #     #     # # #   #   ###  \r\n\u001b[0m\u001b[36m     #       #     #   #    #      #    #   #    #     #     #  ##   #   #  # \r\n\u001b[0m"
+    ],
+    [
+      3.8e-05,
+      "\u001b[36m     #        #    #   #   #####   #####     ####      #     #   #   #   #   #\r\n\u001b[0m\u001b[35m     #########################################################################\r\n"
+    ],
+    [
+      3.3e-05,
+      "\u001b[0m\r\n\u001b[37m"
+    ],
+    [
+      4.6e-05,
+      "     из России с любовью <3 !\r\n\u001b[0m\r\n"
+    ],
+    [
+      0.000719,
+      "\r\n\u001b[36m"
+    ],
+    [
+      4e-05,
+      "     ### SCANNING ###\r\n\u001b[0m     "
+    ],
+    [
+      4.1e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.4e-05,
+      "\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.3e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.3e-05,
+      "\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.3e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.4e-05,
+      "\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.4e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.3e-05,
+      "\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.1e-05,
+      "\u001b[36m-\u001b[0m\u001b[36m-\u001b[0m"
+    ],
+    [
+      3.2e-05,
+      "\u001b[36m-\u001b[0m"
+    ],
+    [
+      4.1e-05,
+      "\u001b[36m-\u001b[0m"
+    ],
+    [
+      4.6e-05,
+      "\r\n\u001b[37m     Scan target: http://localhost/razboynik/h.php, parameter: razboynik\r\n\u001b[0m\r\n"
+    ],
+    [
+      0.003605,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mGET\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.001711,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mGET\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: true\r\n"
+    ],
+    [
+      0.001988,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mGET\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.001755,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mGET\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: true\r\n     \r\n"
+    ],
+    [
+      0.00201,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mPOST\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.001986,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mPOST\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: true\r\n"
+    ],
+    [
+      0.002102,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mPOST\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.004316,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mPOST\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: true\r\n     \r\n"
+    ],
+    [
+      0.003393,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mHEADER\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.003887,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mHEADER\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: true\r\n"
+    ],
+    [
+      0.002418,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mHEADER\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.000997,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mHEADER\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: true\r\n     \r\n"
+    ],
+    [
+      0.000955,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mCOOKIE\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.000864,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mCOOKIE\u001b[0m, Shell method: \u001b[35msystem()\u001b[0m, Raw: true\r\n"
+    ],
+    [
+      0.000969,
+      "     \u001b[32m[v] \u001b[0mMethod: \u001b[33mCOOKIE\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: false\r\n"
+    ],
+    [
+      0.000638,
+      "     \u001b[31m[x] \u001b[0mMethod: \u001b[33mCOOKIE\u001b[0m, Shell method: \u001b[35mshell_exec()\u001b[0m, Raw: true\r\n     \r\n"
+    ],
+    [
+      0.000848,
+      "\u001b]0;vrasquier@php-18: ~\u0007\u001b[01;32mvrasquier@php-18\u001b[00m:\u001b[01;34m~\u001b[00m$ "
+    ],
+    [
+      6.769113,
+      "#"
+    ],
+    [
+      0.493176,
+      "t"
+    ],
+    [
+      0.137845,
+      "h"
+    ],
+    [
+      0.161599,
+      "a"
+    ],
+    [
+      0.108079,
+      "n"
+    ],
+    [
+      0.224645,
+      "k"
+    ],
+    [
+      0.143363,
+      "s"
+    ],
+    [
+      0.239439,
+      " "
+    ],
+    [
+      0.25677,
+      "!"
+    ],
+    [
+      0.209908,
+      " "
+    ],
+    [
+      0.63353,
+      "h"
+    ],
+    [
+      0.245978,
+      "o"
+    ],
+    [
+      0.176672,
+      "p"
+    ],
+    [
+      0.082266,
+      "e"
+    ],
+    [
+      0.481154,
+      " "
+    ],
+    [
+      0.511759,
+      "y"
+    ],
+    [
+      0.079452,
+      "o"
+    ],
+    [
+      0.193203,
+      "u"
+    ],
+    [
+      0.18804,
+      " "
+    ],
+    [
+      0.272602,
+      "e"
+    ],
+    [
+      0.093744,
+      "n"
+    ],
+    [
+      0.239544,
+      "j"
+    ],
+    [
+      0.220494,
+      "o"
+    ],
+    [
+      0.180084,
+      "y"
+    ],
+    [
+      0.162479,
+      " "
+    ],
+    [
+      0.218684,
+      "!"
+    ],
+    [
+      1.631315,
+      "\u0007"
+    ],
+    [
+      1.098365,
+      "\b\u001b[K"
+    ],
+    [
+      0.499174,
+      "\b\u001b[K"
+    ],
+    [
+      0.032656,
+      "\b\u001b[K"
+    ],
+    [
+      0.034478,
+      "\b\u001b[K"
+    ],
+    [
+      0.029082,
+      "\b\u001b[K"
+    ],
+    [
+      0.029308,
+      "\b\u001b[K"
+    ],
+    [
+      0.030145,
+      "\b\u001b[K"
+    ],
+    [
+      0.031555,
+      "\b\u001b[K"
+    ],
+    [
+      0.03174,
+      "\b\u001b[K"
+    ],
+    [
+      0.030442,
+      "\b\u001b[K"
+    ],
+    [
+      0.031189,
+      "\b\u001b[K"
+    ],
+    [
+      0.031145,
+      "\b\u001b[K"
+    ],
+    [
+      0.03117,
+      "\b\u001b[K"
+    ],
+    [
+      0.03179,
+      "\b\u001b[K"
+    ],
+    [
+      0.031935,
+      "\b\u001b[K"
+    ],
+    [
+      0.03229,
+      "\b\u001b[K"
+    ],
+    [
+      0.030616,
+      "\b\u001b[K"
+    ],
+    [
+      0.031917,
+      "\b\u001b[K"
+    ],
+    [
+      0.034533,
+      "\b\u001b[K"
+    ],
+    [
+      0.028889,
+      "\b\u001b[K"
+    ],
+    [
+      0.029349,
+      "\b\u001b[K"
+    ],
+    [
+      0.031612,
+      "\b\u001b[K"
+    ],
+    [
+      0.031348,
+      "\b\u001b[K"
+    ],
+    [
+      0.031204,
+      "\b\u001b[K"
+    ],
+    [
+      0.030973,
+      "\b\u001b[K"
+    ],
+    [
+      0.031071,
+      "\b\u001b[K"
+    ],
+    [
+      0.031012,
+      "\u0007"
+    ],
+    [
+      0.031245,
+      "\u0007"
+    ],
+    [
+      0.031443,
+      "\u0007"
+    ],
+    [
+      0.031926,
+      "\u0007"
+    ],
+    [
+      0.03125,
+      "\u0007"
+    ]
+  ],
+  "command": null,
+  "height": 24,
+  "env": {
+    "TERM": "xterm-256color",
+    "SHELL": "/bin/bash"
+  },
+  "duration": 117.85539,
+  "width": 80,
+  "title": null
+}

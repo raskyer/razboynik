@@ -12,13 +12,14 @@ import (
 )
 
 func DownloadInit(bc *bash.BashCommand) {
-	var path string
-	var req string
-	var err error
-	var resp *network.Response
-	var srv *network.NETWORK
-	var shl *shell.SHELL
-	var ph *php.PHP
+	var (
+		path, req string
+		err       error
+		resp      *network.Response
+		n         *network.NETWORK
+		s         *shell.SHELL
+		p         *php.PHP
+	)
 
 	if bc.GetArrLgt() < 2 {
 		err = errors.New("Please write the path of the file to download")
@@ -26,12 +27,10 @@ func DownloadInit(bc *bash.BashCommand) {
 		return
 	}
 
-	srv, shl, ph = bc.GetObjects()
-
-	path = getPath(bc.GetArr(), shl.GetContext())
-	req = ph.Download(path)
-
-	resp, err = srv.PrepareSend(req)
+	n, s, p = bc.GetObjects()
+	path = getPath(bc.GetArr(), s.GetContext())
+	req = p.Download(path)
+	resp, err = n.PrepareSend(req)
 
 	if err != nil {
 		bc.WriteError(err)
@@ -43,6 +42,7 @@ func DownloadInit(bc *bash.BashCommand) {
 
 func getPath(arr []string, context string) string {
 	var path string
+
 	path = arr[1]
 
 	if context != "" {
@@ -53,10 +53,15 @@ func getPath(arr []string, context string) string {
 }
 
 func ReadDownload(resp *network.Response, bc *bash.BashCommand) {
-	var location string
-	location = bc.GetArrItem(2, "output.txt")
+	var (
+		location string
+		err      error
+		out      *os.File
+	)
 
-	out, err := os.Create(location)
+	location = bc.GetArrItem(2, "output.txt")
+	out, err = os.Create(location)
+
 	defer out.Close()
 
 	if err != nil {

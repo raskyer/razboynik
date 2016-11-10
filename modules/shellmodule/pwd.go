@@ -9,26 +9,25 @@ import (
 )
 
 func Pwd(bc *bash.BashCommand) {
-	var srv *network.NETWORK
-	var shl *shell.SHELL
-	var result string
-	var raw string
-	var pwd string
-	var err error
+	var (
+		result, raw, pwd, line string
+		err                    error
+		n                      *network.NETWORK
+		s                      *shell.SHELL
+	)
 
-	srv, shl, _ = bc.GetObjects()
+	n, s, _ = bc.GetObjects()
 	raw = bc.GetRaw()
-
-	pwd = shl.Raw(raw) + srv.Response()
-	result, err = srv.QuickProcess(pwd)
+	pwd = s.Raw(raw) + n.Response()
+	result, err = n.QuickProcess(pwd)
 
 	if err != nil {
 		bc.WriteError(err)
 		return
 	}
 
-	line := strings.TrimSpace(result)
-
+	line = strings.TrimSpace(result)
 	bc.GetParent().UpdatePrompt(line)
+
 	bc.WriteSuccess(result)
 }

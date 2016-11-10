@@ -6,14 +6,15 @@ import (
 )
 
 func Raw(bc *bash.BashCommand) {
-	var srv *network.NETWORK
-	var str string
-	var result string
-	var err error
+	var (
+		str, result string
+		err         error
+		n           *network.NETWORK
+	)
 
-	srv = bc.GetServer()
+	n = bc.GetServer()
 	str = bc.GetStr()
+	result, err = n.QuickSend(str)
 
-	result, err = srv.QuickSend(str)
 	bc.Write(result, err)
 }

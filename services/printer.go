@@ -82,8 +82,7 @@ func PrintSection(section string, str string) {
 }
 
 func Println(str string) {
-	Print(str)
-	fmt.Print("\n")
+	Print(str + "\n")
 }
 
 func Print(str string) {
