@@ -62,6 +62,20 @@ func getCommands(app *AppInterface) []cli.Command {
 		Usage:   "(Not available)",
 	}
 
+	var encodeDefinition = cli.Command{
+		Name:    "encode",
+		Aliases: []string{"e"},
+		Usage:   "Encode a string in base64",
+		Action:  app.Encode,
+	}
+
+	var decodeDefinition = cli.Command{
+		Name:    "decode",
+		Aliases: []string{"d"},
+		Usage:   "Decode a base64 string",
+		Action:  app.Decode,
+	}
+
 	var helpDefinition = cli.Command{
 		Name:    "help",
 		Aliases: []string{"h"},
@@ -75,6 +89,8 @@ func getCommands(app *AppInterface) []cli.Command {
 		scanDefinition,
 		invisibleDefinition,
 		botnetDefinition,
+		encodeDefinition,
+		decodeDefinition,
 		helpDefinition,
 	}
 }

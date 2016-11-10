@@ -27,7 +27,6 @@ func (app *AppInterface) Start(c *cli.Context) {
 	}
 
 	services.PrintStart()
-
 	err = app.testing(cf)
 
 	if err != nil {
@@ -36,7 +35,6 @@ func (app *AppInterface) Start(c *cli.Context) {
 	}
 
 	services.PrintSection("Reverse shell", "Reverse shell ready!")
-
 	app.startBash(cf)
 }
 
@@ -105,8 +103,8 @@ func (app *AppInterface) startBash(cf *core.Config) {
 	)
 
 	n, _ = network.Create(cf)
-	p = php.Create(cf)
 	s = shell.Create(cf)
+	p = php.Create(cf)
 
 	bsh = bash.Create(n, s, p)
 	modules.Boot(bsh)

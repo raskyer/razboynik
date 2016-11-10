@@ -16,7 +16,6 @@ type AppInterface struct {
 
 func Create() *AppInterface {
 	services.PrintIntro()
-
 	app := &AppInterface{}
 	app.createCli()
 
@@ -41,7 +40,7 @@ func (app *AppInterface) createCli() {
 	client.Copyright = "(c) 2016 EatBytes. из России с любовью <3"
 	client.EnableBashCompletion = true
 	client.BashComplete = func(c *cli.Context) {
-		fmt.Fprintf(c.App.Writer, "run\nscan\ngenerate\n")
+		fmt.Fprintf(c.App.Writer, "run\nscan\ngenerate\ninvisible\nencode\ndecode\nhelp")
 	}
 
 	client.Flags = []cli.Flag{
