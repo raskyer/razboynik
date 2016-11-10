@@ -55,7 +55,7 @@ Instructions to build the app:
 (Makefile on the way)
 
 ##Demo
-(Video coming soon)
+[![asciicast](https://asciinema.org/a/92281.png)](https://asciinema.org/a/92281)
 
 Let's suppose you find a file upload vulnerability in a website and you upload the script available in `res/backdoor` folder.
 Now the url of your script could be (as example) : http://{website}/uploads/script.php
