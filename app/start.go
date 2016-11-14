@@ -47,7 +47,7 @@ func (app *AppInterface) getConfig(c *cli.Context) (*core.Config, error) {
 		cf                          *core.Config
 	)
 
-	url = c.String("u")
+	url = c.Args().First()
 	method = c.String("m")
 	parameter = c.String("p")
 	shmethod = c.Int("s")

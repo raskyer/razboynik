@@ -21,7 +21,7 @@ func (app *AppInterface) Scan(c *cli.Context) {
 		cf                  *core.Config
 	)
 
-	url = c.String("u")
+	url = c.Args().First()
 	parameter = c.String("p")
 	key = c.String("k")
 

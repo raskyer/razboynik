@@ -21,7 +21,7 @@ func (app *AppInterface) Invisible(c *cli.Context) {
 		res          *network.Response
 	)
 
-	url = c.String("u")
+	url = c.Args().First()
 	referer = c.String("r")
 
 	if url == "" || referer == "" {
