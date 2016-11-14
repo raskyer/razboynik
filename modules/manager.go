@@ -11,6 +11,7 @@ func Boot(b *bash.BashInterface) {
 	b.SetDefaultFunc(shellmodule.Raw)
 	b.AddSpCmd("cd", shellmodule.Cd)
 	b.AddSpCmd("pwd", shellmodule.Pwd)
+	b.AddSpCmd("vim", shellmodule.Vim)
 	b.AddSpCmd("-raw", shellmodule.Raw)
 	b.AddSpCmd("-php", phpmodule.Raw)
 	b.AddSpCmd("-info", bashmodule.Info)
@@ -19,5 +20,5 @@ func Boot(b *bash.BashInterface) {
 	b.AddSpCmd("-decode", b.Decode)
 	b.AddSpCmd("-upload", phpmodule.UploadInit)
 	b.AddSpCmd("-download", phpmodule.DownloadInit)
-	b.AddSpCmd("-exit", b.Exit)
+	b.AddSpCmd("exit", b.Exit)
 }

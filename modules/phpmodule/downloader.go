@@ -13,12 +13,11 @@ import (
 
 func DownloadInit(bc *bash.BashCommand) {
 	var (
-		path, req string
-		err       error
-		resp      *network.Response
-		n         *network.NETWORK
-		s         *shell.SHELL
-		p         *php.PHP
+		path, location, resp string
+		err                  error
+		n                    *network.NETWORK
+		s                    *shell.SHELL
+		p                    *php.PHP
 	)
 
 	if bc.GetArrLgt() < 2 {
@@ -29,21 +28,15 @@ func DownloadInit(bc *bash.BashCommand) {
 
 	n, s, p = bc.GetObjects()
 	path = getPath(bc.GetArr(), s.GetContext())
-	req = p.Download(path)
-	resp, err = n.PrepareSend(req)
+	location = bc.GetArrItem(2, "output.txt")
 
-	if err != nil {
-		bc.WriteError(err)
-		return
-	}
+	resp, err = Download(n, p, path, location)
 
-	ReadDownload(resp, bc)
+	bc.Write(resp, err)
 }
 
 func getPath(arr []string, context string) string {
-	var path string
-
-	path = arr[1]
+	path := arr[1]
 
 	if context != "" {
 		path = context + "/" + path
@@ -52,29 +45,30 @@ func getPath(arr []string, context string) string {
 	return path
 }
 
-func ReadDownload(resp *network.Response, bc *bash.BashCommand) {
+func Download(n *network.NETWORK, p *php.PHP, remote, local string) (string, error) {
 	var (
-		location string
-		err      error
-		out      *os.File
+		req  string
+		err  error
+		resp *network.Response
+		out  *os.File
 	)
 
-	location = bc.GetArrItem(2, "output.txt")
-	out, err = os.Create(location)
+	req = p.Download(remote)
+	resp, err = n.PrepareSend(req)
+
+	out, err = os.Create(local)
 
 	defer out.Close()
 
 	if err != nil {
-		bc.WriteError(err)
-		return
+		return "", err
 	}
 
 	_, err = io.Copy(out, resp.Http.Body)
 
 	if err != nil {
-		bc.WriteError(err)
-		return
+		return "", err
 	}
 
-	bc.Write("Downloaded successfully to "+location, nil)
+	return "Downloaded successfully to " + local, nil
 }

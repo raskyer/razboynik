@@ -1,6 +1,7 @@
 package phpmodule
 
 import (
+	"bytes"
 	"errors"
 	"strings"
 
@@ -11,11 +12,11 @@ import (
 
 func UploadInit(bc *bash.BashCommand) {
 	var (
-		path, dir string
-		arr       []string
-		err       error
-		n         *network.NETWORK
-		p         *php.PHP
+		path, dir, resp string
+		arr             []string
+		err             error
+		n               *network.NETWORK
+		p               *php.PHP
 	)
 
 	if bc.GetArrLgt() < 2 {
@@ -24,47 +25,62 @@ func UploadInit(bc *bash.BashCommand) {
 		return
 	}
 
-	n = bc.GetServer()
-	p = bc.GetPHP()
-
 	arr = bc.GetArr()
 	path = arr[1]
+	dir = getDir(arr, path)
 
-	if bc.GetArrLgt() > 2 {
-		dir = arr[2]
-	} else {
-		pathArr := strings.Split(path, "/")
-		lgt := len(pathArr) - 1
-		dir = pathArr[lgt]
+	n = bc.GetServer()
+	p = bc.GetPHP()
+	resp, err = Upload(n, p, path, dir)
+
+	bc.Write(resp, err)
+}
+
+func getDir(arr []string, path string) string {
+	if len(arr) > 2 {
+		return arr[2]
 	}
 
-	bytes, bondary, err := p.Upload(path, dir)
+	pathArr := strings.Split(path, "/")
+	lgt := len(pathArr) - 1
+	dir := pathArr[lgt]
+
+	return dir
+}
+
+func Upload(n *network.NETWORK, p *php.PHP, local, remote string) (string, error) {
+	var (
+		bondary, body string
+		bytes         *bytes.Buffer
+		err           error
+		req           *network.Request
+		resp          *network.Response
+	)
+
+	bytes, bondary, err = p.Upload(local, remote)
 
 	if err != nil {
-		bc.WriteError(err)
-		return
+		return "", err
 	}
 
-	req, err := n.PrepareUpload(bytes, bondary)
+	req, err = n.PrepareUpload(bytes, bondary)
 
 	if err != nil {
-		bc.WriteError(err)
-		return
+		return "", err
 	}
 
-	resp, err := n.Send(req)
-	body := resp.GetResult()
+	resp, err = n.Send(req)
 
 	if err != nil {
-		bc.WriteError(err)
-		return
+		return "", err
 	}
 
-	if body == "1" {
+	body = resp.GetResult()
+
+	if body != "1" {
 		err = errors.New("Server havn't upload the file")
-		bc.WriteError(err)
-		return
+		return "", err
 	}
 
-	bc.Write(resp.GetBodyStr(), nil)
+	return resp.GetBodyStr(), nil
 }
