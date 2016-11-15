@@ -42,8 +42,7 @@ func getDir(arr []string, path string) string {
 	}
 
 	pathArr := strings.Split(path, "/")
-	lgt := len(pathArr) - 1
-	dir := pathArr[lgt]
+	dir := pathArr[len(pathArr)-1]
 
 	return dir
 }

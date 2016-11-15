@@ -13,7 +13,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func (app *AppInterface) Start(c *cli.Context) {
+func (app *AppInterface) Run(c *cli.Context) {
 	var (
 		err error
 		cf  *core.Config

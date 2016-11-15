@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/eatbytes/razboynik/bash"
 	"github.com/eatbytes/razboynik/modules/phpmodule"
@@ -23,8 +24,8 @@ func Vim(bc *bash.BashCommand) {
 		return
 	}
 
-	local = "tmp.txt"
-	remote = bc.GetArrItem(1, "")
+	remote = bc.GetArgs(1)
+	local = "tmp-razboynik." + filepath.Ext(remote)
 
 	_, err = phpmodule.Download(bc.GetServer(), bc.GetPHP(), remote, local)
 
@@ -50,7 +51,7 @@ func Vim(bc *bash.BashCommand) {
 		return
 	}
 
-	resp, err = sysgo.Call("rm tmp.txt")
+	resp, err = sysgo.Call("rm " + local)
 
 	bc.Write(resp, err)
 }

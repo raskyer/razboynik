@@ -8,5 +8,5 @@ import (
 
 func main() {
 	a := app.Create()
-	a.Run(os.Args)
+	a.Exec(os.Args)
 }

@@ -96,6 +96,10 @@ func (bc *BashCommand) GetArrItem(i int, def string) string {
 	return def
 }
 
+func (bc *BashCommand) GetArgs(i int) string {
+	return bc.arr[i]
+}
+
 func defineOutput(str string, arr []string) string {
 	if strings.Contains(str, ">") {
 

@@ -22,10 +22,10 @@ func (app *AppInterface) Invisible(c *cli.Context) {
 	)
 
 	url = c.Args().First()
-	referer = c.String("r")
+	referer = c.Args().Get(1)
 
 	if url == "" || referer == "" {
-		err = errors.New("Flags -u (url) and -r (referer) are required")
+		err = errors.New("Arguments url and referer are required")
 		services.PrintError(err)
 		return
 	}

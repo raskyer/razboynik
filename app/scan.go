@@ -75,8 +75,6 @@ func (app *AppInterface) Scan(c *cli.Context) {
 		}
 
 		sDef = 0
-
-		continue
 	}
 }
 
@@ -95,6 +93,6 @@ func (app *AppInterface) printscan(cf *core.Config, err error) {
 		shell = "system()"
 	}
 
-	str = str + "Method: " + color.YellowString(cf.Method) + ", Shell method: " + color.MagentaString(shell) + ", Raw: " + strconv.FormatBool(cf.Raw)
+	str = str + "Method: " + color.YellowString(cf.Method) + ", Shell method: " + color.MagentaString(shell) + ", Raw: " + color.BlueString(strconv.FormatBool(cf.Raw))
 	services.Println(str)
 }

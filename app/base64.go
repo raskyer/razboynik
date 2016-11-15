@@ -20,6 +20,7 @@ func (app *AppInterface) Decode(c *cli.Context) {
 
 	if err != nil {
 		services.PrintError(err)
+		return
 	}
 
 	services.Println(sDec)
