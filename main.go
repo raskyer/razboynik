@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/eatbytes/razboynik2/cmd"
+import "github.com/eatbytes/razboynik/cmd"
 
 func main() {
 	cmd.Execute()

@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"github.com/eatbytes/razboynik2/services/printer"
+	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/spf13/cobra"
 )
 
