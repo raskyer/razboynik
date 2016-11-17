@@ -12,10 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cmd
 
-import "github.com/eatbytes/razboynik2/cmd"
+import (
+	"errors"
 
-func main() {
-	cmd.Execute()
+	"github.com/eatbytes/razboynik2/services/printer"
+	"github.com/eatbytes/razboynik2/services/worker"
+	"github.com/spf13/cobra"
+)
+
+var encodeCmd = &cobra.Command{
+	Use:   "encode [str]",
+	Short: "Encode in base64 the string pass in argument",
+	Long:  ``,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		var (
+			sEnc string
+		)
+
+		if len(args) < 1 {
+			return errors.New("Not enough argument.")
+		}
+
+		sEnc = worker.Encode(args[0])
+		printer.Println(sEnc)
+
+		return nil
+	},
+}
+
+func init() {
+	RootCmd.AddCommand(encodeCmd)
 }

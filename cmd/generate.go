@@ -12,10 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cmd
 
-import "github.com/eatbytes/razboynik2/cmd"
+import (
+	"github.com/eatbytes/razboynik2/services/printer"
+	"github.com/spf13/cobra"
+)
 
-func main() {
-	cmd.Execute()
+var generateCmd = &cobra.Command{
+	Use:   "generate",
+	Short: "(Not available)",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		printer.PrintSection("Generating", "Generate php file")
+	},
+}
+
+func init() {
+	RootCmd.AddCommand(generateCmd)
 }

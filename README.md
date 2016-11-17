@@ -113,22 +113,29 @@ Encode or decode string.
 Ex: encode hello => aGVsbG8=
     decode aGVsbG8= => hello
 
-##Roadmap
-###1.5.0
-- Raw request
-- Better error in razboy (core)
-- Add more information when run fail
-- Add cookie method
-- Implement optional key protection
-- Add base64 encoding and decoding to root
-- Add invisible method
+##Current version
+1.6.0
 
-###1.6.0
-- Add web server (FurezApi legacy)
+##Roadmap
+###~~1.5.0 (DONE)~~
+- ~~Raw request~~
+- ~~Better error in razboy (core)~~
+- ~~Add more information when run fail~~
+- ~~Add cookie method~~
+- ~~Implement optional key protection~~
+- ~~Add base64 encoding and decoding to root~~
+- ~~Add invisible method~~
+
+###1.6.0 (IN PROGRESS)
+- Web server (REST API)
+- Hide itself once on server
+- Zip
+- Vim
+
+###1.7.0
 - Add `./bin` folder with binaries
 - More documentation
-- Add asciinema video (in progress)
-- Create a botnet ? Handle multiple server at the same time
-- Config file
+- Create a botnet. Handle multiple server at the same time
+- Config file (necessary with botnet)
 - Proxied tunnel
-- Crypto
+- Crypto ?
