@@ -63,12 +63,6 @@ func PrintStart() {
 	fmt.Print("\n")
 }
 
-func PrintGenerating() {
-	color.Green(SPACE + "### GENERATING ###")
-	color.Green(SPACE + "------------------")
-	fmt.Print("\n")
-}
-
 func PrintError(err error) {
 	err_intro()
 	color.White(SPACE + err.Error())

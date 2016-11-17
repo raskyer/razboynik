@@ -6,5 +6,5 @@ import (
 )
 
 func (app *AppInterface) Generate(c *cli.Context) {
-	services.PrintGenerating()
+	services.PrintSection("Generating", "Generate php file")
 }

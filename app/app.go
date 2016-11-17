@@ -111,6 +111,9 @@ func getCommands(app *AppInterface) []cli.Command {
 		Aliases: []string{"a"},
 		Usage:   "Start the API REST",
 		Action:  app.Api,
+		Flags: []cli.Flag{
+			cli.StringFlag{Name: "p, port", Usage: "Port for the server. Ex: -p 8080", Value: "6666"},
+		},
 	}
 
 	var botnetDefinition = cli.Command{

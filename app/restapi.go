@@ -2,28 +2,30 @@ package app
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services"
 	"github.com/urfave/cli"
 )
 
 type apirequest struct {
-	cmd    string
-	scope  string
-	method int
+	Cmd    string
+	Scope  string
+	Method int
 }
 
 type apidata struct {
-	config  core.Config
-	request apirequest
+	Config  core.Config
+	Request apirequest
 }
 
 func (app *AppInterface) Api(c *cli.Context) {
 	var port string
 
 	port = c.String("p")
+
+	services.PrintSection("API", "REST API launch on port : "+port)
 
 	http.HandleFunc("/api/shell", app.apishell)
 	http.HandleFunc("/api/php", app.apiphp)
@@ -41,12 +43,9 @@ func (app *AppInterface) apishell(w http.ResponseWriter, req *http.Request) {
 	err = decoder.Decode(&data)
 
 	if err != nil {
-		panic(err)
+		services.PrintError(err)
+		return
 	}
-
-	defer req.Body.Close()
-
-	log.Println(data.request.cmd)
 }
 
 func (app *AppInterface) apiphp(w http.ResponseWriter, req *http.Request) {
