@@ -17,11 +17,13 @@ package cmd
 import (
 	"errors"
 
+	"github.com/eatbytes/razboy/core"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
 var method string
+var parameter string
 
 // execCmd represents the exec command
 var execCmd = &cobra.Command{
@@ -30,8 +32,9 @@ var execCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			url string
-			raw string
+			url    string
+			raw    string
+			config *core.SERVERCONFIG
 		)
 
 		if len(args) < 2 {
@@ -41,7 +44,13 @@ var execCmd = &cobra.Command{
 		url = args[0]
 		raw = args[1]
 
-		worker.Exec(url, raw, method)
+		config = &core.SERVERCONFIG{
+			Url:       url,
+			Method:    method,
+			Parameter: parameter,
+		}
+
+		worker.Exec(raw, config)
 
 		return nil
 	},
@@ -59,5 +68,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	execCmd.Flags().StringVarP(&method, "method", "m", "GET", "Method to use")
+	execCmd.Flags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use")
 
 }

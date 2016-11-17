@@ -1,7 +1,11 @@
 package worker
 
-import "fmt"
+import (
+	"fmt"
 
-func Exec(url, cmd string, flag string) {
-	fmt.Println(flag)
+	"github.com/eatbytes/razboy/core"
+)
+
+func Exec(cmd string, config *core.SERVERCONFIG) {
+	fmt.Println(cmd)
 }
