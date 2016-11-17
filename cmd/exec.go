@@ -17,43 +17,47 @@ package cmd
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
-var invisibleCmd = &cobra.Command{
-	Use:   "invisible [url] [referer]",
-	Short: "Send invisible request",
+var method string
+
+// execCmd represents the exec command
+var execCmd = &cobra.Command{
+	Use:   "exec [url] [cmd]",
+	Short: "A brief description of your command",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			url, referer, result string
-			err                  error
+			url string
+			raw string
 		)
 
 		if len(args) < 2 {
 			return errors.New("Not enough arguments.")
 		}
 
-		printer.PrintIntro()
-		printer.PrintSection("Invisible", "Send invisible request")
-
 		url = args[0]
-		referer = args[1]
+		raw = args[1]
 
-		result, err = worker.Invisible(url, referer)
-
-		if err != nil {
-			return err
-		}
-
-		printer.PrintSection("Result", result)
+		worker.Exec(url, raw, method)
 
 		return nil
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(invisibleCmd)
+	RootCmd.AddCommand(execCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// execCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	execCmd.Flags().StringVarP(&method, "method", "m", "GET", "Method to use")
+
 }
