@@ -28,8 +28,8 @@ var invisibleCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			url, referer, result string
-			err                  error
+			result string
+			err    error
 		)
 
 		if len(args) < 2 {
@@ -39,10 +39,7 @@ var invisibleCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Invisible", "Send invisible request")
 
-		url = args[0]
-		referer = args[1]
-
-		result, err = worker.Invisible(url, referer)
+		result, err = worker.Invisible(args[0], args[1])
 
 		if err != nil {
 			return err

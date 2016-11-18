@@ -72,6 +72,15 @@ func PrintSection(section string, str string) {
 	fmt.Print("\n")
 }
 
+func PrintSectionI(section string, i ...interface{}) {
+	det_intro(section)
+	fmt.Println(i)
+}
+
+func PrintlnI(i ...interface{}) {
+	fmt.Println(i)
+}
+
 func Println(str string) {
 	Print(str + "\n")
 }
