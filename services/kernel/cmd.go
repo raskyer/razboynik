@@ -19,7 +19,7 @@ type KernelCmd struct {
 	err    string
 }
 
-func CreateCmd(raw, scope string, opt ...string) KernelCmd {
+func CreateCmd(raw, scope string, opt ...string) *KernelCmd {
 	var (
 		arr                 []string
 		str, out, err, name string
@@ -45,7 +45,7 @@ func CreateCmd(raw, scope string, opt ...string) KernelCmd {
 		err = opt[1]
 	}
 
-	return KernelCmd{
+	return &KernelCmd{
 		scope: scope,
 		name:  name,
 		raw:   raw,

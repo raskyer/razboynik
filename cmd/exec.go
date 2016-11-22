@@ -30,9 +30,9 @@ var execCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			err    error
-			kc     kernel.KernelCmd
-			config *core.REQUEST
+			err     error
+			kc      *kernel.KernelCmd
+			request *core.REQUEST
 		)
 
 		if len(args) < 2 {
@@ -42,24 +42,13 @@ var execCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Execute", "Execute a command on server")
 
-		config = &core.REQUEST{
-			SHLc: core.SHELLCONFIG{
-				Method: shellmethod,
-				Cmd:    args[1],
-			},
-			PHPc: core.PHPCONFIG{
-				Raw: raw,
-			},
-			SRVc: core.SERVERCONFIG{
-				Url:       args[0],
-				Method:    method,
-				Parameter: parameter,
-				Key:       key,
-				Raw:       raw,
-			},
-		}
+		shl := worker.BuildShellConfig(shellmethod, "")
+		php := worker.BuildPHPConfig(raw, false)
+		srv := worker.BuildServerConfig(args[0], method, parameter, key, raw)
 
-		kc, err = worker.Exec(config)
+		request = worker.BuildRequest(shl, php, srv)
+
+		kc, err = worker.Exec(args[1], request)
 
 		if debug && kc.GetRzResp() != nil {
 			worker.DebugHTTP(kc.GetRzResp())

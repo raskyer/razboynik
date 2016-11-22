@@ -7,7 +7,7 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Raw(kc kernel.KernelCmd, request *core.REQUEST) (kernel.KernelCmd, error) {
+func Raw(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	var (
 		rzRes *razboy.RazResponse
 		err   error
@@ -17,7 +17,7 @@ func Raw(kc kernel.KernelCmd, request *core.REQUEST) (kernel.KernelCmd, error) {
 
 	request.SHLc.Cmd = kc.GetRaw()
 	request.SHLc.Scope = kc.GetScope()
-	phpadapter.CreateCMD(&request.SHLc)
+	phpadapter.CreateCMD(request.SHLc)
 
 	request.Build()
 

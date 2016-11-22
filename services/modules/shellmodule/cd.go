@@ -9,7 +9,7 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Cd(kc kernel.KernelCmd, request *core.REQUEST) (kernel.KernelCmd, error) {
+func Cd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	var (
 		rzRes *razboy.RazResponse
 		scope string
@@ -22,7 +22,7 @@ func Cd(kc kernel.KernelCmd, request *core.REQUEST) (kernel.KernelCmd, error) {
 
 	request.Type = "SHELL"
 	request.SHLc.Cmd = kc.GetRaw() + " && pwd"
-	phpadapter.CreateCMD(&request.SHLc)
+	phpadapter.CreateCMD(request.SHLc)
 
 	request.Build()
 

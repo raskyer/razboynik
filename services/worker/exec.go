@@ -5,16 +5,18 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Exec(config *core.REQUEST) (kernel.KernelCmd, error) {
+func Exec(cmd string, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	var (
-		kc kernel.KernelCmd
+		kc *kernel.KernelCmd
 		fn kernel.KernelFunction
 	)
 
-	kc = kernel.CreateCmd(config.SHLc.Cmd, config.SHLc.Scope)
+	request.SHLc.Cmd = cmd
+
+	kc = kernel.CreateCmd(request.SHLc.Cmd, request.SHLc.Scope)
 	fn = _exec_getFunction(kc.GetName())
 
-	return fn(kc, config)
+	return fn(kc, request)
 }
 
 func _exec_getFunction(name string) kernel.KernelFunction {

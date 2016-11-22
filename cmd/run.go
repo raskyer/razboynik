@@ -28,30 +28,21 @@ var runCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			config *core.REQUEST
-			err    error
+			request *core.REQUEST
+			err     error
 		)
 
 		if len(args) < 1 {
 			return errors.New("Not enough arguments.")
 		}
 
-		config = &core.REQUEST{
-			SHLc: core.SHELLCONFIG{
-				Method: shellmethod,
-			},
-			SRVc: core.SERVERCONFIG{
-				Url:       args[0],
-				Method:    method,
-				Parameter: parameter,
-				Key:       key,
-			},
-			PHPc: core.PHPCONFIG{
-				Raw: raw,
-			},
-		}
+		shl := worker.BuildShellConfig(shellmethod, "")
+		php := worker.BuildPHPConfig(raw, false)
+		srv := worker.BuildServerConfig(args[0], method, parameter, key, raw)
 
-		err = worker.Run(config)
+		request = worker.BuildRequest(shl, php, srv)
+
+		err = worker.Run(request)
 
 		return err
 	},

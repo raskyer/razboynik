@@ -2,7 +2,7 @@ package kernel
 
 import "github.com/eatbytes/razboy/core"
 
-type KernelFunction func(KernelCmd, *core.REQUEST) (KernelCmd, error)
+type KernelFunction func(*KernelCmd, *core.REQUEST) (*KernelCmd, error)
 
 type KernelItem struct {
 	Name string

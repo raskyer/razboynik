@@ -15,7 +15,7 @@ func Invisible(url, referer string) (string, error) {
 
 	request = &core.REQUEST{
 		Type: "PHP",
-		SRVc: core.SERVERCONFIG{
+		SRVc: &core.SERVERCONFIG{
 			Url:    url,
 			Method: "GET",
 			Headers: []core.HEADER{
