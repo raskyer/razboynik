@@ -6,13 +6,11 @@ func BuildShellConfig(method, scope string) *core.SHELLCONFIG {
 	return &core.SHELLCONFIG{
 		Method: method,
 		Scope:  scope,
-		Cmd:    "",
 	}
 }
 
 func BuildPHPConfig(raw, upload bool) *core.PHPCONFIG {
 	return &core.PHPCONFIG{
-		Cmd:    "",
 		Raw:    raw,
 		Upload: upload,
 	}

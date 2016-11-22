@@ -21,10 +21,7 @@ func Cd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) 
 	}
 
 	request.Type = "SHELL"
-	request.SHLc.Cmd = kc.GetRaw() + " && pwd"
-	phpadapter.CreateCMD(request.SHLc)
-
-	request.Build()
+	request.Action = phpadapter.CreateCMD(kc.GetRaw()+" && pwd", request.SHLc) + phpadapter.CreateAnswer(request)
 
 	rzRes, err = razboy.Send(request)
 	kc.SetResult(rzRes)

@@ -14,12 +14,8 @@ func Raw(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error)
 	)
 
 	request.Type = "SHELL"
-
-	request.SHLc.Cmd = kc.GetRaw()
 	request.SHLc.Scope = kc.GetScope()
-	phpadapter.CreateCMD(request.SHLc)
-
-	request.Build()
+	request.Action = phpadapter.CreateCMD(kc.GetRaw(), request.SHLc) + phpadapter.CreateAnswer(request)
 
 	rzRes, err = razboy.Send(request)
 	kc.SetResult(rzRes)

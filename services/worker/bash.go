@@ -65,7 +65,7 @@ func createReadline(url string) (*readline.Instance, error) {
 
 func (b *Bash) cleanRequest() {
 	b.request.Type = ""
-	b.request.Raw = ""
+	b.request.Action = ""
 }
 
 func (b *Bash) loop() {

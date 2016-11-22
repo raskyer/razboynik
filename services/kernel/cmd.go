@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboy/core"
 )
 
 type KernelCmd struct {
@@ -136,4 +137,18 @@ func (kc *KernelCmd) SetScope(scope string) {
 
 func (kc *KernelCmd) SetResult(rzRes *razboy.RazResponse) {
 	kc.result = rzRes
+}
+
+func (kc *KernelCmd) Exec(request *core.REQUEST) (*KernelCmd, error) {
+	var k *Kernel
+
+	k = Boot()
+
+	for _, item := range k.GetItems() {
+		if item.Name == kc.GetName() {
+			return item.Fn(kc, request)
+		}
+	}
+
+	return k.GetDefaultItem().Fn(kc, request)
 }
