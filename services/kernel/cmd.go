@@ -9,18 +9,18 @@ import (
 )
 
 type KernelCmd struct {
-	result *razboy.RazResponse
-	_body  string
-	scope  string
+	parent *Bash
+	res    *razboy.RazResponse
 	name   string
 	raw    string
 	arr    []string
 	str    string
 	out    string
 	err    string
+	_body  string
 }
 
-func CreateCmd(raw, scope string, opt ...string) *KernelCmd {
+func CreateCmd(raw string, opt ...string) *KernelCmd {
 	var (
 		arr                 []string
 		str, out, err, name string
@@ -47,13 +47,12 @@ func CreateCmd(raw, scope string, opt ...string) *KernelCmd {
 	}
 
 	return &KernelCmd{
-		scope: scope,
-		name:  name,
-		raw:   raw,
-		arr:   arr,
-		str:   str,
-		out:   out,
-		err:   err,
+		name: name,
+		raw:  raw,
+		arr:  arr,
+		str:  str,
+		out:  out,
+		err:  err,
 	}
 }
 
@@ -76,10 +75,6 @@ func (kc KernelCmd) WriteError(err error) {
 	if kc.err == "2" {
 		fmt.Println(err.Error())
 	}
-}
-
-func (kc KernelCmd) GetScope() string {
-	return kc.scope
 }
 
 func (kc KernelCmd) GetName() string {
@@ -118,7 +113,7 @@ func (kc KernelCmd) GetArrItem(i int, def ...string) string {
 }
 
 func (kc KernelCmd) GetRzResp() *razboy.RazResponse {
-	return kc.result
+	return kc.res
 }
 
 func (kc *KernelCmd) GetResult() string {
@@ -126,17 +121,13 @@ func (kc *KernelCmd) GetResult() string {
 		return kc._body
 	}
 
-	kc._body = kc.result.GetResult()
+	kc._body = kc.res.GetResult()
 
 	return kc._body
 }
 
-func (kc *KernelCmd) SetScope(scope string) {
-	kc.scope = scope
-}
-
 func (kc *KernelCmd) SetResult(rzRes *razboy.RazResponse) {
-	kc.result = rzRes
+	kc.res = rzRes
 }
 
 func (kc *KernelCmd) Exec(request *core.REQUEST) (*KernelCmd, error) {

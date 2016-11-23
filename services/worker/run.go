@@ -1,20 +1,23 @@
 package worker
 
-import "github.com/eatbytes/razboy/core"
+import (
+	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/bash"
+)
 
 func Run(request *core.REQUEST) error {
 	var (
-		b   *Bash
+		b   *bash.Bash
 		err error
 	)
 
-	b, err = CreateBash(request)
+	b, err = bash.CreateBash(request)
 
 	if err != nil {
 		return err
 	}
 
-	b.loop()
+	b.Run()
 
 	return nil
 }

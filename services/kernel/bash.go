@@ -1,4 +1,4 @@
-package worker
+package kernel
 
 import (
 	"io"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy/core"
-	"github.com/eatbytes/razboynik/services/kernel"
 )
 
 type Bash struct {
@@ -36,13 +35,13 @@ func CreateBash(request *core.REQUEST) (*Bash, error) {
 
 func createReadline(url string) (*readline.Instance, error) {
 	var (
-		k             *kernel.Kernel
+		k             *Kernel
 		config        *readline.Config
 		autocompleter *readline.PrefixCompleter
 		commands      []string
 	)
 
-	k = kernel.Boot()
+	k = Boot()
 
 	autocompleter = readline.NewPrefixCompleter()
 	commands = append(k.GetCommons(), k.GetItemsName()...)
@@ -69,11 +68,17 @@ func (b *Bash) cleanRequest() {
 }
 
 func (b *Bash) loop() {
+	var (
+		kc   *KernelCmd
+		line string
+		err  error
+	)
+
 	defer b.readline.Close()
 	log.SetOutput(b.readline.Stderr())
 
 	for b.run {
-		line, err := b.readline.Readline()
+		line, err = b.readline.Readline()
 
 		if err == readline.ErrInterrupt || err == io.EOF {
 			return
@@ -85,15 +90,20 @@ func (b *Bash) loop() {
 
 		b.cleanRequest()
 
-		command, err := Exec(line, b.request)
+		kc = CreateCmd(line, b.request.SHLc.Scope)
+		kc, err = kc.Exec(b.request)
 
 		if err != nil {
-			command.WriteError(err)
+			kc.WriteError(err)
 			continue
 		}
 
-		command.WriteSuccess(command.GetResult())
+		kc.WriteSuccess(kc.GetResult())
 	}
+}
+
+func (b *Bash) Run() {
+	b.loop()
 }
 
 func (b *Bash) UpdatePrompt(scope string) {
