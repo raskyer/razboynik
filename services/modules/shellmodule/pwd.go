@@ -9,22 +9,18 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Cd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func Pwd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	var (
-		rzRes     *razboy.RazResponse
-		scope, cd string
-		err       error
+		rzRes      *razboy.RazResponse
+		pwd, scope string
+		err        error
 	)
-
-	if strings.Contains(kc.GetRaw(), "&&") || kc.GetArrItem(1, "") == "-" {
-		return Raw(kc, request)
-	}
 
 	request.Type = "SHELL"
 	request.SHLc.Scope = kc.GetScope()
 
-	cd = phpadapter.CreateCMD(kc.GetRaw()+" && pwd", request.SHLc) + phpadapter.CreateAnswer(request)
-	request.Action = cd
+	pwd = phpadapter.CreateCMD(kc.GetRaw(), request.SHLc) + phpadapter.CreateAnswer(request)
+	request.Action = pwd
 
 	rzRes, err = razboy.Send(request)
 	kc.SetResult(rzRes)

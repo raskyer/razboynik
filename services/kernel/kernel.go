@@ -20,6 +20,7 @@ type Kernel struct {
 	def      *KernelItem
 	items    []*KernelItem
 	readline *readline.Instance
+	former   *KernelCmd
 	commons  []string
 	run      bool
 }
@@ -80,6 +81,10 @@ func (k Kernel) GetItems() []*KernelItem {
 	return k.items
 }
 
+func (k Kernel) GetFormerCmd() *KernelCmd {
+	return k.former
+}
+
 func (k Kernel) GetItemsName() []string {
 	var names []string
 
@@ -92,6 +97,10 @@ func (k Kernel) GetItemsName() []string {
 
 func (k Kernel) GetCommons() []string {
 	return k.commons
+}
+
+func (k *Kernel) SetFormerCmd(kc *KernelCmd) {
+	k.former = kc
 }
 
 func (k *Kernel) SetDefault(item *KernelItem) {
@@ -121,12 +130,12 @@ func (k *Kernel) UpdatePrompt(url, scope string) {
 func (k *Kernel) _cleanRequest(request *core.REQUEST) {
 	request.Type = ""
 	request.Action = ""
+	request.PHPc.Upload = false
 }
 
 func (k *Kernel) _loop(request *core.REQUEST) {
 	var (
-		kc          *KernelCmd
-		fkc         *KernelCmd
+		kc, fkc     *KernelCmd
 		line, scope string
 		err         error
 	)
@@ -149,7 +158,7 @@ func (k *Kernel) _loop(request *core.REQUEST) {
 		if fkc != nil {
 			k._cleanRequest(request)
 			scope = fkc.GetScope()
-			fkc = nil
+			k.SetFormerCmd(fkc)
 		}
 
 		kc = CreateCmd(line, scope)
@@ -196,5 +205,5 @@ func (k *Kernel) _initReadline(url string) error {
 }
 
 func _kernelDefault(kc *KernelCmd, request *core.REQUEST) (*KernelCmd, error) {
-	return nil, errors.New("No default fonction defined")
+	return kc, errors.New("No default fonction defined")
 }

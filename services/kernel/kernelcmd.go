@@ -71,8 +71,10 @@ func (kc KernelCmd) Write(str string, err error) {
 }
 
 func (kc KernelCmd) WriteSuccess(str string) {
-	if kc.out == "1" {
-		fmt.Printf(str)
+	str = strings.Trim(str, "\n")
+
+	if kc.out == "1" && str != "" {
+		fmt.Println(str)
 	}
 }
 
@@ -137,6 +139,10 @@ func (kc *KernelCmd) GetResult() string {
 
 func (kc *KernelCmd) SetResult(rzRes *razboy.RazResponse) {
 	kc.res = rzRes
+}
+
+func (kc *KernelCmd) SetBody(body string) {
+	kc._body = body
 }
 
 func (kc *KernelCmd) SetScope(scope string) {
