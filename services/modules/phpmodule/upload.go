@@ -12,10 +12,10 @@ import (
 
 func Upload(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	var (
-		rzRes                 *razboy.RazResponse
-		local, remote, upload string
-		arr                   []string
-		err                   error
+		rzRes         *razboy.RazResponse
+		local, remote string
+		arr           []string
+		err           error
 	)
 
 	if kc.GetArrLgt() < 2 {
@@ -34,17 +34,7 @@ func Upload(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, err
 		remote = pathArr[lgt]
 	}
 
-	upload, err = phpadapter.CreateUpload(local, remote, request.PHPc)
-
-	if err != nil {
-		return kc, err
-	}
-
-	request.Type = "PHP"
-	request.Action = upload
-	request.PHPc.Upload = true
-
-	rzRes, err = razboy.Send(request)
+	rzRes, err = UploadAction(local, remote, request)
 	kc.SetResult(rzRes)
 
 	if err != nil {
@@ -56,4 +46,23 @@ func Upload(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, err
 	}
 
 	return kc, nil
+}
+
+func UploadAction(local, remote string, request *core.REQUEST) (*razboy.RazResponse, error) {
+	var (
+		upload string
+		err    error
+	)
+
+	upload, err = phpadapter.CreateUpload(local, remote, request.PHPc)
+
+	if err != nil {
+		return nil, err
+	}
+
+	request.Type = "PHP"
+	request.Action = upload
+	request.PHPc.Upload = true
+
+	return razboy.Send(request)
 }

@@ -24,12 +24,24 @@ func Boot() {
 			Fn:   shellmodule.Cd,
 		},
 		&kernel.KernelItem{
+			Name: "vim",
+			Fn:   shellmodule.Vim,
+		},
+		&kernel.KernelItem{
 			Name: "pwd",
 			Fn:   shellmodule.Pwd,
 		},
 		&kernel.KernelItem{
 			Name: "-php",
 			Fn:   phpmodule.Raw,
+		},
+		&kernel.KernelItem{
+			Name: "-listfile",
+			Fn:   phpmodule.ListFile,
+		},
+		&kernel.KernelItem{
+			Name: "-readfile",
+			Fn:   phpmodule.ReadFile,
 		},
 		&kernel.KernelItem{
 			Name: "-upload",

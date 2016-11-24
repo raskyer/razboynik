@@ -13,7 +13,6 @@ import (
 
 func Download(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	var (
-		out           *os.File
 		rzRes         *razboy.RazResponse
 		local, remote string
 		err           error
@@ -26,14 +25,27 @@ func Download(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, e
 	remote = _getRemote(kc.GetArr(), kc.GetScope())
 	local = kc.GetArrItem(2, "output.txt")
 
+	rzRes, err = DownloadAction(remote, local, request)
+	kc.SetResult(rzRes)
+	kc.SetBody("Downloaded successfully to " + local)
+
+	return kc, err
+}
+
+func DownloadAction(remote, local string, request *core.REQUEST) (*razboy.RazResponse, error) {
+	var (
+		out   *os.File
+		rzRes *razboy.RazResponse
+		err   error
+	)
+
 	request.Type = "PHP"
 	request.Action = phpadapter.CreateDownload(remote, request.PHPc)
 
 	rzRes, err = razboy.Send(request)
-	kc.SetResult(rzRes)
 
 	if err != nil {
-		return kc, err
+		return rzRes, err
 	}
 
 	out, err = os.Create(local)
@@ -41,13 +53,12 @@ func Download(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, e
 	defer out.Close()
 
 	if err != nil {
-		return kc, err
+		return nil, err
 	}
 
 	_, err = io.Copy(out, rzRes.GetHTTP().Body)
-	kc.SetBody("Downloaded successfully to " + local)
 
-	return kc, err
+	return rzRes, err
 }
 
 func _getRemote(arr []string, context string) string {
