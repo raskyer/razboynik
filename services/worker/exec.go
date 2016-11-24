@@ -12,7 +12,6 @@ func Exec(cmd string, request *core.REQUEST) (*kernel.KernelCmd, error) {
 	)
 
 	kc = kernel.CreateCmd(cmd)
-
 	k = kernel.Boot()
 
 	return k.Exec(kc, request)

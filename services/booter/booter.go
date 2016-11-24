@@ -7,20 +7,26 @@ import (
 )
 
 func Boot() {
-	var k *kernel.Kernel
+	var (
+		k *kernel.Kernel
+		i []*kernel.KernelItem
+	)
 
 	k = kernel.Boot(&kernel.KernelItem{
 		Name: "raw",
 		Fn:   shellmodule.Raw,
 	})
 
-	k.AddItem(&kernel.KernelItem{
-		Name: "cd",
-		Fn:   shellmodule.Cd,
-	})
+	i = []*kernel.KernelItem{
+		&kernel.KernelItem{
+			Name: "cd",
+			Fn:   shellmodule.Cd,
+		},
+		&kernel.KernelItem{
+			Name: "exit",
+			Fn:   kernelmodule.Exit,
+		},
+	}
 
-	k.AddItem(&kernel.KernelItem{
-		Name: "exit",
-		Fn:   kernelmodule.Exit,
-	})
+	k.SetItems(i)
 }

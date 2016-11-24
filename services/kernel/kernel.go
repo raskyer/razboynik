@@ -98,6 +98,10 @@ func (k *Kernel) SetDefault(item *KernelItem) {
 	k.def = item
 }
 
+func (k *Kernel) SetItems(items []*KernelItem) {
+	k.items = items
+}
+
 func (k *Kernel) AddItem(item *KernelItem) {
 	k.items = append(k.items, item)
 }
