@@ -6,8 +6,14 @@ import (
 )
 
 func Exec(cmd string, request *core.REQUEST) (*kernel.KernelCmd, error) {
-	var kc *kernel.KernelCmd
-	kc = kernel.CreateCmd(cmd, request.SHLc.Scope)
+	var (
+		k  *kernel.Kernel
+		kc *kernel.KernelCmd
+	)
 
-	return kc.Exec(request)
+	kc = kernel.CreateCmd(cmd)
+
+	k = kernel.Boot()
+
+	return k.Exec(kc, request)
 }

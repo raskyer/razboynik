@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/eatbytes/razboynik/services/modules"
+	"github.com/eatbytes/razboynik/services/booter"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -38,7 +38,7 @@ var RootCmd = &cobra.Command{
 }
 
 func Execute() {
-	modules.Boot()
+	booter.Boot()
 
 	if err := RootCmd.Execute(); err != nil {
 		os.Exit(-1)

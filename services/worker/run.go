@@ -2,22 +2,16 @@ package worker
 
 import (
 	"github.com/eatbytes/razboy/core"
-	"github.com/eatbytes/razboynik/services/bash"
+	"github.com/eatbytes/razboynik/services/kernel"
 )
 
 func Run(request *core.REQUEST) error {
 	var (
-		b   *bash.Bash
-		err error
+		k *kernel.Kernel
 	)
 
-	b, err = bash.CreateBash(request)
-
-	if err != nil {
-		return err
-	}
-
-	b.Run()
+	k = kernel.Boot()
+	k.Run(request)
 
 	return nil
 }

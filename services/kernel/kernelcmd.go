@@ -5,27 +5,27 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboy/core"
 )
 
 type KernelCmd struct {
-	parent *Bash
-	res    *razboy.RazResponse
-	name   string
-	raw    string
-	arr    []string
-	str    string
-	out    string
-	err    string
-	_body  string
+	res   *razboy.RazResponse
+	scope string
+	name  string
+	raw   string
+	arr   []string
+	str   string
+	out   string
+	err   string
+	_body string
 }
 
 func CreateCmd(raw string, opt ...string) *KernelCmd {
 	var (
-		arr                 []string
-		str, out, err, name string
+		arr                        []string
+		str, out, err, name, scope string
 	)
 
+	scope = ""
 	out = "1"
 	err = "2"
 
@@ -39,20 +39,25 @@ func CreateCmd(raw string, opt ...string) *KernelCmd {
 	}
 
 	if len(opt) > 0 {
-		out = opt[0]
+		scope = opt[0]
 	}
 
 	if len(opt) > 1 {
-		err = opt[1]
+		out = opt[1]
+	}
+
+	if len(opt) > 2 {
+		err = opt[2]
 	}
 
 	return &KernelCmd{
-		name: name,
-		raw:  raw,
-		arr:  arr,
-		str:  str,
-		out:  out,
-		err:  err,
+		scope: scope,
+		name:  name,
+		raw:   raw,
+		arr:   arr,
+		str:   str,
+		out:   out,
+		err:   err,
 	}
 }
 
@@ -116,8 +121,12 @@ func (kc KernelCmd) GetRzResp() *razboy.RazResponse {
 	return kc.res
 }
 
+func (kc KernelCmd) GetScope() string {
+	return kc.scope
+}
+
 func (kc *KernelCmd) GetResult() string {
-	if kc._body != "" {
+	if kc._body != "" || kc.res == nil {
 		return kc._body
 	}
 
@@ -130,16 +139,6 @@ func (kc *KernelCmd) SetResult(rzRes *razboy.RazResponse) {
 	kc.res = rzRes
 }
 
-func (kc *KernelCmd) Exec(request *core.REQUEST) (*KernelCmd, error) {
-	var k *Kernel
-
-	k = Boot()
-
-	for _, item := range k.GetItems() {
-		if item.Name == kc.GetName() {
-			return item.Fn(kc, request)
-		}
-	}
-
-	return k.GetDefaultItem().Fn(kc, request)
+func (kc *KernelCmd) SetScope(scope string) {
+	kc.scope = scope
 }

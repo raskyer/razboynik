@@ -1,6 +1,7 @@
 package shellmodule
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/eatbytes/razboy"
@@ -21,6 +22,8 @@ func Cd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) 
 	}
 
 	request.Type = "SHELL"
+	fmt.Println(kc.GetScope())
+	request.SHLc.Scope = kc.GetScope()
 	request.Action = phpadapter.CreateCMD(kc.GetRaw()+" && pwd", request.SHLc) + phpadapter.CreateAnswer(request)
 
 	rzRes, err = razboy.Send(request)
@@ -34,6 +37,7 @@ func Cd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) 
 
 	if scope != "" {
 		kc.SetScope(scope)
+		kernel.Boot().UpdatePrompt(request.SRVc.Url, scope)
 	}
 
 	return kc, nil

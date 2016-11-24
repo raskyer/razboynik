@@ -18,6 +18,7 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/debugger"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
@@ -51,7 +52,7 @@ var execCmd = &cobra.Command{
 		kc, err = worker.Exec(args[1], request)
 
 		if debug && kc.GetRzResp() != nil {
-			worker.DebugHTTP(kc.GetRzResp())
+			debugger.HTTP(kc.GetRzResp())
 		}
 
 		if err != nil {
