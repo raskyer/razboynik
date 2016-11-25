@@ -24,6 +24,7 @@ var generateCmd = &cobra.Command{
 	Short: "(Not available)",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		printer.PrintIntro()
 		printer.PrintSection("Generating", "Generate php file")
 	},
 }
