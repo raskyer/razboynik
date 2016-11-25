@@ -5,15 +5,15 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func ReadFile(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func ReadFile(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 	var (
-		rzRes *razboy.RazResponse
-		file  string
-		err   error
+		request *razboy.REQUEST
+		file    string
+		err     error
 	)
 
 	file = kc.GetArrItem(1)
@@ -22,11 +22,15 @@ func ReadFile(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, e
 		return kc, errors.New("You should give the path of the file")
 	}
 
-	request.Type = "PHP"
-	request.Action = "$r=file_get_contents('" + file + "');" + phpadapter.CreateAnswer(request)
+	request = razboy.CreateRequest(
+		[4]string{c.Url, c.Method, c.Parameter, c.Key},
+		[2]string{c.Shellmethod, kc.GetScope()},
+		[2]bool{c.Raw, false},
+	)
 
-	rzRes, err = razboy.Send(request)
-	kc.SetResult(rzRes)
+	request.Action = "$r=file_get_contents('" + file + "');" + phpadapter.CreateAnswer(c.Method, c.Parameter)
+
+	_, err = kc.Send(request)
 
 	return kc, err
 }

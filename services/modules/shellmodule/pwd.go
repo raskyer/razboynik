@@ -5,25 +5,26 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Pwd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func Pwd(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 	var (
-		rzRes      *razboy.RazResponse
-		pwd, scope string
-		err        error
+		request *razboy.REQUEST
+		scope   string
+		err     error
 	)
 
-	request.Type = "SHELL"
-	request.SHLc.Scope = kc.GetScope()
+	request = razboy.CreateRequest(
+		[4]string{c.Url, c.Method, c.Parameter, c.Key},
+		[2]string{c.Shellmethod, kc.GetScope()},
+		[2]bool{c.Raw, false},
+	)
 
-	pwd = phpadapter.CreateCMD(kc.GetRaw(), request.SHLc) + phpadapter.CreateAnswer(request)
-	request.Action = pwd
+	request.Action = phpadapter.CreateCMD(kc.GetRaw(), kc.GetScope(), c.Shellmethod, true, c.Method, c.Parameter)
 
-	rzRes, err = razboy.Send(request)
-	kc.SetResult(rzRes)
+	_, err = kc.Send(request)
 
 	if err != nil {
 		return kc, err
@@ -33,7 +34,7 @@ func Pwd(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error)
 
 	if scope != "" {
 		kc.SetScope(scope)
-		kernel.Boot().UpdatePrompt(request.SRVc.Url, scope)
+		kernel.Boot().UpdatePrompt(c.Url, scope)
 	}
 
 	return kc, nil

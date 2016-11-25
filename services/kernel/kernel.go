@@ -1,15 +1,14 @@
 package kernel
 
 import (
-	"errors"
 	"io"
 	"log"
 
 	"github.com/chzyer/readline"
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 )
 
-type KernelFunction func(*KernelCmd, *core.REQUEST) (*KernelCmd, error)
+type KernelFunction func(*KernelCmd, *config.Config) (*KernelCmd, error)
 
 type KernelItem struct {
 	Name string
@@ -48,104 +47,45 @@ func Boot(def ...*KernelItem) *Kernel {
 	return kInstance
 }
 
-func (k *Kernel) Exec(kc *KernelCmd, request *core.REQUEST) (*KernelCmd, error) {
+func (k *Kernel) Exec(kc *KernelCmd, config *config.Config) (*KernelCmd, error) {
 	for _, item := range k.items {
 		if item.Name == kc.name {
-			return item.Fn(kc, request)
+			return item.Fn(kc, config)
 		}
 	}
 
-	return k.def.Fn(kc, request)
+	return k.def.Fn(kc, config)
 }
 
-func (k *Kernel) Run(request *core.REQUEST) error {
+func (k *Kernel) Run(config *config.Config) error {
 	var err error
 
-	err = k._initReadline(request.SRVc.Url)
+	err = k._initReadline(config.Url)
 
 	if err != nil {
 		return err
 	}
 
 	k.run = true
-	k._loop(request)
+	k._loop(config)
 
 	return nil
 }
 
-func (k Kernel) GetDefaultItem() *KernelItem {
-	return k.def
-}
-
-func (k Kernel) GetItems() []*KernelItem {
-	return k.items
-}
-
-func (k Kernel) GetFormerCmd() *KernelCmd {
-	return k.former
-}
-
-func (k Kernel) GetItemsName() []string {
-	var names []string
-
-	for _, item := range k.items {
-		names = append(names, item.Name)
-	}
-
-	return names
-}
-
-func (k Kernel) GetCommons() []string {
-	return k.commons
-}
-
-func (k *Kernel) SetFormerCmd(kc *KernelCmd) {
-	k.former = kc
-}
-
-func (k *Kernel) SetDefault(item *KernelItem) {
-	k.def = item
-}
-
-func (k *Kernel) SetItems(items []*KernelItem) {
-	k.items = items
-}
-
-func (k *Kernel) AddItem(item *KernelItem) {
-	k.items = append(k.items, item)
-}
-
-func (k *Kernel) Stop() {
-	k.run = false
-}
-
-func (k *Kernel) UpdatePrompt(url, scope string) {
-	if k.readline == nil {
-		return
-	}
-
-	k.readline.SetPrompt("(" + url + "):" + scope + "$ ")
-}
-
-func (k *Kernel) _cleanRequest(request *core.REQUEST) {
-	request.Type = ""
-	request.Action = ""
-	request.PHPc.Upload = false
-}
-
-func (k *Kernel) _loop(request *core.REQUEST) {
+func (k *Kernel) _loop(config *config.Config) {
 	var (
 		kc, fkc     *KernelCmd
 		line, scope string
 		err         error
 	)
 
+	scope = ""
+
 	defer k.readline.Close()
 	log.SetOutput(k.readline.Stderr())
 
 	for k.run {
 		line, err = k.readline.Readline()
-		scope = ""
 
 		if err == readline.ErrInterrupt || err == io.EOF {
 			return
@@ -156,13 +96,12 @@ func (k *Kernel) _loop(request *core.REQUEST) {
 		}
 
 		if fkc != nil {
-			k._cleanRequest(request)
 			scope = fkc.GetScope()
 			k.SetFormerCmd(fkc)
 		}
 
 		kc = CreateCmd(line, scope)
-		fkc, err = k.Exec(kc, request)
+		fkc, err = k.Exec(kc, config)
 
 		if err != nil {
 			fkc.WriteError(err)
@@ -171,39 +110,4 @@ func (k *Kernel) _loop(request *core.REQUEST) {
 
 		fkc.WriteSuccess(fkc.GetResult())
 	}
-}
-
-func (k *Kernel) _initReadline(url string) error {
-	var (
-		rl            *readline.Instance
-		config        *readline.Config
-		autocompleter *readline.PrefixCompleter
-		commands      []string
-		err           error
-	)
-
-	autocompleter = readline.NewPrefixCompleter()
-	commands = append(k.commons, k.GetItemsName()...)
-
-	for _, item := range commands {
-		child := readline.PcItem(item)
-		autocompleter.SetChildren(append(autocompleter.GetChildren(), child))
-	}
-
-	config = &readline.Config{
-		Prompt:          "(" + url + ")$ ",
-		HistoryFile:     "/tmp/razboynik.tmp",
-		AutoComplete:    autocompleter,
-		InterruptPrompt: "^C",
-		EOFPrompt:       "exit",
-	}
-
-	rl, err = readline.NewEx(config)
-	k.readline = rl
-
-	return err
-}
-
-func _kernelDefault(kc *KernelCmd, request *core.REQUEST) (*KernelCmd, error) {
-	return kc, errors.New("No default fonction defined")
 }

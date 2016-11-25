@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/fatih/color"
 )
 
-func Debug(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func Debug(kc *kernel.KernelCmd, config *config.Config) (*kernel.KernelCmd, error) {
 	var fkc *kernel.KernelCmd
 
 	fkc = kernel.Boot().GetFormerCmd()

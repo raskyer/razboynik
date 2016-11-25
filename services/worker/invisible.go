@@ -2,25 +2,26 @@ package worker
 
 import (
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboy/core"
 	"github.com/eatbytes/razboy/normalizer"
 )
 
 func Invisible(url, referer string) (string, error) {
 	var (
-		request *core.REQUEST
+		request *razboy.REQUEST
 		rzRes   *razboy.RazResponse
 		err     error
 	)
 
-	request = &core.REQUEST{
-		Type: "PHP",
-		SRVc: &core.SERVERCONFIG{
-			Url:    url,
-			Method: "GET",
-			Headers: []core.HEADER{
-				core.HEADER{Key: "Referer", Value: normalizer.Encode(referer)},
-			},
+	request = razboy.CreateRequest(
+		[4]string{url, "GET", "", ""},
+		[2]string{"", ""},
+		[2]bool{false, false},
+	)
+
+	request.Headers = []razboy.HEADER{
+		razboy.HEADER{
+			Key:   "Referer",
+			Value: normalizer.Encode(referer),
 		},
 	}
 

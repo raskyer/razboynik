@@ -1,17 +1,19 @@
 package phpmodule
 
 import (
+	"bytes"
 	"errors"
 	"strings"
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Upload(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func Upload(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 	var (
+		request       *razboy.REQUEST
 		rzRes         *razboy.RazResponse
 		local, remote string
 		arr           []string
@@ -22,6 +24,12 @@ func Upload(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, err
 		err = errors.New("Please write the path of the local file to upload")
 		return kc, err
 	}
+
+	request = razboy.CreateRequest(
+		[4]string{c.Url, c.Method, c.Parameter, c.Key},
+		[2]string{c.Shellmethod, kc.GetScope()},
+		[2]bool{c.Raw, false},
+	)
 
 	arr = kc.GetArr()
 	local = arr[1]
@@ -48,21 +56,22 @@ func Upload(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, err
 	return kc, nil
 }
 
-func UploadAction(local, remote string, request *core.REQUEST) (*razboy.RazResponse, error) {
+func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RazResponse, error) {
 	var (
 		upload string
+		data   *bytes.Buffer
 		err    error
 	)
 
-	upload, err = phpadapter.CreateUpload(local, remote, request.PHPc)
+	upload, data, err = phpadapter.CreateUpload(local, remote, request.Raw)
 
 	if err != nil {
 		return nil, err
 	}
 
-	request.Type = "PHP"
 	request.Action = upload
-	request.PHPc.Upload = true
+	request.Upload = true
+	request.Buffer = data
 
 	return razboy.Send(request)
 }

@@ -3,15 +3,15 @@ package phpmodule
 import (
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func ListFile(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func ListFile(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 	var (
-		rzRes *razboy.RazResponse
-		scope string
-		err   error
+		request *razboy.REQUEST
+		scope   string
+		err     error
 	)
 
 	scope = "__DIR__"
@@ -24,11 +24,15 @@ func ListFile(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, e
 		scope = "'" + kc.GetStr() + "'"
 	}
 
-	request.Type = "PHP"
-	request.Action = "$r=json_encode(scandir(" + scope + "));" + phpadapter.CreateAnswer(request)
+	request = razboy.CreateRequest(
+		[4]string{c.Url, c.Method, c.Parameter, c.Key},
+		[2]string{c.Shellmethod, kc.GetScope()},
+		[2]bool{c.Raw, false},
+	)
 
-	rzRes, err = razboy.Send(request)
-	kc.SetResult(rzRes)
+	request.Action = "$r=json_encode(scandir(" + scope + "));" + phpadapter.CreateAnswer(c.Method, c.Parameter)
+
+	_, err = kc.Send(request)
 
 	return kc, err
 }

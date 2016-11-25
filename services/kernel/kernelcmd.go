@@ -26,8 +26,8 @@ func CreateCmd(raw string, opt ...string) *KernelCmd {
 	)
 
 	scope = ""
-	out = "1"
-	err = "2"
+	out = "&1"
+	err = "&2"
 
 	arr = strings.Fields(raw)
 
@@ -73,13 +73,13 @@ func (kc KernelCmd) Write(str string, err error) {
 func (kc KernelCmd) WriteSuccess(str string) {
 	str = strings.Trim(str, "\n")
 
-	if kc.out == "1" && str != "" {
+	if kc.out == "&1" && str != "" {
 		fmt.Println(str)
 	}
 }
 
 func (kc KernelCmd) WriteError(err error) {
-	if kc.err == "2" {
+	if kc.err == "&2" {
 		fmt.Println(err.Error())
 	}
 }
@@ -147,4 +147,16 @@ func (kc *KernelCmd) SetBody(body string) {
 
 func (kc *KernelCmd) SetScope(scope string) {
 	kc.scope = scope
+}
+
+func (kc *KernelCmd) Send(request *razboy.REQUEST) (*razboy.RazResponse, error) {
+	var (
+		rzRes *razboy.RazResponse
+		err   error
+	)
+
+	rzRes, err = razboy.Send(request)
+	kc.SetResult(rzRes)
+
+	return rzRes, err
 }

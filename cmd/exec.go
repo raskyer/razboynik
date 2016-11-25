@@ -17,7 +17,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/debugger"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/printer"
@@ -31,9 +31,9 @@ var execCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			err     error
-			kc      *kernel.KernelCmd
-			request *core.REQUEST
+			err error
+			kc  *kernel.KernelCmd
+			c   *config.Config
 		)
 
 		if len(args) < 2 {
@@ -43,13 +43,16 @@ var execCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Execute", "Execute a command on server")
 
-		shl := worker.BuildShellConfig(shellmethod, "")
-		php := worker.BuildPHPConfig(raw, false)
-		srv := worker.BuildServerConfig(args[0], method, parameter, key, raw)
+		c = &config.Config{
+			Url:         args[0],
+			Method:      method,
+			Parameter:   parameter,
+			Key:         key,
+			Raw:         raw,
+			Shellmethod: shellmethod,
+		}
 
-		request = worker.BuildRequest(shl, php, srv)
-
-		kc, err = worker.Exec(args[1], request)
+		kc, err = worker.Exec(args[1], c)
 
 		if debug && kc.GetRzResp() != nil {
 			debugger.HTTP(kc.GetRzResp())

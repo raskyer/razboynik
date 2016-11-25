@@ -17,7 +17,8 @@ package cmd
 import (
 	"errors"
 
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
+	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
@@ -28,21 +29,27 @@ var runCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			request *core.REQUEST
-			err     error
+			c   *config.Config
+			err error
 		)
 
 		if len(args) < 1 {
 			return errors.New("Not enough arguments.")
 		}
 
-		shl := worker.BuildShellConfig(shellmethod, "")
-		php := worker.BuildPHPConfig(raw, false)
-		srv := worker.BuildServerConfig(args[0], method, parameter, key, raw)
+		printer.PrintIntro()
+		printer.PrintSection("Run", "Run reverse shell with configuration")
 
-		request = worker.BuildRequest(shl, php, srv)
+		c = &config.Config{
+			Url:         args[0],
+			Method:      method,
+			Parameter:   parameter,
+			Key:         key,
+			Raw:         raw,
+			Shellmethod: shellmethod,
+		}
 
-		err = worker.Run(request)
+		err = worker.Run(c)
 
 		return err
 	},

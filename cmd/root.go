@@ -32,7 +32,7 @@ var shellmethod string
 var raw bool
 
 var RootCmd = &cobra.Command{
-	Use:   "razboynik2",
+	Use:   "razboynik",
 	Short: "A brief description of your application",
 	Long:  ``,
 }

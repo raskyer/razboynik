@@ -7,12 +7,13 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboy/core"
+	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Download(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, error) {
+func Download(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 	var (
+		request       *razboy.REQUEST
 		rzRes         *razboy.RazResponse
 		local, remote string
 		err           error
@@ -21,6 +22,12 @@ func Download(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, e
 	if kc.GetArrLgt() < 2 {
 		return kc, errors.New("Please write the path of the file to download")
 	}
+
+	request = razboy.CreateRequest(
+		[4]string{c.Url, c.Method, c.Parameter, c.Key},
+		[2]string{c.Shellmethod, kc.GetScope()},
+		[2]bool{c.Raw, false},
+	)
 
 	remote = _getRemote(kc.GetArr(), kc.GetScope())
 	local = kc.GetArrItem(2, "output.txt")
@@ -32,16 +39,14 @@ func Download(kc *kernel.KernelCmd, request *core.REQUEST) (*kernel.KernelCmd, e
 	return kc, err
 }
 
-func DownloadAction(remote, local string, request *core.REQUEST) (*razboy.RazResponse, error) {
+func DownloadAction(remote, local string, request *razboy.REQUEST) (*razboy.RazResponse, error) {
 	var (
 		out   *os.File
 		rzRes *razboy.RazResponse
 		err   error
 	)
 
-	request.Type = "PHP"
-	request.Action = phpadapter.CreateDownload(remote, request.PHPc)
-
+	request.Action = phpadapter.CreateDownload(remote, false)
 	rzRes, err = razboy.Send(request)
 
 	if err != nil {
