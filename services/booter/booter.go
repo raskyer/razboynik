@@ -56,6 +56,14 @@ func Boot() {
 			Fn:   kernelmodule.Debug,
 		},
 		&kernel.KernelItem{
+			Name: "-encode",
+			Fn:   kernelmodule.Encode,
+		},
+		&kernel.KernelItem{
+			Name: "-decode",
+			Fn:   kernelmodule.Decode,
+		},
+		&kernel.KernelItem{
 			Name: "exit",
 			Fn:   kernelmodule.Exit,
 		},
