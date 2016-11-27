@@ -3,13 +3,13 @@ package phpmodule
 import (
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func ListFile(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
+func ListFile(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	var (
 		request *razboy.REQUEST
+		action  string
 		scope   string
 		err     error
 	)
@@ -24,13 +24,8 @@ func ListFile(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error)
 		scope = "'" + kc.GetStr() + "'"
 	}
 
-	request = razboy.CreateRequest(
-		[4]string{c.Url, c.Method, c.Parameter, c.Key},
-		[2]string{c.Shellmethod, kc.GetScope()},
-		[2]bool{c.Raw, false},
-	)
-
-	request.Action = "$r=json_encode(scandir(" + scope + "));" + phpadapter.CreateAnswer(c.Method, c.Parameter)
+	action = "$r=json_encode(scandir(" + scope + "));" + phpadapter.CreateAnswer(c.Method, c.Parameter)
+	request = razboy.CreateRequest(action, kc.GetScope(), c)
 
 	_, err = kc.Send(request)
 

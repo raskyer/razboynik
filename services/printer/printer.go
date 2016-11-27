@@ -21,20 +21,20 @@ func PrintIntro() {
 	color.Blue("_______________________________________________________________________")
 	fmt.Print("\n")
 
-	color.White("из России с любовью <3 !")
+	color.Yellow("из России с любовью <3 !")
 	fmt.Print("\n")
 }
 
 func err_intro() {
 	fmt.Print("\n")
-	color.Red("### ERROR ###")
-	color.Red("-------------")
+	color.Red("███ ERROR ███")
+	color.Red("_____________")
 }
 
 func suc_intro() {
 	fmt.Print("\n")
-	color.Green("### SUCCESS ###")
-	color.Green("---------------")
+	color.Green("███ SUCCESS ███")
+	color.Green("_______________")
 }
 
 func det_intro(str string) {
@@ -43,10 +43,10 @@ func det_intro(str string) {
 	lenght = len(str)
 
 	fmt.Print("\n")
-	color.Cyan("### " + strings.ToUpper(str) + " ###")
+	color.Blue("███ " + strings.ToUpper(str) + " ███")
 
 	for i < lenght+8 {
-		f := color.CyanString("-")
+		f := color.BlueString("-")
 		fmt.Print(f)
 		i++
 	}

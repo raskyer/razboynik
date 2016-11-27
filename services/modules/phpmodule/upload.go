@@ -7,14 +7,13 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
-	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Upload(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
+func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	var (
 		request       *razboy.REQUEST
-		rzRes         *razboy.RazResponse
+		rzRes         *razboy.RESPONSE
 		local, remote string
 		arr           []string
 		err           error
@@ -25,11 +24,7 @@ func Upload(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 		return kc, err
 	}
 
-	request = razboy.CreateRequest(
-		[4]string{c.Url, c.Method, c.Parameter, c.Key},
-		[2]string{c.Shellmethod, kc.GetScope()},
-		[2]bool{c.Raw, false},
-	)
+	request = razboy.CreateRequest("", kc.GetScope(), c)
 
 	arr = kc.GetArr()
 	local = arr[1]
@@ -56,14 +51,14 @@ func Upload(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 	return kc, nil
 }
 
-func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RazResponse, error) {
+func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
 	var (
 		upload string
 		data   *bytes.Buffer
 		err    error
 	)
 
-	upload, data, err = phpadapter.CreateUpload(local, remote, request.Raw)
+	upload, data, err = phpadapter.CreateUpload(local, remote, request.GetConfig().Raw)
 
 	if err != nil {
 		return nil, err

@@ -1,11 +1,11 @@
 package worker
 
 import (
-	"github.com/eatbytes/razboynik/services/config"
+	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Run(config *config.Config) error {
+func Run(config *razboy.Config) error {
 	var (
 		k *kernel.Kernel
 	)

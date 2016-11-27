@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/chzyer/readline"
-	"github.com/eatbytes/razboynik/services/config"
+	"github.com/eatbytes/razboy"
 )
 
 func (k *Kernel) _initReadline(url string) error {
@@ -38,6 +38,6 @@ func (k *Kernel) _initReadline(url string) error {
 	return err
 }
 
-func _kernelDefault(kc *KernelCmd, config *config.Config) (*KernelCmd, error) {
+func _kernelDefault(kc *KernelCmd, config *razboy.Config) (*KernelCmd, error) {
 	return kc, errors.New("No default fonction defined")
 }

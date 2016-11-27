@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/eatbytes/razboynik/services/config"
+	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/fatih/color"
 )
 
-func Debug(kc *kernel.KernelCmd, config *config.Config) (*kernel.KernelCmd, error) {
+func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, error) {
 	var fkc *kernel.KernelCmd
 
 	fkc = kernel.Boot().GetFormerCmd()
 
-	if fkc == nil || fkc.GetRzResp() == nil || fkc.GetRzResp().GetRequest() == nil {
+	if fkc == nil || fkc.GetResponse() == nil || fkc.GetResponse().GetRequest() == nil {
 		return kc, errors.New("You havn't made any request.\nYou must make a request before seing any information")
 	}
 
@@ -41,7 +41,7 @@ func _requestInfo(kc, fkc *kernel.KernelCmd) {
 	color.Yellow("--- Request ---")
 
 	flag = false
-	r = fkc.GetRzResp().GetRequest().GetHTTP()
+	r = fkc.GetResponse().GetRequest().GetHTTP()
 	str = kc.GetStr()
 
 	if strings.Contains(str, "-url") {
@@ -85,7 +85,7 @@ func _responseInfo(kc, fkc *kernel.KernelCmd) {
 	color.Yellow("--- Response ---")
 
 	flag = false
-	r = fkc.GetRzResp().GetHTTP()
+	r = fkc.GetResponse().GetHTTP()
 	str = kc.GetStr()
 
 	if strings.Contains(str, "-status") {

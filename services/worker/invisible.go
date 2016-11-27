@@ -7,17 +7,20 @@ import (
 
 func Invisible(url, referer string) (string, error) {
 	var (
-		request *razboy.REQUEST
-		rzRes   *razboy.RazResponse
-		err     error
+		c        *razboy.Config
+		request  *razboy.REQUEST
+		response *razboy.RESPONSE
+		err      error
 	)
 
-	request = razboy.CreateRequest(
-		[4]string{url, "GET", "", ""},
-		[2]string{"", ""},
-		[2]bool{false, false},
-	)
+	c = &razboy.Config{
+		Url:       url,
+		Method:    "GET",
+		Parameter: "",
+		Key:       "",
+	}
 
+	request = razboy.CreateRequest("", "", c)
 	request.Headers = []razboy.HEADER{
 		razboy.HEADER{
 			Key:   "Referer",
@@ -25,11 +28,11 @@ func Invisible(url, referer string) (string, error) {
 		},
 	}
 
-	rzRes, err = razboy.Send(request)
+	response, err = razboy.Send(request)
 
 	if err != nil {
 		return "", err
 	}
 
-	return rzRes.GetResult(), nil
+	return response.GetResult(), nil
 }

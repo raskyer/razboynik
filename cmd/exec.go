@@ -17,7 +17,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/config"
+	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/debugger"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/printer"
@@ -33,7 +33,7 @@ var execCmd = &cobra.Command{
 		var (
 			err error
 			kc  *kernel.KernelCmd
-			c   *config.Config
+			c   *razboy.Config
 		)
 
 		if len(args) < 2 {
@@ -43,19 +43,20 @@ var execCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Execute", "Execute a command on server")
 
-		c = &config.Config{
+		c = &razboy.Config{
 			Url:         args[0],
 			Method:      method,
 			Parameter:   parameter,
 			Key:         key,
 			Raw:         raw,
+			Proxy:       proxy,
 			Shellmethod: shellmethod,
 		}
 
 		kc, err = worker.Exec(args[1], c)
 
-		if debug && kc.GetRzResp() != nil {
-			debugger.HTTP(kc.GetRzResp())
+		if debug && kc.GetResponse() != nil {
+			debugger.HTTP(kc.GetResponse())
 		}
 
 		if err != nil {

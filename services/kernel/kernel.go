@@ -5,10 +5,10 @@ import (
 	"log"
 
 	"github.com/chzyer/readline"
-	"github.com/eatbytes/razboynik/services/config"
+	"github.com/eatbytes/razboy"
 )
 
-type KernelFunction func(*KernelCmd, *config.Config) (*KernelCmd, error)
+type KernelFunction func(*KernelCmd, *razboy.Config) (*KernelCmd, error)
 
 type KernelItem struct {
 	Name string
@@ -47,7 +47,7 @@ func Boot(def ...*KernelItem) *Kernel {
 	return kInstance
 }
 
-func (k *Kernel) Exec(kc *KernelCmd, config *config.Config) (*KernelCmd, error) {
+func (k *Kernel) Exec(kc *KernelCmd, config *razboy.Config) (*KernelCmd, error) {
 	for _, item := range k.items {
 		if item.Name == kc.name {
 			return item.Fn(kc, config)
@@ -57,7 +57,7 @@ func (k *Kernel) Exec(kc *KernelCmd, config *config.Config) (*KernelCmd, error) 
 	return k.def.Fn(kc, config)
 }
 
-func (k *Kernel) Run(config *config.Config) error {
+func (k *Kernel) Run(config *razboy.Config) error {
 	var err error
 
 	err = k._initReadline(config.Url)
@@ -72,7 +72,7 @@ func (k *Kernel) Run(config *config.Config) error {
 	return nil
 }
 
-func (k *Kernel) _loop(config *config.Config) {
+func (k *Kernel) _loop(config *razboy.Config) {
 	var (
 		kc, fkc     *KernelCmd
 		line, scope string

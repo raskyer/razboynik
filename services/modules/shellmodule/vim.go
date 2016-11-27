@@ -7,13 +7,12 @@ import (
 	"path/filepath"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/config"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/modules/phpmodule"
 	"github.com/eatbytes/sysgo"
 )
 
-func Vim(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
+func Vim(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	var (
 		request             *razboy.REQUEST
 		remote, local, resp string
@@ -25,11 +24,7 @@ func Vim(kc *kernel.KernelCmd, c *config.Config) (*kernel.KernelCmd, error) {
 		return kc, errors.New("Please write the path of the file to edit")
 	}
 
-	request = razboy.CreateRequest(
-		[4]string{c.Url, c.Method, c.Parameter, c.Key},
-		[2]string{c.Shellmethod, kc.GetScope()},
-		[2]bool{c.Raw, false},
-	)
+	request = razboy.CreateRequest("", kc.GetScope(), c)
 
 	remote = kc.GetArrItem(1)
 	local = "/tmp/tmp-razboynik." + filepath.Ext(remote)

@@ -8,7 +8,7 @@ import (
 )
 
 type KernelCmd struct {
-	res   *razboy.RazResponse
+	res   *razboy.RESPONSE
 	scope string
 	name  string
 	raw   string
@@ -119,7 +119,7 @@ func (kc KernelCmd) GetArrItem(i int, def ...string) string {
 	return item
 }
 
-func (kc KernelCmd) GetRzResp() *razboy.RazResponse {
+func (kc KernelCmd) GetResponse() *razboy.RESPONSE {
 	return kc.res
 }
 
@@ -137,7 +137,7 @@ func (kc *KernelCmd) GetResult() string {
 	return kc._body
 }
 
-func (kc *KernelCmd) SetResult(rzRes *razboy.RazResponse) {
+func (kc *KernelCmd) SetResult(rzRes *razboy.RESPONSE) {
 	kc.res = rzRes
 }
 
@@ -149,9 +149,9 @@ func (kc *KernelCmd) SetScope(scope string) {
 	kc.scope = scope
 }
 
-func (kc *KernelCmd) Send(request *razboy.REQUEST) (*razboy.RazResponse, error) {
+func (kc *KernelCmd) Send(request *razboy.REQUEST) (*razboy.RESPONSE, error) {
 	var (
-		rzRes *razboy.RazResponse
+		rzRes *razboy.RESPONSE
 		err   error
 	)
 
