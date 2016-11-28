@@ -28,12 +28,12 @@ func Api(port string) {
 func _apishell(w http.ResponseWriter, req *http.Request) {
 	var (
 		decoder *json.Decoder
-		api     apidata
+		api     *apidata
 		err     error
 	)
 
 	decoder = json.NewDecoder(req.Body)
-	err = decoder.Decode(&api)
+	err = decoder.Decode(api)
 
 	if err != nil {
 		fmt.Println(err)

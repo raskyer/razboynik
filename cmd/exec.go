@@ -40,8 +40,10 @@ var execCmd = &cobra.Command{
 			return errors.New("Not enough arguments.")
 		}
 
-		printer.PrintIntro()
-		printer.PrintSection("Execute", "Execute a command on server")
+		if !silent {
+			printer.PrintIntro()
+			printer.PrintSection("Execute", "Execute a command on server")
+		}
 
 		c = &razboy.Config{
 			Url:         args[0],
@@ -63,7 +65,11 @@ var execCmd = &cobra.Command{
 			return err
 		}
 
-		printer.PrintSection("Result", kc.GetResult())
+		if !silent {
+			printer.PrintSection("Result", kc.GetResult())
+		} else {
+			printer.Println(kc.GetResult())
+		}
 
 		return nil
 	},

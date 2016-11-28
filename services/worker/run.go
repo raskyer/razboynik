@@ -6,12 +6,8 @@ import (
 )
 
 func Run(config *razboy.Config) error {
-	var (
-		k *kernel.Kernel
-	)
+	var k *kernel.Kernel
 
 	k = kernel.Boot()
-	k.Run(config)
-
-	return nil
+	return k.Run(config)
 }

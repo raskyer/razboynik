@@ -7,15 +7,12 @@ import (
 
 func Exec(cmd string, config *razboy.Config) (*kernel.KernelCmd, error) {
 	var (
-		k   *kernel.Kernel
-		kc  *kernel.KernelCmd
-		err error
+		k  *kernel.Kernel
+		kc *kernel.KernelCmd
 	)
 
-	kc = kernel.CreateCmd(cmd)
 	k = kernel.Boot()
+	kc = kernel.CreateCmd(cmd)
 
-	kc, err = k.Exec(kc, config)
-
-	return kc, err
+	return k.Exec(kc, config)
 }

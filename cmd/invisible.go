@@ -36,8 +36,10 @@ var invisibleCmd = &cobra.Command{
 			return errors.New("Not enough arguments.")
 		}
 
-		printer.PrintIntro()
-		printer.PrintSection("Invisible", "Send invisible request")
+		if !silent {
+			printer.PrintIntro()
+			printer.PrintSection("Invisible", "Send invisible request")
+		}
 
 		result, err = worker.Invisible(args[0], args[1])
 
@@ -45,7 +47,11 @@ var invisibleCmd = &cobra.Command{
 			return err
 		}
 
-		printer.PrintSection("Result", result)
+		if !silent {
+			printer.PrintSection("Result", result)
+		} else {
+			printer.Println(result)
+		}
 
 		return nil
 	},

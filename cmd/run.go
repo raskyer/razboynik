@@ -37,8 +37,10 @@ var runCmd = &cobra.Command{
 			return errors.New("Not enough arguments.")
 		}
 
-		printer.PrintIntro()
-		printer.PrintSection("Run", "Run reverse shell with configuration")
+		if !silent {
+			printer.PrintIntro()
+			printer.PrintSection("Run", "Run reverse shell with configuration")
+		}
 
 		c = &razboy.Config{
 			Url:         args[0],

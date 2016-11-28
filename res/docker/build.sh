@@ -1,5 +1,5 @@
-cd ..
+cd ../..
 docker build -t go-razboynik .
 
-cd res/backdoor
+cd ../backdoor
 docker build -t php-razboynik .

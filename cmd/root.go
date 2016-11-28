@@ -23,14 +23,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
 var method string
 var parameter string
 var key string
-var proxy string
-var debug bool
 var shellmethod string
+var proxy string
+var encoding string
 var raw bool
+var debug bool
+var silent bool
 
 var RootCmd = &cobra.Command{
 	Use:   "razboynik",
@@ -49,24 +50,19 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.razboynik2.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&method, "method", "m", "GET", "Method to use. Ex: -m POST")
 	RootCmd.PersistentFlags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
 	RootCmd.PersistentFlags().StringVarP(&key, "key", "k", "FromRussiaWithLove<3", "Key to unlock optional small protection. Ex: -k keytounlock")
-	RootCmd.PersistentFlags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: -p http://localhost:8080")
 	RootCmd.PersistentFlags().StringVarP(&shellmethod, "shellmethod", "s", "system", "")
+	RootCmd.PersistentFlags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: -p http://localhost:8080")
+	RootCmd.PersistentFlags().StringVarP(&encoding, "encoding", "e", "base64", "")
 	RootCmd.PersistentFlags().BoolVarP(&raw, "raw", "r", false, "raw")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Print more information")
-
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	RootCmd.PersistentFlags().BoolVar(&silent, "silent", false, "Don't print anything else than result or error")
 }
 
 func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	}
-
-	viper.SetConfigName(".razboynik2")
+	viper.SetConfigName(".razboynik")
 	viper.AddConfigPath("$HOME")
 	viper.AutomaticEnv()
 
