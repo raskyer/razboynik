@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/eatbytes/razboynik/cmd/target"
+	"github.com/eatbytes/razboynik/services/printer"
+	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +25,12 @@ var targetCmd = &cobra.Command{
 	Use:   "target",
 	Short: "A brief description of your command",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("target called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if !silent {
+			printer.PrintIntro()
+		}
+
+		return worker.TargetList()
 	},
 }
 

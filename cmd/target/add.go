@@ -15,8 +15,8 @@
 package target
 
 import (
-	"fmt"
-
+	"github.com/eatbytes/razboynik/services/printer"
+	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,12 @@ var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "A brief description of your command",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if cmd.Flag("silent").Value.String() == "false" {
+			printer.PrintIntro()
+			printer.PrintSection("Add target", "Add a target in configuration")
+		}
+
+		return worker.TargetAdd()
 	},
 }

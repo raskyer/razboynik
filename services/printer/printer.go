@@ -21,7 +21,7 @@ func PrintIntro() {
 	color.Blue("_______________________________________________________________________")
 	fmt.Print("\n")
 
-	color.Yellow("из России с любовью <3 !")
+	color.White("из России с любовью <3 !")
 	fmt.Print("\n")
 }
 
@@ -37,7 +37,7 @@ func suc_intro() {
 	color.Green("_______________")
 }
 
-func det_intro(str string) {
+func PrintTitle(str string) {
 	var i, lenght int
 
 	lenght = len(str)
@@ -68,14 +68,17 @@ func PrintError(err error) {
 }
 
 func PrintSection(section string, str string) {
-	det_intro(section)
+	PrintTitle(section)
 	color.White(str)
 	fmt.Print("\n")
 }
 
 func PrintSectionI(section string, i ...interface{}) {
-	det_intro(section)
-	fmt.Println(i)
+	PrintTitle(section)
+
+	for _, item := range i {
+		fmt.Println(item)
+	}
 }
 
 func PrintlnI(i ...interface{}) {

@@ -15,12 +15,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/eatbytes/razboynik/services/booter"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -66,11 +64,4 @@ func init() {
 }
 
 func initConfig() {
-	viper.SetConfigName(".razboynik")
-	viper.AddConfigPath("$HOME")
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
 }
