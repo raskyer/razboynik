@@ -15,16 +15,27 @@
 package target
 
 import (
-	"fmt"
+	"errors"
 
+	"github.com/eatbytes/razboynik/services/printer"
+	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
 var EditCmd = &cobra.Command{
-	Use:   "edit",
+	Use:   "edit [target]",
 	Short: "A brief description of your command",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("edit called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("Not enough arguments.")
+		}
+
+		if cmd.Flag("silent").Value.String() == "false" {
+			printer.PrintIntro()
+			printer.PrintSection("Edit target", "Edit target '"+args[0]+"' in config file")
+		}
+
+		return worker.TargetEdit(args[0])
 	},
 }

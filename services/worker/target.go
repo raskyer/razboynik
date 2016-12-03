@@ -44,3 +44,76 @@ func TargetAdd() error {
 
 	return targetwork.SaveConfiguration(config)
 }
+
+func TargetEdit(name string) error {
+	var (
+		config *targetwork.Configuration
+		target *targetwork.Target
+		err    error
+	)
+
+	config, err = targetwork.GetConfiguration()
+
+	if err != nil {
+		return err
+	}
+
+	target, err = targetwork.FindTarget(config, name)
+
+	if err != nil {
+		return err
+	}
+
+	targetwork.EditTarget(target)
+
+	return targetwork.SaveConfiguration(config)
+}
+
+func TargetDetails(name string) error {
+	var (
+		config *targetwork.Configuration
+		target *targetwork.Target
+		err    error
+	)
+
+	config, err = targetwork.GetConfiguration()
+
+	if err != nil {
+		return err
+	}
+
+	target, err = targetwork.FindTarget(config, name)
+
+	if err != nil {
+		return err
+	}
+
+	printer.Println("Name: " + target.Name)
+	printer.Println("Url: " + target.Config.Url)
+	printer.Println("Method: " + target.Config.Method)
+	printer.Println("Parameter: " + target.Config.Parameter)
+
+	return nil
+}
+
+func TargetRun(name string) error {
+	var (
+		config *targetwork.Configuration
+		target *targetwork.Target
+		err    error
+	)
+
+	config, err = targetwork.GetConfiguration()
+
+	if err != nil {
+		return err
+	}
+
+	target, err = targetwork.FindTarget(config, name)
+
+	if err != nil {
+		return err
+	}
+
+	return Run(target.Config)
+}

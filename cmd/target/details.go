@@ -15,21 +15,27 @@
 package target
 
 import (
+	"errors"
+
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
-var AddCmd = &cobra.Command{
-	Use:   "add",
+var DetailsCmd = &cobra.Command{
+	Use:   "details [target]",
 	Short: "A brief description of your command",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if cmd.Flag("silent").Value.String() == "false" {
-			printer.PrintIntro()
-			printer.PrintSection("Add target", "Add target in config file")
+		if len(args) < 1 {
+			return errors.New("Not enough arguments.")
 		}
 
-		return worker.TargetAdd()
+		if cmd.Flag("silent").Value.String() == "false" {
+			printer.PrintIntro()
+			printer.PrintSection("Details target", "Details target '"+args[0]+"' in config file")
+		}
+
+		return worker.TargetDetails(args[0])
 	},
 }
