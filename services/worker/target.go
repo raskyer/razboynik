@@ -58,7 +58,7 @@ func TargetEdit(name string) error {
 		return err
 	}
 
-	target, err = targetwork.FindTarget(config, name)
+	target, _, err = targetwork.FindTarget(config, name)
 
 	if err != nil {
 		return err
@@ -82,7 +82,7 @@ func TargetDetails(name string) error {
 		return err
 	}
 
-	target, err = targetwork.FindTarget(config, name)
+	target, _, err = targetwork.FindTarget(config, name)
 
 	if err != nil {
 		return err
@@ -109,11 +109,35 @@ func TargetRun(name string) error {
 		return err
 	}
 
-	target, err = targetwork.FindTarget(config, name)
+	target, _, err = targetwork.FindTarget(config, name)
 
 	if err != nil {
 		return err
 	}
 
 	return Run(target.Config)
+}
+
+func TargetRemove(name string) error {
+	var (
+		config *targetwork.Configuration
+		index  int
+		err    error
+	)
+
+	config, err = targetwork.GetConfiguration()
+
+	if err != nil {
+		return err
+	}
+
+	_, index, err = targetwork.FindTarget(config, name)
+
+	if err != nil {
+		return err
+	}
+
+	config.Targets = append(config.Targets[:index], config.Targets[index+1:]...)
+
+	return targetwork.SaveConfiguration(config)
 }

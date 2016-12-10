@@ -32,7 +32,7 @@ var encodeCmd = &cobra.Command{
 		)
 
 		if len(args) < 1 {
-			return errors.New("Not enough argument.")
+			return errors.New("not enough arguments")
 		}
 
 		sEnc = worker.Encode(args[0])

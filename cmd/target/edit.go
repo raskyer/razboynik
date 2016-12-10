@@ -28,7 +28,7 @@ var EditCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
-			return errors.New("Not enough arguments.")
+			return errors.New("not enough arguments")
 		}
 
 		if cmd.Flag("silent").Value.String() == "false" {

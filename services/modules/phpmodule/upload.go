@@ -1,7 +1,6 @@
 package phpmodule
 
 import (
-	"bytes"
 	"errors"
 	"strings"
 
@@ -52,21 +51,9 @@ func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 }
 
 func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
-	var (
-		upload string
-		data   *bytes.Buffer
-		err    error
-	)
-
-	upload, data, err = phpadapter.CreateUpload(local, remote, request.GetConfig().Raw)
-
-	if err != nil {
-		return nil, err
-	}
-
-	request.Action = upload
+	request.Action = phpadapter.CreateUpload(remote)
 	request.Upload = true
-	request.Buffer = data
+	request.UploadPath = local
 
 	return razboy.Send(request)
 }

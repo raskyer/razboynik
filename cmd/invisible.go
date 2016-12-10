@@ -33,7 +33,7 @@ var invisibleCmd = &cobra.Command{
 		)
 
 		if len(args) < 2 {
-			return errors.New("Not enough arguments.")
+			return errors.New("not enough arguments")
 		}
 
 		if !silent {

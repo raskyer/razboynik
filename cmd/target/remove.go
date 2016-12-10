@@ -15,16 +15,27 @@
 package target
 
 import (
-	"fmt"
+	"errors"
 
+	"github.com/eatbytes/razboynik/services/printer"
+	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
 var RemoveCmd = &cobra.Command{
-	Use:   "remove",
+	Use:   "remove [target]",
 	Short: "A brief description of your command",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("remove called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("not enough arguments")
+		}
+
+		if cmd.Flag("silent").Value.String() == "false" {
+			printer.PrintIntro()
+			printer.PrintSection("Remove target", "Remove target '"+args[0]+"' in config file")
+		}
+
+		return worker.TargetRemove(args[0])
 	},
 }

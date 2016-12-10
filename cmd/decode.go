@@ -33,7 +33,7 @@ var decodeCmd = &cobra.Command{
 		)
 
 		if len(args) < 1 {
-			return errors.New("Not enough argument.")
+			return errors.New("not enough arguments")
 		}
 
 		sDec, err = worker.Decode(args[0])

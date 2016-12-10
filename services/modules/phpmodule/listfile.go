@@ -24,7 +24,7 @@ func ListFile(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error)
 		scope = "'" + kc.GetStr() + "'"
 	}
 
-	action = "$r=json_encode(scandir(" + scope + "));" + phpadapter.CreateAnswer(c.Method, c.Parameter)
+	action = phpadapter.CreateListFile(scope) + phpadapter.CreateAnswer(c.Method, c.Parameter)
 	request = razboy.CreateRequest(action, kc.GetScope(), c)
 
 	_, err = kc.Send(request)

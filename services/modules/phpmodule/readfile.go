@@ -22,7 +22,7 @@ func ReadFile(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error)
 		return kc, errors.New("You should give the path of the file")
 	}
 
-	action = "$r=file_get_contents('" + file + "');" + phpadapter.CreateAnswer(c.Method, c.Parameter)
+	action = phpadapter.CreateReadFile(file) + phpadapter.CreateAnswer(c.Method, c.Parameter)
 	request = razboy.CreateRequest(action, kc.GetScope(), c)
 
 	_, err = kc.Send(request)

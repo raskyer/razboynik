@@ -45,7 +45,7 @@ func _getInput(txt, def string) string {
 
 	color.Green(tmp)
 
-	return def
+	return tmp
 }
 
 func CreateTarget() *Target {
@@ -69,14 +69,14 @@ func EditTarget(target *Target) {
 	target.Config.Key = _getInput("key", target.Config.Key)
 }
 
-func FindTarget(config *Configuration, name string) (*Target, error) {
-	for _, item := range config.Targets {
+func FindTarget(config *Configuration, name string) (*Target, int, error) {
+	for i, item := range config.Targets {
 		if item.Name == name {
-			return item, nil
+			return item, i, nil
 		}
 	}
 
-	return nil, errors.New("No available target with name: " + name)
+	return nil, 0, errors.New("No available target with name: " + name)
 }
 
 func SaveConfiguration(config *Configuration) error {

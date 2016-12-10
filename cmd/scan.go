@@ -32,4 +32,9 @@ var scanCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(scanCmd)
+
+	scanCmd.LocalFlags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
+	scanCmd.LocalFlags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
+	scanCmd.LocalFlags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
+	runCmd.LocalFlags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
 }
