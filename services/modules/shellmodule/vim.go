@@ -51,7 +51,7 @@ func Vim(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	}
 
 	resp, err = sysgo.Call("rm " + local)
-	kc.SetBody(resp)
+	kc.WriteSuccess(resp)
 
 	return kc, err
 }

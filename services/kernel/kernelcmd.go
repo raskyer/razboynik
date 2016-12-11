@@ -16,7 +16,6 @@ type KernelCmd struct {
 	str   string
 	out   string
 	err   string
-	_body string
 }
 
 func CreateCmd(raw string, opt ...string) *KernelCmd {
@@ -128,21 +127,11 @@ func (kc KernelCmd) GetScope() string {
 }
 
 func (kc *KernelCmd) GetResult() string {
-	if kc._body != "" || kc.res == nil {
-		return kc._body
-	}
-
-	kc._body = kc.res.GetResult()
-
-	return kc._body
+	return kc.res.GetResult()
 }
 
-func (kc *KernelCmd) SetResult(rzRes *razboy.RESPONSE) {
+func (kc *KernelCmd) SetResponse(rzRes *razboy.RESPONSE) {
 	kc.res = rzRes
-}
-
-func (kc *KernelCmd) SetBody(body string) {
-	kc._body = body
 }
 
 func (kc *KernelCmd) SetScope(scope string) {
@@ -151,12 +140,12 @@ func (kc *KernelCmd) SetScope(scope string) {
 
 func (kc *KernelCmd) Send(request *razboy.REQUEST) (*razboy.RESPONSE, error) {
 	var (
-		rzRes *razboy.RESPONSE
-		err   error
+		response *razboy.RESPONSE
+		err      error
 	)
 
-	rzRes, err = razboy.Send(request)
-	kc.SetResult(rzRes)
+	response, err = razboy.Send(request)
+	kc.SetResponse(response)
 
-	return rzRes, err
+	return response, err
 }

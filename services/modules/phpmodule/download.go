@@ -28,8 +28,11 @@ func Download(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error)
 	local = kc.GetArrItem(2, "output.txt")
 
 	response, err = DownloadAction(remote, local, request)
-	kc.SetResult(response)
-	kc.SetBody("Downloaded successfully to " + local)
+	kc.SetResponse(response)
+
+	if err != nil {
+		kc.WriteSuccess("Downloaded successfully to " + local)
+	}
 
 	return kc, err
 }

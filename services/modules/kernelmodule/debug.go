@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"net/http/httputil"
+
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/fatih/color"
@@ -21,11 +23,15 @@ func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, erro
 	}
 
 	if !strings.Contains(fkc.GetStr(), "response") {
-		_requestInfo(kc, fkc)
+		b, _ := httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), true)
+		fmt.Println(string(b))
+		//_requestInfo(kc, fkc)
 	}
 
 	if !strings.Contains(fkc.GetStr(), "request") {
-		_responseInfo(kc, fkc)
+		b, _ := httputil.DumpResponse(fkc.GetResponse().GetHTTP(), false)
+		fmt.Println(string(b))
+		//_responseInfo(kc, fkc)
 	}
 
 	return fkc, nil

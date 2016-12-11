@@ -8,14 +8,14 @@ import (
 
 func Encode(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, error) {
 	sEnc := normalizer.Encode(kc.GetStr())
-	kc.SetBody(sEnc)
+	kc.WriteSuccess(sEnc)
 
 	return kc, nil
 }
 
 func Decode(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, error) {
 	sDec, err := normalizer.Decode(kc.GetStr())
-	kc.SetBody(sDec)
+	kc.WriteSuccess(sDec)
 
 	return kc, err
 }

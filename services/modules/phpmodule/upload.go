@@ -19,8 +19,7 @@ func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	)
 
 	if kc.GetArrLgt() < 2 {
-		err = errors.New("Please write the path of the local file to upload")
-		return kc, err
+		return kc, errors.New("Please write the path of the local file to upload")
 	}
 
 	request = razboy.CreateRequest("", kc.GetScope(), c)
@@ -37,7 +36,7 @@ func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	}
 
 	rzRes, err = UploadAction(local, remote, request)
-	kc.SetResult(rzRes)
+	kc.SetResponse(rzRes)
 
 	if err != nil {
 		return kc, err
