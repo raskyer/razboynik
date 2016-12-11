@@ -8,14 +8,15 @@ import (
 )
 
 type KernelCmd struct {
-	res   *razboy.RESPONSE
-	scope string
-	name  string
-	raw   string
-	arr   []string
-	str   string
-	out   string
-	err   string
+	res    *razboy.RESPONSE
+	result string
+	scope  string
+	name   string
+	raw    string
+	arr    []string
+	str    string
+	out    string
+	err    string
 }
 
 func CreateCmd(raw string, opt ...string) *KernelCmd {
@@ -126,8 +127,16 @@ func (kc KernelCmd) GetScope() string {
 	return kc.scope
 }
 
-func (kc *KernelCmd) GetResult() string {
-	return kc.res.GetResult()
+func (kc KernelCmd) GetResult() string {
+	if kc.res != nil {
+		kc.result = kc.res.GetResult()
+	}
+
+	return kc.result
+}
+
+func (kc *KernelCmd) SetResult(result string) {
+	kc.result = result
 }
 
 func (kc *KernelCmd) SetResponse(rzRes *razboy.RESPONSE) {

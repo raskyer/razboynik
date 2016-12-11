@@ -44,12 +44,20 @@ func Boot() {
 			Fn:   phpmodule.ReadFile,
 		},
 		&kernel.KernelItem{
+			Name: "-delete",
+			Fn:   phpmodule.Delete,
+		},
+		&kernel.KernelItem{
 			Name: "-upload",
 			Fn:   phpmodule.Upload,
 		},
 		&kernel.KernelItem{
 			Name: "-download",
 			Fn:   phpmodule.Download,
+		},
+		&kernel.KernelItem{
+			Name: "-sys",
+			Fn:   kernelmodule.Sys,
 		},
 		&kernel.KernelItem{
 			Name: "-debug",

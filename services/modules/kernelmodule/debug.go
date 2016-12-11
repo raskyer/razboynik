@@ -3,7 +3,6 @@ package kernelmodule
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 
 	"net/http/httputil"
@@ -14,7 +13,11 @@ import (
 )
 
 func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, error) {
-	var fkc *kernel.KernelCmd
+	var (
+		fkc *kernel.KernelCmd
+		b   []byte
+		err error
+	)
 
 	fkc = kernel.Boot().GetFormerCmd()
 
@@ -23,98 +26,27 @@ func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, erro
 	}
 
 	if !strings.Contains(fkc.GetStr(), "response") {
-		b, _ := httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), true)
+		color.Yellow("--- Request ---")
+		b, err = httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), true)
+
+		if err != nil {
+			b, _ = httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), false)
+			color.Red(err.Error())
+		}
+
 		fmt.Println(string(b))
-		//_requestInfo(kc, fkc)
 	}
 
 	if !strings.Contains(fkc.GetStr(), "request") {
-		b, _ := httputil.DumpResponse(fkc.GetResponse().GetHTTP(), false)
+		color.Yellow("--- Response ---")
+		b, err = httputil.DumpResponse(fkc.GetResponse().GetHTTP(), false)
+
+		if err != nil {
+			color.Red(err.Error())
+		}
+
 		fmt.Println(string(b))
-		//_responseInfo(kc, fkc)
 	}
 
 	return fkc, nil
-}
-
-func _requestInfo(kc, fkc *kernel.KernelCmd) {
-	var (
-		flag bool
-		str  string
-		r    *http.Request
-	)
-
-	color.Yellow("--- Request ---")
-
-	flag = false
-	r = fkc.GetResponse().GetRequest().GetHTTP()
-	str = kc.GetStr()
-
-	if strings.Contains(str, "-url") {
-		color.Cyan("Url: ")
-		fmt.Println(r.URL.String())
-		flag = true
-	}
-
-	if strings.Contains(str, "-method") {
-		color.Cyan("Method: ")
-		fmt.Println(r.Method)
-		flag = true
-	}
-
-	if strings.Contains(str, "-body") {
-		color.Cyan("Body: ")
-		fmt.Println(r.PostForm)
-		flag = true
-	}
-
-	if strings.Contains(str, "-header") {
-		color.Cyan("Header: ")
-		fmt.Println(r.Header)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(r)
-	}
-
-	color.Unset()
-}
-
-func _responseInfo(kc, fkc *kernel.KernelCmd) {
-	var (
-		flag bool
-		str  string
-		r    *http.Response
-	)
-
-	color.Yellow("--- Response ---")
-
-	flag = false
-	r = fkc.GetResponse().GetHTTP()
-	str = kc.GetStr()
-
-	if strings.Contains(str, "-status") {
-		color.Cyan("Status:")
-		fmt.Println(r.Status)
-		flag = true
-	}
-
-	if strings.Contains(str, "-body") {
-		color.Cyan("Body:")
-		fmt.Println(fkc.GetResult())
-		flag = true
-	}
-
-	if strings.Contains(str, "-headers") {
-		color.Cyan("Headers:")
-		fmt.Println(r.Header)
-		flag = true
-	}
-
-	if !flag {
-		fmt.Println(r)
-	}
-
-	color.Unset()
 }

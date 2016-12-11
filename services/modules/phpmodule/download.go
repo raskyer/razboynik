@@ -31,7 +31,7 @@ func Download(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error)
 	kc.SetResponse(response)
 
 	if err != nil {
-		kc.WriteSuccess("Downloaded successfully to " + local)
+		kc.SetResult("Downloaded successfully to " + local)
 	}
 
 	return kc, err

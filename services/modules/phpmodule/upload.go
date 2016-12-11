@@ -42,7 +42,7 @@ func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		return kc, err
 	}
 
-	if kc.GetResult() == "1" {
+	if kc.GetResult() != "1" {
 		return kc, errors.New("Server havn't upload the file")
 	}
 
