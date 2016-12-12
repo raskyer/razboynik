@@ -16,7 +16,6 @@ func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, erro
 	var (
 		fkc *kernel.KernelCmd
 		b   []byte
-		err error
 	)
 
 	fkc = kernel.Boot().GetFormerCmd()
@@ -27,25 +26,15 @@ func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, erro
 
 	if !strings.Contains(fkc.GetStr(), "response") {
 		color.Yellow("--- Request ---")
-		b, err = httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), true)
-
-		if err != nil {
-			b, _ = httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), false)
-			color.Red(err.Error())
-		}
-
-		fmt.Println(string(b))
+		b, _ = httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), false)
+		fmt.Print(string(b))
+		fmt.Println(string(fkc.GetResponse().GetRequest().GetBody()), "\n")
 	}
 
 	if !strings.Contains(fkc.GetStr(), "request") {
 		color.Yellow("--- Response ---")
-		b, err = httputil.DumpResponse(fkc.GetResponse().GetHTTP(), false)
-
-		if err != nil {
-			color.Red(err.Error())
-		}
-
-		fmt.Println(string(b))
+		b, _ = httputil.DumpResponse(fkc.GetResponse().GetHTTP(), false)
+		fmt.Print(string(b))
 	}
 
 	return fkc, nil
