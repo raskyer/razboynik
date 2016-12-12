@@ -2,7 +2,6 @@ package kernelmodule
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"net/http/httputil"
@@ -25,16 +24,16 @@ func Debug(kc *kernel.KernelCmd, config *razboy.Config) (*kernel.KernelCmd, erro
 	}
 
 	if !strings.Contains(fkc.GetStr(), "response") {
-		color.Yellow("--- Request ---")
+		kc.WriteSuccess(color.YellowString("--- Request ---"))
 		b, _ = httputil.DumpRequestOut(fkc.GetResponse().GetRequest().GetHTTP(), false)
-		fmt.Print(string(b))
-		fmt.Println(string(fkc.GetResponse().GetRequest().GetBody()), "\n")
+		kc.WriteSuccess(string(b))
+		kc.WriteSuccess(string(fkc.GetResponse().GetRequest().GetBody()) + "\n")
 	}
 
 	if !strings.Contains(fkc.GetStr(), "request") {
-		color.Yellow("--- Response ---")
+		kc.WriteSuccess(color.YellowString("--- Response ---"))
 		b, _ = httputil.DumpResponse(fkc.GetResponse().GetHTTP(), false)
-		fmt.Print(string(b))
+		kc.WriteSuccess(string(b))
 	}
 
 	return fkc, nil

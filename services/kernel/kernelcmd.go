@@ -2,6 +2,7 @@ package kernel
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/eatbytes/razboy"
@@ -31,6 +32,18 @@ func CreateCmd(raw string, opt ...string) *KernelCmd {
 
 	arr = strings.Fields(raw)
 
+	if i := extractIn(arr, "->"); i != -1 {
+		out = arr[i+1]
+		arr = append(arr[:i], arr[i+2:]...)
+		raw = strings.Join(arr, " ")
+	}
+
+	if i := extractIn(arr, "-2>"); i != -1 {
+		err = arr[i+1]
+		arr = append(arr[:i], arr[i+2:]...)
+		raw = strings.Join(arr, " ")
+	}
+
 	if len(arr) > 0 {
 		name = arr[0]
 
@@ -40,14 +53,6 @@ func CreateCmd(raw string, opt ...string) *KernelCmd {
 
 	if len(opt) > 0 {
 		scope = opt[0]
-	}
-
-	if len(opt) > 1 {
-		out = opt[1]
-	}
-
-	if len(opt) > 2 {
-		err = opt[2]
 	}
 
 	return &KernelCmd{
@@ -73,15 +78,33 @@ func (kc KernelCmd) Write(str string, err error) {
 func (kc KernelCmd) WriteSuccess(str string) {
 	str = strings.Trim(str, "\n")
 
-	if kc.out == "&1" && str != "" {
-		fmt.Println(str)
+	if str == "" {
+		return
 	}
+
+	if kc.out != "&1" {
+		err := writeInFile(kc.out, []byte(str))
+
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		return
+	}
+
+	fmt.Println(str)
 }
 
 func (kc KernelCmd) WriteError(err error) {
-	if kc.err == "&2" {
-		fmt.Println(err.Error())
+	if kc.err != "&2" {
+		err := writeInFile(kc.out, []byte(err.Error()))
+
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
+
+	fmt.Println(err.Error())
 }
 
 func (kc KernelCmd) GetName() string {
@@ -157,4 +180,33 @@ func (kc *KernelCmd) Send(request *razboy.REQUEST) (*razboy.RESPONSE, error) {
 	kc.SetResponse(response)
 
 	return response, err
+}
+
+func writeInFile(path string, buf []byte) error {
+	var (
+		f   *os.File
+		err error
+	)
+
+	f, err = os.Create(path)
+
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	_, err = f.Write(buf)
+
+	return err
+}
+
+func extractIn(slice []string, value string) int {
+	for p, v := range slice {
+		if v == value {
+			return p
+		}
+	}
+
+	return -1
 }
