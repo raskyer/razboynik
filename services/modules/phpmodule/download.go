@@ -22,9 +22,9 @@ func Download(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error)
 		return kc, errors.New("Please write the path of the file to download")
 	}
 
-	request = razboy.CreateRequest("", kc.GetScope(), c)
+	request = razboy.CreateRequest("", c)
 
-	remote = _getRemote(kc.GetArr(), kc.GetScope())
+	remote = _getRemote(kc.GetArr(), c.Shellscope)
 	local = kc.GetArrItem(2, "output.txt")
 
 	response, err = DownloadAction(remote, local, request)

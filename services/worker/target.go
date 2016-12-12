@@ -92,6 +92,8 @@ func TargetDetails(name string) error {
 	printer.Println("Url: " + target.Config.Url)
 	printer.Println("Method: " + target.Config.Method)
 	printer.Println("Parameter: " + target.Config.Parameter)
+	printer.Println("Shellmethod: " + target.Config.Shellmethod)
+	printer.Println("Shellscope: " + target.Config.Shellscope)
 
 	return nil
 }

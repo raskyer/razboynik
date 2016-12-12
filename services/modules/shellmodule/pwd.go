@@ -16,8 +16,8 @@ func Pwd(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		err     error
 	)
 
-	action = phpadapter.CreateCMD(kc.GetRaw(), kc.GetScope(), c.Shellmethod) + phpadapter.CreateAnswer(c.Method, c.Parameter)
-	request = razboy.CreateRequest(action, kc.GetScope(), c)
+	action = phpadapter.CreateCMD(kc.GetRaw(), c.Shellscope, c.Shellmethod) + phpadapter.CreateAnswer(c.Method, c.Parameter)
+	request = razboy.CreateRequest(action, c)
 	_, err = kc.Send(request)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func Pwd(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	scope = strings.TrimSpace(kc.GetResult())
 
 	if scope != "" {
-		kc.SetScope(scope)
+		c.Shellscope = scope
 		kernel.Boot().UpdatePrompt(c.Url, scope)
 	}
 

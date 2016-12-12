@@ -1,5 +1,11 @@
 package kernel
 
+import (
+	"errors"
+
+	"github.com/eatbytes/razboy"
+)
+
 func (k Kernel) GetDefaultItem() *KernelItem {
 	return k.def
 }
@@ -52,4 +58,8 @@ func (k *Kernel) UpdatePrompt(url, scope string) {
 	}
 
 	k.readline.SetPrompt("(" + url + "):" + scope + "$ ")
+}
+
+func KernelDefault(kc *KernelCmd, config *razboy.Config) (*KernelCmd, error) {
+	return kc, errors.New("No default fonction defined")
 }

@@ -15,7 +15,7 @@ func HTTP(res *razboy.RESPONSE) {
 	color.Yellow("--- Request ---")
 	b, _ := httputil.DumpRequestOut(res.GetRequest().GetHTTP(), false)
 	fmt.Println(string(b))
-	fmt.Println(string(res.GetRequest().GetBody()) + "\n")
+	fmt.Println(string(res.GetRequest().GetBody()))
 
 	color.Yellow("--- Respone ---")
 	b, _ = httputil.DumpResponse(res.GetHTTP(), true)

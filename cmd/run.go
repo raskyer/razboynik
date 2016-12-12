@@ -48,8 +48,9 @@ var runCmd = &cobra.Command{
 			Parameter:   parameter,
 			Key:         key,
 			Proxy:       proxy,
-			Raw:         raw,
+			Encoding:    encoding,
 			Shellmethod: shellmethod,
+			Shellscope:  shellscope,
 		}
 
 		err = worker.Run(c)
@@ -61,13 +62,11 @@ var runCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(runCmd)
 
-	runCmd.LocalFlags().StringVarP(&method, "method", "m", "GET", "Method to use. Ex: -m POST")
-	runCmd.LocalFlags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
-	runCmd.LocalFlags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
-	runCmd.LocalFlags().StringVarP(&shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
-	runCmd.LocalFlags().StringVarP(&encoding, "encoding", "e", "base64", "Encoding of the request. Ex: -e base64")
-	runCmd.LocalFlags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
-	runCmd.LocalFlags().BoolVarP(&raw, "raw", "r", false, "*DEPRECATED* (use encoding instead) raw")
-	runCmd.LocalFlags().BoolVar(&debug, "debug", false, "Print more information for debugging. Ex: --debug")
-	runCmd.LocalFlags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
+	runCmd.Flags().StringVarP(&method, "method", "m", "GET", "Method to use. Ex: -m POST")
+	runCmd.Flags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
+	runCmd.Flags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
+	runCmd.Flags().StringVarP(&shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
+	runCmd.Flags().StringVarP(&encoding, "encoding", "e", "base64", "Encoding of the request. Ex: -e base64")
+	runCmd.Flags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
+	runCmd.Flags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
 }

@@ -24,7 +24,7 @@ import (
 
 var DetailsCmd = &cobra.Command{
 	Use:   "details [target]",
-	Short: "A brief description of your command",
+	Short: "Get details of a target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {

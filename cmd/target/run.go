@@ -24,7 +24,7 @@ import (
 
 var RunCmd = &cobra.Command{
 	Use:   "run [target]",
-	Short: "A brief description of your command",
+	Short: "Run reverse shell on target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {

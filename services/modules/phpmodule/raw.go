@@ -11,7 +11,7 @@ func Raw(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		err     error
 	)
 
-	request = razboy.CreateRequest(kc.GetStr(), kc.GetScope(), c)
+	request = razboy.CreateRequest(kc.GetStr(), c)
 	_, err = kc.Send(request)
 
 	return kc, err

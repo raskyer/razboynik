@@ -23,7 +23,7 @@ import (
 
 var apiCmd = &cobra.Command{
 	Use:   "api",
-	Short: "A brief description of your command",
+	Short: "(In progress)",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("api called")

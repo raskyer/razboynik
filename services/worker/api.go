@@ -9,14 +9,9 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type apirequest struct {
-	action string
-	scope  string
-}
-
 type apidata struct {
-	config  razboy.Config
-	request apirequest
+	config razboy.Config
+	action string
 }
 
 func Api(port string) {
@@ -41,10 +36,10 @@ func _apishell(w http.ResponseWriter, req *http.Request) {
 
 	defer req.Body.Close()
 
-	fmt.Println(api.request)
+	fmt.Println(api)
 
 	k := kernel.Boot()
-	kc := kernel.CreateCmd(api.request.action, api.request.scope)
+	kc := kernel.CreateCmd(api.action)
 
 	kc, err = k.Exec(kc, &api.config)
 }

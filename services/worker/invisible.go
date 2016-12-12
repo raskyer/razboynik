@@ -20,7 +20,7 @@ func Invisible(url, referer string) (string, error) {
 		Key:       "",
 	}
 
-	request = razboy.CreateRequest("", "", c)
+	request = razboy.CreateRequest("", c)
 	request.Headers = []razboy.HEADER{
 		razboy.HEADER{
 			Key:   "Referer",

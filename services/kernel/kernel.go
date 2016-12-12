@@ -32,7 +32,7 @@ func Boot(def ...*KernelItem) *Kernel {
 	if kInstance == nil {
 		defaultFn = &KernelItem{
 			Name: "kernel.default",
-			Fn:   _kernelDefault,
+			Fn:   KernelDefault,
 		}
 
 		if len(def) > 0 {
@@ -60,7 +60,7 @@ func (k *Kernel) Exec(kc *KernelCmd, config *razboy.Config) (*KernelCmd, error) 
 func (k *Kernel) Run(config *razboy.Config) error {
 	var err error
 
-	err = k._initReadline(config.Url)
+	err = k.initReadline(config.Url)
 
 	if err != nil {
 		return err
@@ -74,12 +74,10 @@ func (k *Kernel) Run(config *razboy.Config) error {
 
 func (k *Kernel) _loop(config *razboy.Config) {
 	var (
-		kc, fkc     *KernelCmd
-		line, scope string
-		err         error
+		kc, fkc *KernelCmd
+		line    string
+		err     error
 	)
-
-	scope = ""
 
 	defer k.readline.Close()
 	log.SetOutput(k.readline.Stderr())
@@ -96,11 +94,10 @@ func (k *Kernel) _loop(config *razboy.Config) {
 		}
 
 		if fkc != nil {
-			scope = fkc.GetScope()
 			k.SetFormerCmd(fkc)
 		}
 
-		kc = CreateCmd(line, scope)
+		kc = CreateCmd(line)
 		fkc, err = k.Exec(kc, config)
 
 		if err != nil {
@@ -110,4 +107,35 @@ func (k *Kernel) _loop(config *razboy.Config) {
 
 		fkc.WriteSuccess(fkc.GetResult())
 	}
+}
+
+func (k *Kernel) initReadline(url string) error {
+	var (
+		rl            *readline.Instance
+		config        *readline.Config
+		autocompleter *readline.PrefixCompleter
+		commands      []string
+		err           error
+	)
+
+	autocompleter = readline.NewPrefixCompleter()
+	commands = append(k.commons, k.GetItemsName()...)
+
+	for _, item := range commands {
+		child := readline.PcItem(item)
+		autocompleter.SetChildren(append(autocompleter.GetChildren(), child))
+	}
+
+	config = &readline.Config{
+		Prompt:          "(" + url + ")$ ",
+		HistoryFile:     "/tmp/razboynik.tmp",
+		AutoComplete:    autocompleter,
+		InterruptPrompt: "^C",
+		EOFPrompt:       "exit",
+	}
+
+	rl, err = readline.NewEx(config)
+	k.readline = rl
+
+	return err
 }

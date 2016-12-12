@@ -22,7 +22,7 @@ import (
 
 var AddCmd = &cobra.Command{
 	Use:   "add",
-	Short: "A brief description of your command",
+	Short: "Add a target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if cmd.Flag("silent").Value.String() == "false" {

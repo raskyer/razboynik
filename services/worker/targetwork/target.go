@@ -66,6 +66,7 @@ func EditTarget(target *Target) {
 	target.Config.Method = _getInput("method [GET, POST, HEADER, COOKIE]", target.Config.Method)
 	target.Config.Parameter = _getInput("parameter", target.Config.Parameter)
 	target.Config.Shellmethod = _getInput("shell method [system, shell_exec]", target.Config.Shellmethod)
+	target.Config.Shellscope = _getInput("shell scope ['./', '/']", target.Config.Shellscope)
 	target.Config.Key = _getInput("key", target.Config.Key)
 }
 

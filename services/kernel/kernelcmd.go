@@ -11,7 +11,6 @@ import (
 type KernelCmd struct {
 	res    *razboy.RESPONSE
 	result string
-	scope  string
 	name   string
 	raw    string
 	arr    []string
@@ -20,13 +19,12 @@ type KernelCmd struct {
 	err    string
 }
 
-func CreateCmd(raw string, opt ...string) *KernelCmd {
+func CreateCmd(raw string) *KernelCmd {
 	var (
-		arr                        []string
-		str, out, err, name, scope string
+		arr                 []string
+		str, out, err, name string
 	)
 
-	scope = ""
 	out = "&1"
 	err = "&2"
 
@@ -51,18 +49,13 @@ func CreateCmd(raw string, opt ...string) *KernelCmd {
 		str = strings.Join(tmp, " ")
 	}
 
-	if len(opt) > 0 {
-		scope = opt[0]
-	}
-
 	return &KernelCmd{
-		scope: scope,
-		name:  name,
-		raw:   raw,
-		arr:   arr,
-		str:   str,
-		out:   out,
-		err:   err,
+		name: name,
+		raw:  raw,
+		arr:  arr,
+		str:  str,
+		out:  out,
+		err:  err,
 	}
 }
 
@@ -146,10 +139,6 @@ func (kc KernelCmd) GetResponse() *razboy.RESPONSE {
 	return kc.res
 }
 
-func (kc KernelCmd) GetScope() string {
-	return kc.scope
-}
-
 func (kc KernelCmd) GetResult() string {
 	if kc.res != nil {
 		kc.result = kc.res.GetResult()
@@ -164,10 +153,6 @@ func (kc *KernelCmd) SetResult(result string) {
 
 func (kc *KernelCmd) SetResponse(rzRes *razboy.RESPONSE) {
 	kc.res = rzRes
-}
-
-func (kc *KernelCmd) SetScope(scope string) {
-	kc.scope = scope
 }
 
 func (kc *KernelCmd) Send(request *razboy.REQUEST) (*razboy.RESPONSE, error) {

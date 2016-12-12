@@ -20,8 +20,8 @@ func Cd(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		return Raw(kc, c)
 	}
 
-	action = phpadapter.CreateCD(kc.GetRaw(), kc.GetScope(), c.Shellmethod) + phpadapter.CreateAnswer(c.Method, c.Parameter)
-	request = razboy.CreateRequest(action, kc.GetScope(), c)
+	action = phpadapter.CreateCD(kc.GetRaw(), c.Shellscope, c.Shellmethod) + phpadapter.CreateAnswer(c.Method, c.Parameter)
+	request = razboy.CreateRequest(action, c)
 
 	_, err = kc.Send(request)
 
@@ -32,7 +32,7 @@ func Cd(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 	scope = strings.TrimSpace(kc.GetResult())
 
 	if scope != "" {
-		kc.SetScope(scope)
+		c.Shellscope = scope
 		kernel.Boot().UpdatePrompt(c.Url, scope)
 	}
 

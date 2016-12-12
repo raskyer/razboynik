@@ -22,8 +22,8 @@ import (
 
 // scanCmd represents the scan command
 var scanCmd = &cobra.Command{
-	Use:   "scan",
-	Short: "A brief description of your command",
+	Use:   "scan [url]",
+	Short: "Scan a target by url",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("scan called")
@@ -33,8 +33,8 @@ var scanCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(scanCmd)
 
-	scanCmd.LocalFlags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
-	scanCmd.LocalFlags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
-	scanCmd.LocalFlags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
-	runCmd.LocalFlags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
+	scanCmd.Flags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
+	scanCmd.Flags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
+	scanCmd.Flags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
+	scanCmd.Flags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
 }

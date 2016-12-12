@@ -22,12 +22,12 @@ func Delete(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		return kc, errors.New("You should give the path of the file")
 	}
 
-	if kc.GetScope() != "" {
-		scope = kc.GetScope() + "/" + scope
+	if c.Shellscope != "" {
+		scope = c.Shellscope + "/" + scope
 	}
 
 	action = phpadapter.CreateDelete(scope) + phpadapter.CreateAnswer(c.Method, c.Parameter)
-	request = razboy.CreateRequest(action, kc.GetScope(), c)
+	request = razboy.CreateRequest(action, c)
 
 	_, err = kc.Send(request)
 

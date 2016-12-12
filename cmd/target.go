@@ -23,7 +23,7 @@ import (
 
 var targetCmd = &cobra.Command{
 	Use:   "target",
-	Short: "A brief description of your command",
+	Short: "Target handler",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !silent {

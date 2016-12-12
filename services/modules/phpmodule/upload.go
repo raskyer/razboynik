@@ -22,7 +22,7 @@ func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		return kc, errors.New("Please write the path of the local file to upload")
 	}
 
-	request = razboy.CreateRequest("", kc.GetScope(), c)
+	request = razboy.CreateRequest("", c)
 
 	arr = kc.GetArr()
 	local = arr[1]

@@ -24,7 +24,7 @@ func Vim(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
 		return kc, errors.New("Please write the path of the file to edit")
 	}
 
-	request = razboy.CreateRequest("", kc.GetScope(), c)
+	request = razboy.CreateRequest("", c)
 
 	remote = kc.GetArrItem(1)
 	local = "/tmp/tmp-razboynik." + filepath.Ext(remote)

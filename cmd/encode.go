@@ -24,7 +24,7 @@ import (
 
 var encodeCmd = &cobra.Command{
 	Use:   "encode [str]",
-	Short: "Encode in base64 the string pass in argument",
+	Short: "Encode in base64",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (

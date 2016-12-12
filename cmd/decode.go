@@ -24,7 +24,7 @@ import (
 
 var decodeCmd = &cobra.Command{
 	Use:   "decode [str]",
-	Short: "Decode the base64 string pass in argument",
+	Short: "Decode the base64 string",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
