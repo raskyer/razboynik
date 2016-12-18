@@ -9,10 +9,12 @@ import (
 )
 
 type KernelFunction func(*KernelCmd, *razboy.Config) (*KernelCmd, error)
+type CompleteFunction func(string, *razboy.Config) []string
 
 type KernelItem struct {
-	Name string
-	Fn   KernelFunction
+	Name     string
+	Fn       KernelFunction
+	Callback CompleteFunction
 }
 
 type Kernel struct {
@@ -20,7 +22,6 @@ type Kernel struct {
 	items    []*KernelItem
 	readline *readline.Instance
 	former   *KernelCmd
-	commons  []string
 	run      bool
 }
 
@@ -60,7 +61,7 @@ func (k *Kernel) Exec(kc *KernelCmd, config *razboy.Config) (*KernelCmd, error) 
 func (k *Kernel) Run(config *razboy.Config) error {
 	var err error
 
-	err = k.initReadline(config.Url)
+	err = k.initReadline(config)
 
 	if err != nil {
 		return err
@@ -109,25 +110,32 @@ func (k *Kernel) _loop(config *razboy.Config) {
 	}
 }
 
-func (k *Kernel) initReadline(url string) error {
+func (k *Kernel) initReadline(c *razboy.Config) error {
 	var (
 		rl            *readline.Instance
 		config        *readline.Config
 		autocompleter *readline.PrefixCompleter
-		commands      []string
+		child         *readline.PrefixCompleter
 		err           error
 	)
 
 	autocompleter = readline.NewPrefixCompleter()
-	commands = append(k.commons, k.GetItemsName()...)
 
-	for _, item := range commands {
-		child := readline.PcItem(item)
+	for _, item := range k.GetItems() {
+		if item.Callback != nil {
+			child = readline.PcItem(
+				item.Name,
+				readline.PcItemDynamic(dynamicAdapter(c, item)),
+			)
+		} else {
+			child = readline.PcItem(item.Name)
+		}
+
 		autocompleter.SetChildren(append(autocompleter.GetChildren(), child))
 	}
 
 	config = &readline.Config{
-		Prompt:          "(" + url + ")$ ",
+		Prompt:          "(" + c.Url + ")$ ",
 		HistoryFile:     "/tmp/razboynik.tmp",
 		AutoComplete:    autocompleter,
 		InterruptPrompt: "^C",
@@ -138,4 +146,10 @@ func (k *Kernel) initReadline(url string) error {
 	k.readline = rl
 
 	return err
+}
+
+func dynamicAdapter(c *razboy.Config, item *KernelItem) func(string) []string {
+	return func(line string) []string {
+		return item.Callback(line, c)
+	}
 }

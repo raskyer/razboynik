@@ -20,8 +20,9 @@ func Boot() {
 
 	i = []*kernel.KernelItem{
 		&kernel.KernelItem{
-			Name: "cd",
-			Fn:   shellmodule.Cd,
+			Name:     "cd",
+			Fn:       shellmodule.Cd,
+			Callback: k.ListRemoteFiles,
 		},
 		&kernel.KernelItem{
 			Name: "vim",
@@ -48,8 +49,9 @@ func Boot() {
 			Fn:   phpmodule.Delete,
 		},
 		&kernel.KernelItem{
-			Name: "-upload",
-			Fn:   phpmodule.Upload,
+			Name:     "-upload",
+			Fn:       phpmodule.Upload,
+			Callback: k.ListLocalFiles,
 		},
 		&kernel.KernelItem{
 			Name: "-download",

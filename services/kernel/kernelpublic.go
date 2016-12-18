@@ -28,10 +28,6 @@ func (k Kernel) GetItemsName() []string {
 	return names
 }
 
-func (k Kernel) GetCommons() []string {
-	return k.commons
-}
-
 func (k *Kernel) SetFormerCmd(kc *KernelCmd) {
 	k.former = kc
 }
