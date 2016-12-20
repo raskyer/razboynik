@@ -10,40 +10,64 @@ import (
 )
 
 type apidata struct {
-	config razboy.Config
-	action string
+	Config razboy.Config
+	Action string
 }
 
-func Api(port string) {
-	http.HandleFunc("/api/shell", _apishell)
-	http.HandleFunc("/api/php", _apiphp)
-	http.ListenAndServe(":"+port, nil)
+type apiresponse struct {
+	Status   string
+	Response string
 }
 
-func _apishell(w http.ResponseWriter, req *http.Request) {
+func Api(port string) error {
+	http.HandleFunc("/api/exec", _apiExec)
+
+	return http.ListenAndServe(":"+port, nil)
+}
+
+func _apiExec(w http.ResponseWriter, req *http.Request) {
 	var (
 		decoder *json.Decoder
 		api     *apidata
+		apires  apiresponse
 		err     error
 	)
+
+	api = new(apidata)
 
 	decoder = json.NewDecoder(req.Body)
 	err = decoder.Decode(api)
 
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	defer req.Body.Close()
 
-	fmt.Println(api)
-
 	k := kernel.Boot()
-	kc := kernel.CreateCmd(api.action)
+	kc := kernel.CreateCmd(api.Action)
 
-	kc, err = k.Exec(kc, &api.config)
-}
+	kc, err = k.Exec(kc, &api.Config)
 
-func _apiphp(w http.ResponseWriter, req *http.Request) {
+	if err != nil {
+		apires = apiresponse{
+			Status:   "error",
+			Response: err.Error(),
+		}
+	} else {
+		apires = apiresponse{
+			Status:   "success",
+			Response: kc.GetResult(),
+		}
+	}
 
+	res, err := json.Marshal(apires)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Write(res)
 }

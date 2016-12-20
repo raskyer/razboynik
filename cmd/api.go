@@ -21,6 +21,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var port string
+
 var apiCmd = &cobra.Command{
 	Use:   "api",
 	Short: "(In progress)",
@@ -28,11 +30,11 @@ var apiCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("api called")
 
-		worker.Api("8080")
-		return nil
+		return worker.Api(port)
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(apiCmd)
+	apiCmd.Flags().StringVarP(&port, "port", "p", "8080", "Web server's port")
 }
