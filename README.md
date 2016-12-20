@@ -1,18 +1,16 @@
+(screen)
+
 #Razboynik - разбойник
-Razboynik is the FurezLegacy project on Go
+Razboynik, gain reverse shell with a simple PHP backdoor
 
-##Main Goal ?
-Razboynik wants to be the best reverse shell based on PHP backdoor
+##Current version
+2.0.0
 
-##FurezLegacy ?
-FurezApi Framework was a little PHP website that exploit PHP backdoor.
-It allow you to exploit file upload vulnerability on web server.
-The main goal was pretty simple : Test every possibilities of infected files to upload, and then, if the upload is successful:
-
-- giving you a user interface to manage datas
-- allowing you to do what you want on server
-
-Show the folder structure of the website ? Show a specific file ? Zip content ? Download content ? Upload or even delete ? If the API succeed to be upload on the server. You're the new king of this one!
+##How it works ?
+- Upload the infected file on a webserver (thanks to file upload vulnerability)
+- Start Razboynik with the right information
+- You have a reverse shell on the server
+- Enjoy
 
 ##Why Razboynik ?
 Where FurezApi Framework and later FurezExploit (C++ brother) were boring and long to setup and install, Razboynik learnt about those mistakes and fix it. 
@@ -24,38 +22,41 @@ Razboynik is giving you a better interface to handle the server (nothing better 
 - Easy to plug bundle and plugin thanks to modules
 - Proxied tunnel (on the way)
 
-##Binary
-(Not available yet)
+##FurezLegacy ?
+Razboynik is the FurezLegacy project on Golang.
+FurezApi Framework was a little PHP website that exploit PHP backdoor.
+It allow you to exploit file upload vulnerability on web server.
+The main goal was pretty simple : Test every possibilities of infected files to upload, and then, if the upload is successful:
 
-Binaries for differents platforms (Linux, Windows and soon or later Mac) will be available in the `./bin` directory. So if you don't want to build the application by yourself you can use it.
+- giving you a user interface to manage datas
+- allowing you to do what you want on server
 
-On Windows launch: `./bin/razboynik.exe`
-On linux (in your terminal): (root directory) `./bin/razboynik`
+Show the folder structure of the website ? Show a specific file ? Zip content ? Download content ? Upload or even delete ? If the API succeed to be upload on the server. You're the new king of this one!
 
-##Build locally
+##Install & Run
 ###Requirements
-These requirements are necessary only if you want to build the app:
+These requirements are necessary :
 - `Golang`
 
 ###Dependencies
 These dependencies will be install:
-- `eatbytes/razboy` (Business logic and core of razboynik)
 - `eatbytes/sysgo` (Small abstraction of system command)
 - `spf13/cobra` (Usefull utility to handle flag and parse command)
-- `chzyer/readline` (Implementation of readline to loop on command)
 - `fatih/color` (Great colors to push on terminal)
 - `golang library` (fmt, strings, buffer, etc...)
+
+These dependencies are already in the vendor folder:
+- `eatbytes/razboy` (Business logic and core of razboynik)
+- `chzyer/readline` (Implementation of readline to loop on command)
 
 ###Installation
 Instructions to build the app:
 - `git clone https://github.com/EatBytes/razboynik.git` (or SSH if you want)
 - `cd razboynik`
-- `go get`
+- `go get` (install dependencies)
 - `go build` or `go install`
 
-The `go build` command will build the project locally (it means, only create a binary in the folder). `go install` create a binary available everywhere.
-
-(Makefile on the way)
+The `go build` command will build the project locally (it means, only create a binary in the folder). `go install` create a binary available everywhere (if the $GOBIN folder is in $PATH).
 
 ##Demo
 [![asciicast](https://asciinema.org/a/92281.png)](https://asciinema.org/a/92281)
@@ -75,8 +76,6 @@ By default, method is set to GET. You have the choice between : GET, POST, HEADE
 For more option you can add -h flag. Or type `./razboynik help`.
 
 ##API
-You will find the API of all the business logic in the appropriate repository `razboy`
-
 ###run
 Run a reverse shell with specified configuration
 
@@ -113,6 +112,9 @@ ARGUMENTS:
 - `[URL]`: (string) Url of the target. Ex: `http://localhost/script.php`
 - `[REFERER]`: (string) Url that the server will call to get the cmd to execute. Ex: `http://website.com/cmd-i-want-to-execute.txt`
 
+###api
+(TO DO...)
+
 ###encode / decode
 Encode or decode string.
 
@@ -123,8 +125,7 @@ Ex:
 - `encode hello` => `aGVsbG8=`
 - `decode aGVsbG8=` => `hello`
 
-##Current version
-2.0.0
+##GO DOC
 
 ##Roadmap
 ###~~1.5.0 (DONE)~~
@@ -142,9 +143,12 @@ Ex:
 - Better coding standarts
 - Proxy available (works like a charm with mitmproxy)
 - Web server (REST API)
-- Hide itself once on server
 - Zip
 - Vim
+- Crazy autocomplete like on your favorite shell
+- Vendor folder to have same version of lib
+- New modules system, more easy and powerful
+- More documentation
 
 ###2.1.0 (IN PROGRESS)
 - Add `./bin` folder with binaries
@@ -153,3 +157,4 @@ Ex:
 - Config file (necessary with botnet)
 - Proxied tunnel
 - Crypto ?
+- Hide itself once on server

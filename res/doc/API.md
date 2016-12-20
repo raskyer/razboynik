@@ -9,13 +9,12 @@ Post data type: `JSON`
 
 Required parameters:
 - `[config][url]` (string)
-- `[request][cmd]` (string)
+- `[action]` (string)
 
 Optional parameters:
 - `[config][parameter]` (string) (default: "razboynik")
 - `[config][method]` (string) ["GET", "POST", "HEADER", "COOKIE"] (default: "GET")
-- `[config][key]` (string) (default: "FromRussiaWithLove<3")
-- `[config][raw]` (boolean) (default: false)
+- `[config][key]` (string) (default: "")
 - `[request][scope]` (string) (default: "")
 - `[request][method]` (int) [0 => "system()", 1 => "shell_exec()"] (default: 0)
 
@@ -24,13 +23,9 @@ Example:
 {
     "config": {
         "url": "http://target.com/script.php",
-        "method": "POST",
-        "raw": false
+        "method": "POST"
     },
-    "request": {
-        "cmd": "ls",
-        "method": 1
-    }
+    "action": "ls"
 }
 ```
 
