@@ -10,57 +10,83 @@ import (
 )
 
 func (k *Kernel) ListLocalFiles(line string, c *razboy.Config) []string {
-	return Local(line)
+	return Local(line, "")
 }
 
-func Local(line string, plus ...string) []string {
+func Local(line string, filename string) []string {
 	var (
-		lenPlus int
-		arr     []string
-		names   []string
-		tmp     []string
-		dir     string
+		arrScope []string
+		names    []string
+		dir      string
+		arg      string
+		scope    string
+		items    []os.FileInfo
+		err      error
 	)
 
-	lenPlus = len(plus)
-	names = make([]string, 0)
-	dir = ""
+	arg = strings.TrimPrefix(line, "-upload ")
+	arg = strings.TrimSpace(arg)
 
-	if lenPlus < 1 {
-		dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
-		arr = strings.Fields(line)
-
-		if len(arr) > 1 {
-			dir = arr[1]
+	f, err := os.Stat(arg)
+	if err == nil {
+		if f.Mode().IsRegular() {
+			return []string{}
 		}
-	} else {
-		arr = append(plus[:0], plus[:len(plus)-1]...)
-		dir = strings.Join(arr, "/")
+
+		if f.IsDir() && !strings.HasSuffix(arg, "/") {
+			return []string{"/"}
+		}
 	}
 
-	files, _ := ioutil.ReadDir(dir)
+	if arg != "" {
+		dir = arg
+	} else {
+		dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
+	}
 
-	if len(arr) > 1 {
-		arr = strings.Split(arr[1], "/")
-		tmp = Local(line, arr...)
+	items, err = ioutil.ReadDir(dir)
+
+	//Check if former directory as other result
+	if err != nil && filename == "" {
+		arrScope = strings.Split(arg, "/")
+		filename = arrScope[len(arrScope)-1]
+		scope = strings.TrimSuffix(arg, filename)
+
+		tmp := Local(scope, filename)
 
 		if len(tmp) > 0 {
 			return tmp
 		}
 	}
 
-	for _, f := range files {
-		name := f.Name()
+	names = []string{}
+	for _, i := range items {
+		name := i.Name()
 
-		if lenPlus > 0 {
-			if !strings.Contains(name, plus[lenPlus-1]) {
+		if filename != "" {
+			if !strings.HasPrefix(name, filename) {
 				continue
 			}
 
-			name = strings.Replace(name, plus[lenPlus-1], "", -1)
+			name = strings.Replace(name, filename, "", -1)
+		}
+
+		if name == "" {
+			continue
+		}
+
+		f, err := os.Stat(dir + "/" + filename + name)
+		if err == nil && f.IsDir() {
+			name = name + "/"
+		} else {
+			name = name + " "
 		}
 
 		names = append(names, name)
+	}
+
+	if len(names) > 0 {
+		names = append(names, "../", "./")
 	}
 
 	return names

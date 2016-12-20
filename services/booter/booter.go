@@ -20,13 +20,16 @@ func Boot() {
 
 	i = []*kernel.KernelItem{
 		&kernel.KernelItem{
-			Name:     "cd",
-			Fn:       shellmodule.Cd,
-			Callback: k.ListRemoteFiles,
+			Name:       "cd",
+			Fn:         shellmodule.Cd,
+			Callback:   k.ListRemoteFiles,
+			MultiLevel: true,
 		},
 		&kernel.KernelItem{
-			Name: "vim",
-			Fn:   shellmodule.Vim,
+			Name:       "vim",
+			Fn:         shellmodule.Vim,
+			Callback:   k.ListRemoteFiles,
+			MultiLevel: true,
 		},
 		&kernel.KernelItem{
 			Name: "pwd",
@@ -49,13 +52,16 @@ func Boot() {
 			Fn:   phpmodule.Delete,
 		},
 		&kernel.KernelItem{
-			Name:     "-upload",
-			Fn:       phpmodule.Upload,
-			Callback: k.ListLocalFiles,
+			Name:       "-upload",
+			Fn:         phpmodule.Upload,
+			Callback:   k.ListLocalFiles,
+			MultiLevel: true,
 		},
 		&kernel.KernelItem{
-			Name: "-download",
-			Fn:   phpmodule.Download,
+			Name:       "-download",
+			Fn:         phpmodule.Download,
+			Callback:   k.ListRemoteFiles,
+			MultiLevel: true,
 		},
 		&kernel.KernelItem{
 			Name: "-sys",

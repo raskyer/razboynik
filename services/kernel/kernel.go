@@ -12,9 +12,10 @@ type KernelFunction func(*KernelCmd, *razboy.Config) (*KernelCmd, error)
 type CompleteFunction func(string, *razboy.Config) []string
 
 type KernelItem struct {
-	Name     string
-	Fn       KernelFunction
-	Callback CompleteFunction
+	Name       string
+	Fn         KernelFunction
+	Callback   CompleteFunction
+	MultiLevel bool
 }
 
 type Kernel struct {
@@ -127,6 +128,10 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 				item.Name,
 				readline.PcItemDynamic(dynamicAdapter(c, item)),
 			)
+
+			if item.MultiLevel {
+				child.MultiLevel = true
+			}
 		} else {
 			child = readline.PcItem(item.Name)
 		}

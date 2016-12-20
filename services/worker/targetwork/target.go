@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/user"
 	"strings"
 
 	"errors"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/usr"
 	"github.com/fatih/color"
 )
 
@@ -104,17 +104,35 @@ func SaveConfiguration(config *Configuration) error {
 
 func GetConfigFilePath() (string, error) {
 	var (
-		usr *user.User
+		dir string
 		err error
 	)
 
-	usr, err = user.Current()
+	dir, err = usr.GetHomeDir()
 
 	if err != nil {
 		return "", err
 	}
 
-	return usr.HomeDir + "/.razboynik.json", nil
+	return dir + "/.razboynik.json", nil
+}
+
+func CreateFile(filepath string) error {
+	var (
+		file *os.File
+		err  error
+	)
+
+	file, err = os.Create(filepath)
+	defer file.Close()
+
+	if err != nil {
+		return err
+	}
+
+	err = SaveConfiguration(new(Configuration))
+
+	return err
 }
 
 func GetConfiguration() (*Configuration, error) {
@@ -134,8 +152,11 @@ func GetConfiguration() (*Configuration, error) {
 
 	config = new(Configuration)
 	file, err = os.Open(filepath)
-
 	defer file.Close()
+
+	if os.IsNotExist(err) {
+		err = CreateFile(filepath)
+	}
 
 	if err != nil {
 		return config, err
