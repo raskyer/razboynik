@@ -25,11 +25,10 @@ var port string
 
 var apiCmd = &cobra.Command{
 	Use:   "api",
-	Short: "(In progress)",
+	Short: "Create web server API that handle request",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("api called")
-
+		fmt.Println("Start on port: " + port)
 		return worker.Api(port)
 	},
 }

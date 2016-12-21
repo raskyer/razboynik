@@ -1,4 +1,4 @@
-package normalizer
+package razboy
 
 import "encoding/base64"
 

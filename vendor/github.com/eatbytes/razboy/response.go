@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"github.com/eatbytes/razboy/normalizer"
 )
 
 type RESPONSE struct {
@@ -90,7 +88,7 @@ func (res *RESPONSE) GetResult() string {
 	var str string
 
 	str = res.GetResultStr()
-	str, _ = normalizer.Decode(str)
+	str, _ = Decode(str)
 
 	return str
 }

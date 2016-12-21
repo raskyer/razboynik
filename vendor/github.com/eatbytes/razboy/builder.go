@@ -8,15 +8,13 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-
-	"github.com/eatbytes/razboy/normalizer"
 )
 
 func _createSimpleRequest(req *REQUEST) error {
 	var err error
 
 	req.setup = true
-	req.cmd = normalizer.Encode(req.Action)
+	req.cmd = Encode(req.Action)
 
 	switch req.c.Method {
 	case "GET":
@@ -55,7 +53,7 @@ func _createUploadRequest(req *REQUEST) error {
 	)
 
 	req.setup = true
-	req.cmd = normalizer.Encode(req.Action)
+	req.cmd = Encode(req.Action)
 
 	file, err = os.Open(req.UploadPath)
 

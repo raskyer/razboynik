@@ -27,9 +27,7 @@ var encodeCmd = &cobra.Command{
 	Short: "Encode in base64",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var (
-			sEnc string
-		)
+		var sEnc string
 
 		if len(args) < 1 {
 			return errors.New("not enough arguments")

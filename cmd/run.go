@@ -28,10 +28,7 @@ var runCmd = &cobra.Command{
 	Short: "Run reverse shell with configuration",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var (
-			c   *razboy.Config
-			err error
-		)
+		var c *razboy.Config
 
 		if len(args) < 1 {
 			return errors.New("not enough arguments")
@@ -53,9 +50,7 @@ var runCmd = &cobra.Command{
 			Shellscope:  shellscope,
 		}
 
-		err = worker.Run(c)
-
-		return err
+		return worker.Run(c)
 	},
 }
 

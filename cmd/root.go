@@ -29,14 +29,13 @@ var (
 	encoding    string
 	proxy       string
 	shellscope  string
-	raw         bool /* @DEPRECATED */
 	debug       bool
 	silent      bool
 )
 
 var RootCmd = &cobra.Command{
 	Use:   "razboynik",
-	Short: "Virtual shell on webserver thanks to file upload vulnerability",
+	Short: "Reverse shell on webserver thanks to file upload vulnerability",
 	Long:  ``,
 }
 

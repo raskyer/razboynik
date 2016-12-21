@@ -15,18 +15,59 @@
 package cmd
 
 import (
-	"fmt"
+	"errors"
 
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/kernel"
+	"github.com/eatbytes/razboynik/services/printer"
+	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
 )
 
-// scanCmd represents the scan command
 var scanCmd = &cobra.Command{
 	Use:   "scan [url]",
-	Short: "Scan a target by url",
+	Short: "Scan target by url and display possible method to use",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("scan called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		var (
+			c   *razboy.Config
+			kc  *kernel.KernelCmd
+			err error
+		)
+
+		if len(args) < 1 {
+			return errors.New("not enough arguments")
+		}
+
+		if !silent {
+			printer.PrintIntro()
+			printer.PrintSection("Scan", "Scan target by url and display possible method to use")
+		}
+
+		c = &razboy.Config{
+			Url:         args[0],
+			Method:      method,
+			Parameter:   parameter,
+			Key:         key,
+			Proxy:       proxy,
+			Encoding:    encoding,
+			Shellmethod: shellmethod,
+			Shellscope:  shellscope,
+		}
+
+		kc, err = worker.Scan(c)
+
+		if err != nil {
+			return err
+		}
+
+		if !silent {
+			printer.PrintTitle("Result")
+		}
+
+		printer.Println(kc.GetResult())
+
+		return nil
 	},
 }
 
