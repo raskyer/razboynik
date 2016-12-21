@@ -48,6 +48,7 @@ var runCmd = &cobra.Command{
 			Encoding:    encoding,
 			Shellmethod: shellmethod,
 			Shellscope:  shellscope,
+			NoExtra:     noextra,
 		}
 
 		return worker.Run(c)
@@ -64,4 +65,5 @@ func init() {
 	runCmd.Flags().StringVarP(&encoding, "encoding", "e", "base64", "Encoding of the request. Ex: -e base64")
 	runCmd.Flags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
 	runCmd.Flags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
+	runCmd.Flags().BoolVar(&noextra, "no-extra", false, "Unallowed Razboynik to make extra request that user don't want. Ex: --no-extra")
 }

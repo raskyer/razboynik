@@ -18,7 +18,6 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
@@ -31,7 +30,7 @@ var scanCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
 			c   *razboy.Config
-			kc  *kernel.KernelCmd
+			res string
 			err error
 		)
 
@@ -55,7 +54,7 @@ var scanCmd = &cobra.Command{
 			Shellscope:  shellscope,
 		}
 
-		kc, err = worker.Scan(c)
+		res, err = worker.Scan(c)
 
 		if err != nil {
 			return err
@@ -65,7 +64,7 @@ var scanCmd = &cobra.Command{
 			printer.PrintTitle("Result")
 		}
 
-		printer.Println(kc.GetResult())
+		printer.Println(res)
 
 		return nil
 	},

@@ -22,9 +22,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var DetailsCmd = &cobra.Command{
-	Use:   "details [target]",
-	Short: "Get details of a target in config file",
+var DetailCmd = &cobra.Command{
+	Use:   "detail [target]",
+	Short: "Get detail of a target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
@@ -33,9 +33,9 @@ var DetailsCmd = &cobra.Command{
 
 		if cmd.Flag("silent").Value.String() == "false" {
 			printer.PrintIntro()
-			printer.PrintSection("Details target", "Details target '"+args[0]+"' in config file")
+			printer.PrintSection("Detail target", "Detail target '"+args[0]+"' in config file")
 		}
 
-		return worker.TargetDetails(args[0])
+		return worker.TargetDetail(args[0])
 	},
 }

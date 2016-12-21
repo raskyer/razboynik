@@ -24,7 +24,8 @@ func Local(line string, filename string) []string {
 		err      error
 	)
 
-	arg = strings.TrimPrefix(line, "-upload ")
+	a := strings.Fields(line)
+	arg = strings.TrimPrefix(line, a[0]+" ")
 	arg = strings.TrimSpace(arg)
 
 	f, err := os.Stat(arg)
@@ -93,6 +94,10 @@ func Local(line string, filename string) []string {
 }
 
 func (k *Kernel) ListRemoteFiles(line string, c *razboy.Config) []string {
+	if c.NoExtra {
+		return make([]string, 0)
+	}
+
 	return k.Remote(line, c)
 }
 
@@ -106,6 +111,35 @@ func (k *Kernel) Remote(line string, c *razboy.Config) []string {
 	}
 
 	kc := CreateCmd("ls " + addScope)
+	kc, err := k.Exec(kc, c)
+
+	if err != nil {
+		return make([]string, 0)
+	}
+
+	f := kc.GetResult()
+
+	return strings.Fields(f)
+}
+
+func (k *Kernel) ListRemoteFilesPHP(line string, c *razboy.Config) []string {
+	if c.NoExtra {
+		return make([]string, 0)
+	}
+
+	return k.RemotePHP(line, c)
+}
+
+func (k *Kernel) RemotePHP(line string, c *razboy.Config) []string {
+	var addScope string
+
+	arr := strings.Fields(line)
+
+	if len(arr) > 1 {
+		addScope = arr[1]
+	}
+
+	kc := CreateCmd("-listfile " + addScope)
 	kc, err := k.Exec(kc, c)
 
 	if err != nil {

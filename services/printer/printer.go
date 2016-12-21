@@ -22,6 +22,7 @@ func PrintIntro() {
 	fmt.Print("\n")
 
 	color.White("из России с любовью <3 !")
+	color.Yellow("version: 2.0.0")
 	fmt.Print("\n")
 }
 

@@ -39,6 +39,6 @@ func init() {
 	targetCmd.AddCommand(target.EditCmd)
 	targetCmd.AddCommand(target.RemoveCmd)
 	targetCmd.AddCommand(target.RunCmd)
-	targetCmd.AddCommand(target.DetailsCmd)
+	targetCmd.AddCommand(target.DetailCmd)
 	RootCmd.AddCommand(targetCmd)
 }

@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"strconv"
+
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker/targetwork"
 )
@@ -69,7 +71,7 @@ func TargetEdit(name string) error {
 	return targetwork.SaveConfiguration(config)
 }
 
-func TargetDetails(name string) error {
+func TargetDetail(name string) error {
 	var (
 		config *targetwork.Configuration
 		target *targetwork.Target
@@ -94,6 +96,7 @@ func TargetDetails(name string) error {
 	printer.Println("Parameter: " + target.Config.Parameter)
 	printer.Println("Shellmethod: " + target.Config.Shellmethod)
 	printer.Println("Shellscope: " + target.Config.Shellscope)
+	printer.Println("NoExtra: " + strconv.FormatBool(target.Config.NoExtra))
 
 	return nil
 }

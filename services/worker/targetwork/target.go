@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 
 	"errors"
@@ -26,7 +27,7 @@ type Configuration struct {
 
 func _getInput(txt, def string) string {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter target's " + color.GreenString(txt) + " (\"" + color.MagentaString(def) + "\"): ")
+	fmt.Print("Enter target's " + color.YellowString(txt) + " (\"" + color.MagentaString(def) + "\"): ")
 
 	tmp, err := reader.ReadString('\n')
 
@@ -48,6 +49,30 @@ func _getInput(txt, def string) string {
 	return tmp
 }
 
+func _getInputBool(txt string, def bool) bool {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter target's " + color.YellowString(txt) + " (\"" + color.MagentaString(strconv.FormatBool(def)) + "\"): ")
+
+	tmp, s, err := reader.ReadRune()
+
+	if err != nil || s > 1 {
+		fmt.Println("Please answer : y or n")
+		fmt.Println(err)
+		return _getInputBool(txt, def)
+	}
+
+	if tmp == 'y' {
+		color.Green("true")
+		return true
+	} else if tmp == 'n' || tmp == '\n' {
+		color.Green("false")
+		return false
+	} else {
+		fmt.Println("Please answer : y or n")
+		return _getInputBool(txt, def)
+	}
+}
+
 func CreateTarget() *Target {
 	var (
 		target *Target
@@ -63,11 +88,12 @@ func CreateTarget() *Target {
 func EditTarget(target *Target) {
 	target.Name = _getInput("name", target.Name)
 	target.Config.Url = _getInput("URL", target.Config.Url)
-	target.Config.Method = _getInput("method [GET, POST, HEADER, COOKIE]", target.Config.Method)
+	target.Config.Method = _getInput("method ['GET', 'POST', 'HEADER', 'COOKIE']", target.Config.Method)
 	target.Config.Parameter = _getInput("parameter", target.Config.Parameter)
-	target.Config.Shellmethod = _getInput("shell method [system, shell_exec]", target.Config.Shellmethod)
+	target.Config.Shellmethod = _getInput("shell method ['system', 'shell_exec', 'proc_open', 'passthru']", target.Config.Shellmethod)
 	target.Config.Shellscope = _getInput("shell scope ['./', '/']", target.Config.Shellscope)
 	target.Config.Key = _getInput("key", target.Config.Key)
+	target.Config.NoExtra = _getInputBool("no-extra ['y', 'n']", target.Config.NoExtra)
 }
 
 func FindTarget(config *Configuration, name string) (*Target, int, error) {

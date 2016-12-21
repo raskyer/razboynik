@@ -44,12 +44,16 @@ func Boot() {
 			Fn:   phpmodule.ListFile,
 		},
 		&kernel.KernelItem{
-			Name: "-readfile",
-			Fn:   phpmodule.ReadFile,
+			Name:       "-readfile",
+			Fn:         phpmodule.ReadFile,
+			Callback:   k.ListRemoteFilesPHP,
+			MultiLevel: true,
 		},
 		&kernel.KernelItem{
-			Name: "-delete",
-			Fn:   phpmodule.Delete,
+			Name:       "-delete",
+			Fn:         phpmodule.Delete,
+			Callback:   k.ListRemoteFilesPHP,
+			MultiLevel: true,
 		},
 		&kernel.KernelItem{
 			Name:       "-upload",
@@ -78,6 +82,10 @@ func Boot() {
 		&kernel.KernelItem{
 			Name: "-decode",
 			Fn:   kernelmodule.Decode,
+		},
+		&kernel.KernelItem{
+			Name: "-scan",
+			Fn:   phpmodule.Scan,
 		},
 		&kernel.KernelItem{
 			Name: "exit",

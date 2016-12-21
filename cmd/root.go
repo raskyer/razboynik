@@ -31,11 +31,12 @@ var (
 	shellscope  string
 	debug       bool
 	silent      bool
+	noextra     bool
 )
 
 var RootCmd = &cobra.Command{
 	Use:   "razboynik",
-	Short: "Reverse shell on webserver thanks to file upload vulnerability",
+	Short: "Reverse shell on webserver thanks to file upload vulnerability. version: 2.0.0",
 	Long:  ``,
 }
 

@@ -9,6 +9,7 @@ type Config struct {
 	Encoding    string
 	Shellmethod string
 	Shellscope  string
+	NoExtra     bool
 }
 
 func NewConfig() *Config {
