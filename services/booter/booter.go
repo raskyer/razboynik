@@ -40,6 +40,18 @@ func Boot() {
 			Fn:   phpmodule.Raw,
 		},
 		&kernel.KernelItem{
+			Name:       "-phpscript",
+			Fn:         phpmodule.PHPScriptStatic,
+			Callback:   k.ListLocalFiles,
+			MultiLevel: true,
+		},
+		&kernel.KernelItem{
+			Name:       "-phpscript-interactive",
+			Fn:         phpmodule.PHPScriptInteractive,
+			Callback:   k.ListLocalFiles,
+			MultiLevel: true,
+		},
+		&kernel.KernelItem{
 			Name: "-listfile",
 			Fn:   phpmodule.ListFile,
 		},
