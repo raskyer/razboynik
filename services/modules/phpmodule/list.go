@@ -5,7 +5,9 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Listcmd struct{}
+type Listcmd struct {
+	result string
+}
 
 func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
 	var (
@@ -18,12 +20,13 @@ func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.
 	)
 
 	scope = "__DIR__"
+	args = kl.GetArr()
 
 	if config.Shellscope != "" {
 		scope = "'" + config.Shellscope + "'"
 	}
 
-	if len(kl.GetArr()) > 0 {
+	if len(args) > 0 {
 		scope = "'" + args[0] + "'"
 	}
 
@@ -35,7 +38,8 @@ func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.
 		return list, err
 	}
 
-	kl.WriteSuccess(response.GetResult())
+	list.result = response.GetResult()
+	kl.WriteSuccess(list.result)
 
 	return list, nil
 }
@@ -53,5 +57,5 @@ func (list *Listcmd) GetResult() []byte {
 }
 
 func (list *Listcmd) GetResultStr() string {
-	return ""
+	return list.result
 }

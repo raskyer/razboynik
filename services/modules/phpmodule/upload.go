@@ -7,6 +7,7 @@ import (
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboy/adapter/phpadapter"
 	"github.com/eatbytes/razboynik/services/kernel"
+	"github.com/eatbytes/razboynik/services/lister"
 )
 
 type Uploadcmd struct{}
@@ -54,7 +55,7 @@ func (u *Uploadcmd) GetName() string {
 }
 
 func (u *Uploadcmd) GetCompleter() (kernel.CompleteFunction, bool) {
-	return nil, false
+	return lister.Local, true
 }
 
 func (u *Uploadcmd) GetResult() []byte {

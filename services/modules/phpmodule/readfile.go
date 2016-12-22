@@ -37,6 +37,7 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
+	"github.com/eatbytes/razboynik/services/lister"
 )
 
 type Readfilecmd struct{}
@@ -77,7 +78,7 @@ func (read *Readfilecmd) GetName() string {
 }
 
 func (read *Readfilecmd) GetCompleter() (kernel.CompleteFunction, bool) {
-	return nil, false
+	return lister.RemotePHP, true
 }
 
 func (read *Readfilecmd) GetResult() []byte {
