@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/fatih/color"
 )
 
@@ -33,7 +32,6 @@ func test(n string) string {
 func Scan(config *razboy.Config) (string, error) {
 	var (
 		s       *scanresult
-		kc      *kernel.KernelCmd
 		decoder *json.Decoder
 		m       []string
 		info    [2]string
@@ -48,14 +46,14 @@ func Scan(config *razboy.Config) (string, error) {
 		result += "\nMethod: " + color.YellowString(m[i]) + "\n"
 
 		config.Method = m[i]
-		kc, err = Exec("-scan", config)
+		_, _, err = Exec("-scan", config)
 
 		if err != nil {
 			result += "-" + color.RedString("[x]") + " Error Exec: " + err.Error() + "\n"
 			continue
 		}
 
-		decoder = json.NewDecoder(bytes.NewReader([]byte(kc.GetResult())))
+		decoder = json.NewDecoder(bytes.NewReader([]byte("kc.GetResult()")))
 		err = decoder.Decode(&s)
 
 		if err != nil {

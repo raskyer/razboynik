@@ -2,108 +2,20 @@ package booter
 
 import (
 	"github.com/eatbytes/razboynik/services/kernel"
-	"github.com/eatbytes/razboynik/services/modules/kernelmodule"
-	"github.com/eatbytes/razboynik/services/modules/phpmodule"
 	"github.com/eatbytes/razboynik/services/modules/shellmodule"
 )
 
 func Boot() {
 	var (
 		k *kernel.Kernel
-		i []*kernel.KernelItem
 	)
 
-	k = kernel.Boot(&kernel.KernelItem{
-		Name: "raw",
-		Fn:   shellmodule.Raw,
+	k = kernel.Boot()
+	k.SetDefault(new(shellmodule.SHCmd))
+
+	k.SetCommands([]kernel.KernelCommand{
+		new(shellmodule.HelloWorldCmd),
+		new(shellmodule.CDCmd),
+		new(shellmodule.PWDCmd),
 	})
-
-	i = []*kernel.KernelItem{
-		&kernel.KernelItem{
-			Name:       "cd",
-			Fn:         shellmodule.Cd,
-			Callback:   k.ListRemoteFiles,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name:       "vim",
-			Fn:         shellmodule.Vim,
-			Callback:   k.ListRemoteFiles,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name: "pwd",
-			Fn:   shellmodule.Pwd,
-		},
-		&kernel.KernelItem{
-			Name: "-php",
-			Fn:   phpmodule.Raw,
-		},
-		&kernel.KernelItem{
-			Name:       "-phpscript",
-			Fn:         phpmodule.PHPScriptStatic,
-			Callback:   k.ListLocalFiles,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name:       "-phpscript-interactive",
-			Fn:         phpmodule.PHPScriptInteractive,
-			Callback:   k.ListLocalFiles,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name: "-listfile",
-			Fn:   phpmodule.ListFile,
-		},
-		&kernel.KernelItem{
-			Name:       "-readfile",
-			Fn:         phpmodule.ReadFile,
-			Callback:   k.ListRemoteFilesPHP,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name:       "-delete",
-			Fn:         phpmodule.Delete,
-			Callback:   k.ListRemoteFilesPHP,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name:       "-upload",
-			Fn:         phpmodule.Upload,
-			Callback:   k.ListLocalFiles,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name:       "-download",
-			Fn:         phpmodule.Download,
-			Callback:   k.ListRemoteFiles,
-			MultiLevel: true,
-		},
-		&kernel.KernelItem{
-			Name: "-sys",
-			Fn:   kernelmodule.Sys,
-		},
-		&kernel.KernelItem{
-			Name: "-debug",
-			Fn:   kernelmodule.Debug,
-		},
-		&kernel.KernelItem{
-			Name: "-encode",
-			Fn:   kernelmodule.Encode,
-		},
-		&kernel.KernelItem{
-			Name: "-decode",
-			Fn:   kernelmodule.Decode,
-		},
-		&kernel.KernelItem{
-			Name: "-scan",
-			Fn:   phpmodule.Scan,
-		},
-		&kernel.KernelItem{
-			Name: "exit",
-			Fn:   kernelmodule.Exit,
-		},
-	}
-
-	k.SetItems(i)
 }

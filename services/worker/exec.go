@@ -5,14 +5,10 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Exec(cmd string, config *razboy.Config) (*kernel.KernelCmd, error) {
-	var (
-		k  *kernel.Kernel
-		kc *kernel.KernelCmd
-	)
+func Exec(cmd string, config *razboy.Config) (kernel.KernelCommand, int, error) {
+	var k *kernel.Kernel
 
 	k = kernel.Boot()
-	kc = kernel.CreateCmd(cmd)
 
-	return k.Exec(kc, config)
+	return k.Exec(cmd, config)
 }

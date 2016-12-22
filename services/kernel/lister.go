@@ -102,24 +102,22 @@ func (k *Kernel) ListRemoteFiles(line string, c *razboy.Config) []string {
 }
 
 func (k *Kernel) Remote(line string, c *razboy.Config) []string {
-	var addScope string
+	//var addScope string
 
-	arr := strings.Fields(line)
+	//arr := strings.Fields(line)
 
-	if len(arr) > 1 {
-		addScope = arr[1]
-	}
+	//if len(arr) > 1 {
+	//	addScope = arr[1]
+	//}
 
-	kc := CreateCmd("ls " + addScope)
-	kc, err := k.Exec(kc, c)
+	//kc := CreateCmd("ls " + addScope)
+	//_, err := k.Exec(kc, c)
 
-	if err != nil {
-		return make([]string, 0)
-	}
+	//if err != nil {
+	//	return make([]string, 0)
+	//}
 
-	f := kc.GetResult()
-
-	return strings.Fields(f)
+	return make([]string, 0)
 }
 
 func (k *Kernel) ListRemoteFilesPHP(line string, c *razboy.Config) []string {
@@ -131,22 +129,22 @@ func (k *Kernel) ListRemoteFilesPHP(line string, c *razboy.Config) []string {
 }
 
 func (k *Kernel) RemotePHP(line string, c *razboy.Config) []string {
-	var addScope string
+	//var addScope string
 
-	arr := strings.Fields(line)
+	//arr := strings.Fields(line)
 
-	if len(arr) > 1 {
-		addScope = arr[1]
-	}
+	//if len(arr) > 1 {
+	//	addScope = arr[1]
+	//}
 
-	kc := CreateCmd("-listfile " + addScope)
-	kc, err := k.Exec(kc, c)
+	//kc := CreateCmd("-listfile " + addScope)
+	//_, err := k.Exec(kc, c)
 
-	if err != nil {
-		return make([]string, 0)
-	}
+	//if err != nil {
+	return make([]string, 0)
+	//}
 
-	f := kc.GetResult()
+	//f := kc.GetResult()
 
-	return strings.Fields(f)
+	//return strings.Fields(f)
 }

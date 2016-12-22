@@ -26,8 +26,6 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/debugger"
-	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
@@ -40,7 +38,6 @@ var execCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
 			err error
-			kc  *kernel.KernelCmd
 			c   *razboy.Config
 		)
 
@@ -64,20 +61,20 @@ var execCmd = &cobra.Command{
 			Shellscope:  shellscope,
 		}
 
-		kc, err = worker.Exec(args[1], c)
+		_, _, err = worker.Exec(args[1], c)
 
-		if debug && kc.GetResponse() != nil {
-			debugger.HTTP(kc.GetResponse())
-		}
+		// if debug && kc.GetResponse() != nil {
+		// 	debugger.HTTP(kc.GetResponse())
+		// }
 
 		if err != nil {
 			return err
 		}
 
 		if !silent {
-			printer.PrintSection("Result", kc.GetResult())
+			printer.PrintSection("Result", "kc.GetResult()")
 		} else {
-			printer.Println(kc.GetResult())
+			printer.Println("kc.GetResult()")
 		}
 
 		return nil

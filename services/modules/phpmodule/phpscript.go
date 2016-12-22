@@ -1,95 +1,95 @@
-package phpmodule
+// package phpmodule
 
-import (
-	"errors"
-	"os"
-	"os/exec"
+// import (
+// 	"errors"
+// 	"os"
+// 	"os/exec"
 
-	"io/ioutil"
+// 	"io/ioutil"
 
-	"strings"
+// 	"strings"
 
-	"io"
+// 	"io"
 
-	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
-)
+// 	"github.com/eatbytes/razboy"
+// 	"github.com/eatbytes/razboynik/services/kernel"
+// )
 
-func PHPScriptStatic(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
-	var (
-		request *razboy.REQUEST
-		buffer  []byte
-		bufstr  string
-		err     error
-	)
+// func PHPScriptStatic(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
+// 	var (
+// 		request *razboy.REQUEST
+// 		buffer  []byte
+// 		bufstr  string
+// 		err     error
+// 	)
 
-	if kc.GetArrLgt() < 2 {
-		return kc, errors.New("Please write the path of the local file to upload")
-	}
+// 	if kc.GetArrLgt() < 2 {
+// 		return kc, errors.New("Please write the path of the local file to upload")
+// 	}
 
-	buffer, err = ioutil.ReadFile(kc.GetArrItem(1))
+// 	buffer, err = ioutil.ReadFile(kc.GetArrItem(1))
 
-	if err != nil {
-		return kc, err
-	}
+// 	if err != nil {
+// 		return kc, err
+// 	}
 
-	bufstr = string(buffer)
-	bufstr = strings.TrimPrefix(bufstr, "<php")
+// 	bufstr = string(buffer)
+// 	bufstr = strings.TrimPrefix(bufstr, "<php")
 
-	request = razboy.CreateRequest(bufstr, c)
-	_, err = kc.Send(request)
+// 	request = razboy.CreateRequest(bufstr, c)
+// 	_, err = kc.Send(request)
 
-	return kc, err
-}
+// 	return kc, err
+// }
 
-func PHPScriptInteractive(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
-	var (
-		cmd     *exec.Cmd
-		request *razboy.REQUEST
-		buffer  []byte
-		bufstr  string
-		local   string
-		err     error
-	)
+// func PHPScriptInteractive(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
+// 	var (
+// 		cmd     *exec.Cmd
+// 		request *razboy.REQUEST
+// 		buffer  []byte
+// 		bufstr  string
+// 		local   string
+// 		err     error
+// 	)
 
-	local = "/tmp/tmp-razboynik.php"
+// 	local = "/tmp/tmp-razboynik.php"
 
-	if kc.GetArrLgt() > 1 {
-		f, err := os.Create(local)
+// 	if kc.GetArrLgt() > 1 {
+// 		f, err := os.Create(local)
 
-		if err != nil {
-			return kc, err
-		}
+// 		if err != nil {
+// 			return kc, err
+// 		}
 
-		f2, err := os.OpenFile(kc.GetArrItem(1), os.O_RDONLY, 0666)
+// 		f2, err := os.OpenFile(kc.GetArrItem(1), os.O_RDONLY, 0666)
 
-		if err != nil {
-			return kc, err
-		}
+// 		if err != nil {
+// 			return kc, err
+// 		}
 
-		_, err = io.Copy(f, f2)
-	}
+// 		_, err = io.Copy(f, f2)
+// 	}
 
-	cmd = exec.Command("vim", local)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	err = cmd.Run()
+// 	cmd = exec.Command("vim", local)
+// 	cmd.Stdin = os.Stdin
+// 	cmd.Stdout = os.Stdout
+// 	err = cmd.Run()
 
-	if err != nil {
-		return kc, err
-	}
+// 	if err != nil {
+// 		return kc, err
+// 	}
 
-	buffer, err = ioutil.ReadFile(local)
+// 	buffer, err = ioutil.ReadFile(local)
 
-	if err != nil {
-		return kc, err
-	}
+// 	if err != nil {
+// 		return kc, err
+// 	}
 
-	bufstr = string(buffer)
-	bufstr = strings.TrimPrefix(bufstr, "<php")
+// 	bufstr = string(buffer)
+// 	bufstr = strings.TrimPrefix(bufstr, "<php")
 
-	request = razboy.CreateRequest(bufstr, c)
-	_, err = kc.Send(request)
+// 	request = razboy.CreateRequest(bufstr, c)
+// 	_, err = kc.Send(request)
 
-	return kc, err
-}
+// 	return kc, err
+// }

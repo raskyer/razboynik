@@ -1,6 +1,7 @@
 package kernel
 
 import (
+	"errors"
 	"io"
 	"log"
 
@@ -8,55 +9,53 @@ import (
 	"github.com/eatbytes/razboy"
 )
 
-type KernelFunction func(*KernelCmd, *razboy.Config) (*KernelCmd, error)
 type CompleteFunction func(string, *razboy.Config) []string
-
-type KernelItem struct {
-	Name       string
-	Fn         KernelFunction
-	Callback   CompleteFunction
-	MultiLevel bool
+type KernelCommand interface {
+	Init(stdout string, stderr string)
+	Exec(*KernelLine, *razboy.Config) (KernelCommand, int, error)
+	Write(error, ...interface{}) error
+	WriteSuccess(...interface{}) error
+	WriteError(error) error
+	GetName() string
+	GetCompleter() (CompleteFunction, bool)
+	GetResultStr() string
+	GetResult() []byte
 }
 
 type Kernel struct {
-	def      *KernelItem
-	items    []*KernelItem
+	def      KernelCommand
+	commands []KernelCommand
 	readline *readline.Instance
-	former   *KernelCmd
 	run      bool
 }
 
 var kInstance *Kernel
 
-func Boot(def ...*KernelItem) *Kernel {
-	var defaultFn *KernelItem
-
+func Boot() *Kernel {
 	if kInstance == nil {
-		defaultFn = &KernelItem{
-			Name: "kernel.default",
-			Fn:   KernelDefault,
-		}
-
-		if len(def) > 0 {
-			defaultFn = def[0]
-		}
-
-		kInstance = &Kernel{
-			def: defaultFn,
-		}
+		kInstance = new(Kernel)
 	}
 
 	return kInstance
 }
 
-func (k *Kernel) Exec(kc *KernelCmd, config *razboy.Config) (*KernelCmd, error) {
-	for _, item := range k.items {
-		if item.Name == kc.name {
-			return item.Fn(kc, config)
+func (k *Kernel) Exec(line string, config *razboy.Config) (KernelCommand, int, error) {
+	kl := CreateLine(line)
+
+	for _, cmd := range k.commands {
+		if cmd.GetName() == kl.name {
+			cmd.Init(kl.GetStdout(), kl.GetStderr())
+
+			return cmd.Exec(kl, config)
 		}
 	}
 
-	return k.def.Fn(kc, config)
+	if k.def != nil {
+		k.def.Init(kl.GetStdout(), kl.GetStderr())
+		return k.def.Exec(kl, config)
+	}
+
+	return k.Default(kl, config)
 }
 
 func (k *Kernel) Run(config *razboy.Config) error {
@@ -68,17 +67,15 @@ func (k *Kernel) Run(config *razboy.Config) error {
 		return err
 	}
 
-	k.run = true
-	k._loop(config)
+	k.StartRun()
 
-	return nil
+	return k.Loop(config)
 }
 
-func (k *Kernel) _loop(config *razboy.Config) {
+func (k *Kernel) Loop(config *razboy.Config) error {
 	var (
-		kc, fkc *KernelCmd
-		line    string
-		err     error
+		line string
+		err  error
 	)
 
 	defer k.readline.Close()
@@ -88,27 +85,25 @@ func (k *Kernel) _loop(config *razboy.Config) {
 		line, err = k.readline.Readline()
 
 		if err == readline.ErrInterrupt || err == io.EOF {
-			return
+			return nil
+		}
+
+		if err != nil {
+			return err
 		}
 
 		if len(line) == 0 {
 			continue
 		}
 
-		if fkc != nil {
-			k.SetFormerCmd(fkc)
-		}
-
-		kc = CreateCmd(line)
-		fkc, err = k.Exec(kc, config)
+		_, _, err = k.Exec(line, config)
 
 		if err != nil {
-			fkc.WriteError(err)
-			continue
+			k.WriteError("&2", err)
 		}
-
-		fkc.WriteSuccess(fkc.GetResult())
 	}
+
+	return nil
 }
 
 func (k *Kernel) initReadline(c *razboy.Config) error {
@@ -122,18 +117,20 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 
 	autocompleter = readline.NewPrefixCompleter()
 
-	for _, item := range k.GetItems() {
-		if item.Callback != nil {
+	for _, item := range k.GetCommands() {
+		completer, multilevel := item.GetCompleter()
+
+		if completer != nil {
 			child = readline.PcItem(
-				item.Name,
-				readline.PcItemDynamic(dynamicAdapter(c, item)),
+				item.GetName(),
+				readline.PcItemDynamic(dynamicAdapter(completer, c)),
 			)
 
-			if item.MultiLevel {
+			if multilevel {
 				child.MultiLevel = true
 			}
 		} else {
-			child = readline.PcItem(item.Name)
+			child = readline.PcItem(item.GetName())
 		}
 
 		autocompleter.SetChildren(append(autocompleter.GetChildren(), child))
@@ -153,8 +150,12 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	return err
 }
 
-func dynamicAdapter(c *razboy.Config, item *KernelItem) func(string) []string {
+func (k Kernel) Default(kl *KernelLine, config *razboy.Config) (KernelCommand, int, error) {
+	return nil, 1, errors.New("No default fonction defined")
+}
+
+func dynamicAdapter(completer CompleteFunction, c *razboy.Config) func(string) []string {
 	return func(line string) []string {
-		return item.Callback(line, c)
+		return completer(line, c)
 	}
 }

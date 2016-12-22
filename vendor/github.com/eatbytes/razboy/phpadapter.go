@@ -56,15 +56,6 @@ func CreateCMD(cmd, scope, method string) string {
 	return shellCMD
 }
 
-func CreateCD(cmd, scope, method string) string {
-	var cd string
-
-	cd = cmd + " && pwd"
-	cd = CreateCMD(cd, scope, method)
-
-	return cd
-}
-
 func CreateDownload(dir string) string {
 	var php string
 
