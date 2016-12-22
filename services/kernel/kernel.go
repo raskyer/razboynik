@@ -148,6 +148,34 @@ func (k Kernel) Default(kl *KernelLine, config *razboy.Config) (KernelCommand, e
 	return nil, errors.New("No default fonction defined")
 }
 
+func (k Kernel) GetCommands() []KernelCommand {
+	return k.commands
+}
+
+func (k *Kernel) StartRun() {
+	k.run = true
+}
+
+func (k *Kernel) StopRun() {
+	k.run = false
+}
+
+func (k *Kernel) UpdatePrompt(url, scope string) {
+	if k.readline == nil {
+		return
+	}
+
+	k.readline.SetPrompt("(" + url + "):" + scope + "$ ")
+}
+
+func (k *Kernel) SetDefault(d KernelCommand) {
+	k.def = d
+}
+
+func (k *Kernel) SetCommands(cmd []KernelCommand) {
+	k.commands = cmd
+}
+
 func dynamicAdapter(completer CompleteFunction, c *razboy.Config) func(string) []string {
 	return func(line string) []string {
 		return completer(line, c)
