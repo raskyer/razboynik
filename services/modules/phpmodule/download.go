@@ -1,77 +1,96 @@
-// package phpmodule
+package phpmodule
 
-// import (
-// 	"errors"
-// 	"io"
-// 	"os"
+import (
+	"errors"
+	"io"
+	"os"
 
-// 	"github.com/eatbytes/razboy"
-// 	"github.com/eatbytes/razboy/adapter/phpadapter"
-// 	"github.com/eatbytes/razboynik/services/kernel"
-// )
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboy/adapter/phpadapter"
+	"github.com/eatbytes/razboynik/services/kernel"
+)
 
-// func Download(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
-// 	var (
-// 		request       *razboy.REQUEST
-// 		response      *razboy.RESPONSE
-// 		local, remote string
-// 		err           error
-// 	)
+type Downloadcmd struct{}
 
-// 	if kc.GetArrLgt() < 2 {
-// 		return kc, errors.New("Please write the path of the file to download")
-// 	}
+func (d *Downloadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+	var (
+		local, remote string
+		err           error
+		request       *razboy.REQUEST
+	)
 
-// 	request = razboy.CreateRequest("", c)
+	args := kl.GetArr()
 
-// 	remote = _getRemote(kc.GetArr(), c.Shellscope)
-// 	local = kc.GetArrItem(2, "output.txt")
+	if len(args) < 1 {
+		return d, errors.New("Please write the path of the file to download")
+	}
 
-// 	response, err = DownloadAction(remote, local, request)
-// 	kc.SetResponse(response)
+	request = razboy.CreateRequest(kl.GetRaw(), config)
+	remote = _getRemote(args, config.Shellscope)
 
-// 	if err != nil {
-// 		kc.SetResult("Downloaded successfully to " + local)
-// 	}
+	if len(args) > 1 {
+		local = args[1]
+	} else {
+		local = "output.txt"
+	}
 
-// 	return kc, err
-// }
+	_, err = DownloadAction(remote, local, request)
+	kl.Write(err, "Downloaded successfully to "+local)
 
-// func DownloadAction(remote, local string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
-// 	var (
-// 		out *os.File
-// 		res *razboy.RESPONSE
-// 		err error
-// 	)
+	return d, err
+}
 
-// 	request.Action = phpadapter.CreateDownload(remote)
-// 	res, err = razboy.Send(request)
+func (d *Downloadcmd) GetName() string {
+	return "-download"
+}
 
-// 	if err != nil {
-// 		return res, err
-// 	}
+func (d *Downloadcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+	return nil, false
+}
 
-// 	out, err = os.Create(local)
+func (d *Downloadcmd) GetResult() []byte {
+	return make([]byte, 0)
+}
 
-// 	defer out.Close()
+func (d *Downloadcmd) GetResultStr() string {
+	return ""
+}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+func DownloadAction(remote, local string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
+	var (
+		out *os.File
+		res *razboy.RESPONSE
+		err error
+	)
 
-// 	_, err = io.Copy(out, res.GetHTTP().Body)
+	request.Action = phpadapter.CreateDownload(remote)
+	res, err = razboy.Send(request)
 
-// 	return res, err
-// }
+	if err != nil {
+		return res, err
+	}
 
-// func _getRemote(arr []string, context string) string {
-// 	var path string
+	out, err = os.Create(local)
 
-// 	path = arr[1]
+	defer out.Close()
 
-// 	if context != "" {
-// 		path = context + "/" + path
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return path
-// }
+	_, err = io.Copy(out, res.GetHTTP().Body)
+
+	return res, err
+}
+
+func _getRemote(arr []string, context string) string {
+	var path string
+
+	path = arr[1]
+
+	if context != "" {
+		path = context + "/" + path
+	}
+
+	return path
+}

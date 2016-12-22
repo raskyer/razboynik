@@ -7,17 +7,9 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type CDCmd struct {
-	Stdout string
-	Stderr string
-}
+type Cdcmd struct{}
 
-func (cd *CDCmd) Init(stdout, stderr string) {
-	cd.Stdout = stdout
-	cd.Stderr = stderr
-}
-
-func (cd *CDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, int, error) {
+func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
 	var (
 		raw, a, scope string
 		err           error
@@ -28,7 +20,7 @@ func (cd *CDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Kern
 	raw = "cd " + strings.Join(kl.GetArr(), " ")
 
 	if strings.Contains(raw, "&&") || strings.Contains(raw, "-") {
-		return nil, 0, nil
+		return nil, nil
 	}
 
 	raw += " && pwd"
@@ -39,9 +31,9 @@ func (cd *CDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Kern
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		cd.WriteError(err)
+		kl.WriteError(err)
 
-		return cd, 1, err
+		return cd, err
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -51,37 +43,21 @@ func (cd *CDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Kern
 		kernel.Boot().UpdatePrompt(config.Url, scope)
 	}
 
-	return cd, 0, nil
+	return cd, nil
 }
 
-func (cd *CDCmd) Write(e error, i ...interface{}) error {
-	if e != nil {
-		return cd.WriteError(e)
-	}
-
-	return cd.WriteSuccess(i...)
-}
-
-func (cd *CDCmd) WriteSuccess(i ...interface{}) error {
-	return kernel.Boot().WriteSuccess(cd.Stdout, i...)
-}
-
-func (cd *CDCmd) WriteError(e error) error {
-	return kernel.Boot().WriteError(cd.Stderr, e)
-}
-
-func (cd *CDCmd) GetName() string {
+func (cd *Cdcmd) GetName() string {
 	return "cd"
 }
 
-func (cd *CDCmd) GetCompleter() (kernel.CompleteFunction, bool) {
-	return nil, true
+func (cd *Cdcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+	return nil, false
 }
 
-func (cd *CDCmd) GetResult() []byte {
+func (cd *Cdcmd) GetResult() []byte {
 	return make([]byte, 0)
 }
 
-func (cd *CDCmd) GetResultStr() string {
+func (cd *Cdcmd) GetResultStr() string {
 	return ""
 }

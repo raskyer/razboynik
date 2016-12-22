@@ -1,0 +1,21 @@
+type Examplecmd struct {}
+
+func (ex *Examplecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+	return ex, nil
+}
+
+func (ex *Examplecmd) GetName() string {
+	return "cd"
+}
+
+func (ex *Examplecmd) GetCompleter() (kernel.CompleteFunction, bool) {
+	return nil, false
+}
+
+func (ex *Examplecmd) GetResult() []byte {
+	return make([]byte, 0)
+}
+
+func (ex *Examplecmd) GetResultStr() string {
+	return ""
+}

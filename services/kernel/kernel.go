@@ -2,6 +2,7 @@ package kernel
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"log"
 
@@ -11,11 +12,7 @@ import (
 
 type CompleteFunction func(string, *razboy.Config) []string
 type KernelCommand interface {
-	Init(stdout string, stderr string)
-	Exec(*KernelLine, *razboy.Config) (KernelCommand, int, error)
-	Write(error, ...interface{}) error
-	WriteSuccess(...interface{}) error
-	WriteError(error) error
+	Exec(*KernelLine, *razboy.Config) (KernelCommand, error)
 	GetName() string
 	GetCompleter() (CompleteFunction, bool)
 	GetResultStr() string
@@ -39,19 +36,16 @@ func Boot() *Kernel {
 	return kInstance
 }
 
-func (k *Kernel) Exec(line string, config *razboy.Config) (KernelCommand, int, error) {
+func (k *Kernel) Exec(line string, config *razboy.Config) (KernelCommand, error) {
 	kl := CreateLine(line)
 
 	for _, cmd := range k.commands {
 		if cmd.GetName() == kl.name {
-			cmd.Init(kl.GetStdout(), kl.GetStderr())
-
 			return cmd.Exec(kl, config)
 		}
 	}
 
 	if k.def != nil {
-		k.def.Init(kl.GetStdout(), kl.GetStderr())
 		return k.def.Exec(kl, config)
 	}
 
@@ -96,10 +90,10 @@ func (k *Kernel) Loop(config *razboy.Config) error {
 			continue
 		}
 
-		_, _, err = k.Exec(line, config)
+		_, err = k.Exec(line, config)
 
 		if err != nil {
-			k.WriteError("&2", err)
+			fmt.Println(err)
 		}
 	}
 
@@ -150,8 +144,8 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	return err
 }
 
-func (k Kernel) Default(kl *KernelLine, config *razboy.Config) (KernelCommand, int, error) {
-	return nil, 1, errors.New("No default fonction defined")
+func (k Kernel) Default(kl *KernelLine, config *razboy.Config) (KernelCommand, error) {
+	return nil, errors.New("No default fonction defined")
 }
 
 func dynamicAdapter(completer CompleteFunction, c *razboy.Config) func(string) []string {

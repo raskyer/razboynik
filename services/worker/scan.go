@@ -46,7 +46,7 @@ func Scan(config *razboy.Config) (string, error) {
 		result += "\nMethod: " + color.YellowString(m[i]) + "\n"
 
 		config.Method = m[i]
-		_, _, err = Exec("-scan", config)
+		_, err = Exec("-scan", config)
 
 		if err != nil {
 			result += "-" + color.RedString("[x]") + " Error Exec: " + err.Error() + "\n"

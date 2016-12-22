@@ -1,6 +1,11 @@
 package kernel
 
-import "strings"
+import (
+	"fmt"
+	"os"
+	"reflect"
+	"strings"
+)
 
 type KernelLine struct {
 	name string
@@ -61,6 +66,67 @@ func (kl KernelLine) GetStdout() string {
 
 func (kl KernelLine) GetStderr() string {
 	return kl.err
+}
+
+func (kl KernelLine) Write(e error, i ...interface{}) error {
+	if e != nil {
+		return kl.WriteError(e)
+	}
+
+	return kl.WriteSuccess(i)
+}
+
+func (kl KernelLine) WriteSuccess(i ...interface{}) error {
+	var isString = true
+
+	for _, v := range i {
+		if reflect.TypeOf(v).Kind() == reflect.String {
+			isString = true
+		}
+
+		if kl.out != "&1" && kl.out != "" {
+			if isString {
+				return kl.WriteInFile(kl.out, []byte(v.(string)))
+			}
+		} else {
+			if isString {
+				fmt.Print(strings.TrimSpace(v.(string)), " ")
+			}
+		}
+	}
+
+	fmt.Print("\n")
+
+	return nil
+}
+
+func (kl KernelLine) WriteError(err error) error {
+	if kl.err != "&2" {
+		return kl.WriteInFile(kl.err, []byte(err.Error()))
+	}
+
+	fmt.Println(err.Error())
+
+	return nil
+}
+
+func (kl KernelLine) WriteInFile(path string, buf []byte) error {
+	var (
+		f   *os.File
+		err error
+	)
+
+	f, err = os.Create(path)
+
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	_, err = f.Write(buf)
+
+	return err
 }
 
 func extractIn(slice []string, value string) int {

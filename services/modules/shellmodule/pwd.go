@@ -7,17 +7,9 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type PWDCmd struct {
-	Stdout string
-	Stderr string
-}
+type Pwdcmd struct{}
 
-func (pwd *PWDCmd) Init(stdout, stderr string) {
-	pwd.Stdout = stdout
-	pwd.Stderr = stderr
-}
-
-func (pwd *PWDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, int, error) {
+func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
 	var (
 		raw, a, scope string
 		err           error
@@ -32,9 +24,9 @@ func (pwd *PWDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Ke
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		pwd.WriteError(err)
+		kl.WriteError(err)
 
-		return pwd, 1, err
+		return pwd, err
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -44,37 +36,21 @@ func (pwd *PWDCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Ke
 		kernel.Boot().UpdatePrompt(config.Url, scope)
 	}
 
-	return pwd, 0, nil
+	return pwd, nil
 }
 
-func (pwd *PWDCmd) Write(e error, i ...interface{}) error {
-	if e != nil {
-		return pwd.WriteError(e)
-	}
-
-	return pwd.WriteSuccess(i...)
-}
-
-func (pwd *PWDCmd) WriteSuccess(i ...interface{}) error {
-	return kernel.Boot().WriteSuccess(pwd.Stdout, i...)
-}
-
-func (pwd *PWDCmd) WriteError(e error) error {
-	return kernel.Boot().WriteError(pwd.Stderr, e)
-}
-
-func (pwd *PWDCmd) GetName() string {
+func (pwd *Pwdcmd) GetName() string {
 	return "pwd"
 }
 
-func (pwd *PWDCmd) GetCompleter() (kernel.CompleteFunction, bool) {
-	return nil, true
+func (pwd *Pwdcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+	return nil, false
 }
 
-func (pwd *PWDCmd) GetResult() []byte {
+func (pwd *Pwdcmd) GetResult() []byte {
 	return make([]byte, 0)
 }
 
-func (pwd *PWDCmd) GetResultStr() string {
+func (pwd *Pwdcmd) GetResultStr() string {
 	return ""
 }

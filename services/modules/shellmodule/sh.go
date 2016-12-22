@@ -5,17 +5,9 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type SHCmd struct {
-	Stdout string
-	Stderr string
-}
+type Shcmd struct{}
 
-func (sh *SHCmd) Init(stdout, stderr string) {
-	sh.Stdout = stdout
-	sh.Stderr = stderr
-}
-
-func (sh *SHCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, int, error) {
+func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
 	var (
 		a        string
 		err      error
@@ -27,39 +19,30 @@ func (sh *SHCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Kern
 
 	request = razboy.CreateRequest(a, config)
 	response, err = razboy.Send(request)
-	err = sh.Write(err, response.GetResult())
 
-	return sh, 0, err
-}
+	if err != nil {
+		kl.WriteError(err)
 
-func (sh *SHCmd) Write(e error, i ...interface{}) error {
-	if e != nil {
-		return sh.WriteError(e)
+		return sh, err
 	}
 
-	return sh.WriteSuccess(i...)
+	kl.WriteSuccess(response.GetResult())
+
+	return sh, err
 }
 
-func (sh *SHCmd) WriteSuccess(i ...interface{}) error {
-	return kernel.Boot().WriteSuccess(sh.Stdout, i...)
-}
-
-func (sh *SHCmd) WriteError(e error) error {
-	return kernel.Boot().WriteError(sh.Stderr, e)
-}
-
-func (sh *SHCmd) GetName() string {
+func (sh *Shcmd) GetName() string {
 	return "sh"
 }
 
-func (sh *SHCmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (sh *Shcmd) GetCompleter() (kernel.CompleteFunction, bool) {
 	return nil, true
 }
 
-func (sh *SHCmd) GetResult() []byte {
+func (sh *Shcmd) GetResult() []byte {
 	return make([]byte, 0)
 }
 
-func (sh *SHCmd) GetResultStr() string {
+func (sh *Shcmd) GetResultStr() string {
 	return ""
 }
