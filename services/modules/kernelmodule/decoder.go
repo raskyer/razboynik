@@ -20,7 +20,7 @@ func (d *Decodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.K
 }
 
 func (d *Decodecmd) GetName() string {
-	return "decode"
+	return "-decode"
 }
 
 func (d *Decodecmd) GetCompleter() (kernel.CompleteFunction, bool) {
@@ -45,7 +45,7 @@ func (e *Encodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.K
 }
 
 func (e *Encodecmd) GetName() string {
-	return "encode"
+	return "-encode"
 }
 
 func (e *Encodecmd) GetCompleter() (kernel.CompleteFunction, bool) {

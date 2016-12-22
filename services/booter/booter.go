@@ -23,6 +23,8 @@ func Boot() {
 		new(phpmodule.Phpcmd),
 		new(phpmodule.Downloadcmd),
 		new(phpmodule.Uploadcmd),
+		new(phpmodule.Listcmd),
+		new(phpmodule.Readfilecmd),
 		new(phpmodule.Deletecmd),
 		new(kernelmodule.Decodecmd),
 		new(kernelmodule.Encodecmd),

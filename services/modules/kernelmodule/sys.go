@@ -30,7 +30,7 @@ func (sys *Syscmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Ke
 }
 
 func (sys *Syscmd) GetName() string {
-	return "cd"
+	return "-sys"
 }
 
 func (sys *Syscmd) GetCompleter() (kernel.CompleteFunction, bool) {

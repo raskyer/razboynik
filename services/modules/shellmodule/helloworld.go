@@ -3,41 +3,14 @@ package shellmodule
 import (
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
-	"github.com/jessevdk/go-flags"
 )
 
-type HelloWorldFlags struct {
-	Name string `short:"n" long:"name" description:"Name"`
-}
-
-type HelloWorldCmd struct {
-	Flags *HelloWorldFlags
-}
+type HelloWorldCmd struct{}
 
 func (hw *HelloWorldCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
-	var (
-		parser  *flags.Parser
-		err, we error
-	)
+	kl.WriteSuccess("Hello", "World")
 
-	parser = flags.NewParser(hw.Flags, flags.Default)
-	parser.Name = hw.GetName()
-
-	_, err = parser.ParseArgs(kl.GetArr())
-
-	if err != nil {
-		we = kl.WriteError(err)
-
-		if we != nil {
-			return hw, we
-		}
-
-		return hw, err
-	}
-
-	we = kl.WriteSuccess("Hello", hw.Flags.Name)
-
-	return hw, we
+	return hw, nil
 }
 
 func (hw *HelloWorldCmd) GetName() string {
