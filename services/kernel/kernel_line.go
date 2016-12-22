@@ -5,6 +5,8 @@ import (
 	"os"
 	"reflect"
 	"strings"
+
+	shellwords "github.com/mattn/go-shellwords"
 )
 
 type KernelLine struct {
@@ -19,12 +21,17 @@ func CreateLine(raw string) *KernelLine {
 	var (
 		arr            []string
 		out, err, name string
+		e              error
 	)
 
 	out = "&1"
 	err = "&2"
 
-	arr = strings.Fields(raw)
+	arr, e = shellwords.Parse(raw)
+
+	if e != nil {
+		arr = strings.Fields(raw)
+	}
 
 	if len(arr) > 0 {
 		name = arr[0]

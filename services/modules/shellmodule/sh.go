@@ -1,21 +1,37 @@
 package shellmodule
 
 import (
+	"net/http/httputil"
+
+	"strings"
+
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
+	"github.com/spf13/pflag"
 )
 
-type Shcmd struct{}
+type Shcmd struct {
+	Debug bool
+}
+
+func (sh *Shcmd) InitFlags(args []string) {
+	flaghandler := pflag.NewFlagSet("/bin/sh", pflag.ContinueOnError)
+	flaghandler.BoolVar(&sh.Debug, "debug", false, "Debug mode")
+	flaghandler.Parse(args)
+}
 
 func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
 	var (
-		a        string
+		a, raw   string
 		err      error
 		request  *razboy.REQUEST
 		response *razboy.RESPONSE
 	)
 
-	a = razboy.CreateCMD(kl.GetRaw(), config.Shellscope, config.Shellmethod) + razboy.CreateAnswer(config.Method, config.Parameter)
+	sh.InitFlags(kl.GetArr())
+
+	raw = strings.TrimSuffix(kl.GetRaw(), "--debug")
+	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.CreateAnswer(config.Method, config.Parameter)
 
 	request = razboy.CreateRequest(a, config)
 	response, err = razboy.Send(request)
@@ -24,6 +40,17 @@ func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Kern
 		kl.WriteError(err)
 
 		return sh, err
+	}
+
+	if sh.Debug {
+		kl.WriteSuccess("- REQUEST")
+		b, _ := httputil.DumpRequestOut(request.GetHTTP(), true)
+		kl.WriteSuccess(string(b))
+
+		kl.WriteSuccess("\n")
+		kl.WriteSuccess("- RESPONSE\n\n")
+		b, _ = httputil.DumpResponse(response.GetHTTP(), true)
+		kl.WriteSuccess(string(b))
 	}
 
 	kl.WriteSuccess(response.GetResult())
