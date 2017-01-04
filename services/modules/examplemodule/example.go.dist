@@ -11,11 +11,3 @@ func (ex *Examplecmd) GetName() string {
 func (ex *Examplecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
 }
-
-func (ex *Examplecmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (ex *Examplecmd) GetResultStr() string {
-	return ""
-}

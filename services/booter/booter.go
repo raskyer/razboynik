@@ -17,9 +17,6 @@ func Boot() {
 
 	k.SetDefault(new(shellmodule.Shcmd))
 	k.SetCommands([]kernel.KernelCommand{
-		new(kernelmodule.Plugincmd),
-		new(examplemodule.HelloWorldCmd),
-		new(examplemodule.Fibocmd),
 		new(shellmodule.Cdcmd),
 		new(shellmodule.Pwdcmd),
 		new(shellmodule.Vimcmd),
@@ -33,6 +30,8 @@ func Boot() {
 		new(kernelmodule.Decodecmd),
 		new(kernelmodule.Encodecmd),
 		new(kernelmodule.Syscmd),
+		new(kernelmodule.Plugincmd),
+		new(examplemodule.Fibocmd),
 		new(kernelmodule.Exitcmd),
 	})
 }

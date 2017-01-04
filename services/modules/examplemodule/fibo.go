@@ -7,10 +7,10 @@ type Fibocmd struct{}
 
 func (f *Fibocmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
-		action  string
-		request *razboy.REQUEST
-		//response *razboy.RESPONSE
-		err error
+		action   string
+		request  *razboy.REQUEST
+		response *razboy.RESPONSE
+		err      error
 	)
 
 	action = `function fibo($n) {
@@ -30,13 +30,13 @@ func (f *Fibocmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 
 	action += razboy.AddAnswer(config.Method, config.Parameter)
 	request = razboy.CreateRequest(action, config)
-	_, err = razboy.Send(request)
+	response, err = razboy.Send(request)
 
 	if err != nil {
 		return err
 	}
 
-	//kl.WriteSuccess(response.GetResult())
+	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
 	return nil
 }
