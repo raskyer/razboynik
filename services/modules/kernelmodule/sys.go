@@ -10,7 +10,7 @@ import (
 
 type Syscmd struct{}
 
-func (sys *Syscmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (sys *Syscmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
 		action string
 		result string
@@ -21,19 +21,19 @@ func (sys *Syscmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Ke
 	result, err = sysgo.Call(action)
 
 	if err != nil {
-		return sys, err
+		return err
 	}
 
-	kl.WriteSuccess(result)
+	kernel.WriteSuccess(kl.GetStdout(), result)
 
-	return sys, err
+	return err
 }
 
 func (sys *Syscmd) GetName() string {
 	return "-sys"
 }
 
-func (sys *Syscmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (sys *Syscmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
 }
 

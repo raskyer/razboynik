@@ -8,7 +8,7 @@ func (ex *Examplecmd) GetName() string {
 	return "cd"
 }
 
-func (ex *Examplecmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (ex *Examplecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
 }
 

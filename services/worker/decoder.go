@@ -1,13 +1,13 @@
 package worker
 
-import "github.com/eatbytes/razboy/normalizer"
+import "github.com/eatbytes/razboy"
 
 func Encode(str string) string {
-	return normalizer.Encode(str)
+	return razboy.Encode(str)
 }
 
 func Decode(str string) (string, error) {
-	sDec, err := normalizer.Decode(str)
+	sDec, err := razboy.Decode(str)
 
 	if err != nil {
 		return str, err

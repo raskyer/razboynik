@@ -61,7 +61,7 @@ var execCmd = &cobra.Command{
 			Shellscope:  shellscope,
 		}
 
-		_, err = worker.Exec(args[1], c)
+		err = worker.Exec(args[1], c)
 
 		// if debug && kc.GetResponse() != nil {
 		// 	debugger.HTTP(kc.GetResponse())

@@ -113,7 +113,6 @@ func RemoteSHELL(line string, config *razboy.Config) []string {
 		addScope string
 		arr      []string
 		err      error
-		cmd      kernel.KernelCommand
 	)
 
 	arr = strings.Fields(line)
@@ -122,13 +121,15 @@ func RemoteSHELL(line string, config *razboy.Config) []string {
 		addScope = arr[1]
 	}
 
-	cmd, err = kernel.Boot().Exec("ls "+addScope+" -> /dev/null", config)
+	err = kernel.Boot().Exec("ls "+addScope+" -> /dev/null", config)
 
 	if err != nil {
 		return make([]string, 0)
 	}
 
-	return strings.Fields(cmd.GetResultStr())
+	return arr
+
+	//return strings.Fields(cmd.GetResultStr())
 }
 
 func RemotePHP(line string, config *razboy.Config) []string {
@@ -136,7 +137,6 @@ func RemotePHP(line string, config *razboy.Config) []string {
 		addScope string
 		arr      []string
 		err      error
-		cmd      kernel.KernelCommand
 	)
 
 	arr = strings.Fields(line)
@@ -145,11 +145,13 @@ func RemotePHP(line string, config *razboy.Config) []string {
 		addScope = arr[1]
 	}
 
-	cmd, err = kernel.Boot().Exec("-list "+addScope+" -> /dev/null", config)
+	err = kernel.Boot().Exec("-list "+addScope+" -> /dev/null", config)
 
 	if err != nil {
 		return make([]string, 0)
 	}
 
-	return strings.Fields(cmd.GetResultStr())
+	return arr
+
+	//return strings.Fields(cmd.GetResultStr())
 }

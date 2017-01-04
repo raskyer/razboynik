@@ -1,9 +1,6 @@
 package worker
 
-import (
-	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboy/normalizer"
-)
+import "github.com/eatbytes/razboy"
 
 func Invisible(url, referer string) (string, error) {
 	var (
@@ -24,7 +21,7 @@ func Invisible(url, referer string) (string, error) {
 	request.Headers = []razboy.HEADER{
 		razboy.HEADER{
 			Key:   "Referer",
-			Value: normalizer.Encode(referer),
+			Value: razboy.Encode(referer),
 		},
 	}
 

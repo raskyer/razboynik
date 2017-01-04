@@ -88,7 +88,7 @@ if(is_resource($proc)){fwrite($pipes[0], "echo 1;");fclose($pipes[0]);$s=stream_
 $r=json_encode($r);`
 }
 
-func CreateAnswer(method, parameter string) string {
+func AddAnswer(method, parameter string) string {
 	if method == "HEADER" {
 		return "header('" + parameter + ":' . " + PHPEncode("$r") + ");exit();"
 	}

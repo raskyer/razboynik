@@ -10,52 +10,36 @@ import (
 type Decodecmd struct{}
 type Encodecmd struct{}
 
-func (d *Decodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (d *Decodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	str := strings.Join(kl.GetArr(), " ")
 	sDec, err := razboy.Decode(str)
 
-	kl.Write(err, sDec)
+	kernel.Write(kl.GetStdout(), kl.GetStderr(), err, sDec)
 
-	return d, nil
+	return nil
 }
 
 func (d *Decodecmd) GetName() string {
 	return "-decode"
 }
 
-func (d *Decodecmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (d *Decodecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
 }
 
-func (d *Decodecmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (d *Decodecmd) GetResultStr() string {
-	return ""
-}
-
-func (e *Encodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (e *Encodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	str := strings.Join(kl.GetArr(), " ")
 	sEnc := razboy.Encode(str)
 
-	kl.WriteSuccess(sEnc)
+	kernel.WriteSuccess(kl.GetStdout(), sEnc)
 
-	return e, nil
+	return nil
 }
 
 func (e *Encodecmd) GetName() string {
 	return "-encode"
 }
 
-func (e *Encodecmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (e *Encodecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
-}
-
-func (e *Encodecmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (e *Encodecmd) GetResultStr() string {
-	return ""
 }

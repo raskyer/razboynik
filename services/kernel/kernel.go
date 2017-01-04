@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
 )
 
-type CompleteFunction func(string, *razboy.Config) []string
+type CompleterFunction func(string, *razboy.Config) []string
 type KernelCommand interface {
-	Exec(*KernelLine, *razboy.Config) (KernelCommand, error)
+	Exec(*KernelLine, *razboy.Config) error
 	GetName() string
-	GetCompleter() (CompleteFunction, bool)
-	GetResultStr() string
-	GetResult() []byte
+	GetCompleter() (CompleterFunction, bool)
 }
 
 type Kernel struct {
@@ -36,7 +35,7 @@ func Boot() *Kernel {
 	return kInstance
 }
 
-func (k *Kernel) Exec(line string, config *razboy.Config) (KernelCommand, error) {
+func (k *Kernel) Exec(line string, config *razboy.Config) error {
 	kl := CreateLine(line)
 
 	for _, cmd := range k.commands {
@@ -90,7 +89,7 @@ func (k *Kernel) Loop(config *razboy.Config) error {
 			continue
 		}
 
-		_, err = k.Exec(line, config)
+		err = k.Exec(line, config)
 
 		if err != nil {
 			fmt.Println(err)
@@ -144,8 +143,8 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	return err
 }
 
-func (k Kernel) Default(kl *KernelLine, config *razboy.Config) (KernelCommand, error) {
-	return nil, errors.New("No default fonction defined")
+func (k Kernel) Default(kl *KernelLine, config *razboy.Config) error {
+	return errors.New("No default fonction defined")
 }
 
 func (k Kernel) GetCommands() []KernelCommand {
@@ -176,7 +175,50 @@ func (k *Kernel) SetCommands(cmd []KernelCommand) {
 	k.commands = cmd
 }
 
-func dynamicAdapter(completer CompleteFunction, c *razboy.Config) func(string) []string {
+// func (kl KernelLine) WriteInFile(path string, buf []byte) error {
+// 	var (
+// 		f   *os.File
+// 		err error
+// 	)
+
+// 	f, err = os.Create(path)
+
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	defer f.Close()
+
+// 	_, err = f.Write(buf)
+
+// 	return err
+// }
+
+func Write(stdout, stderr *os.File, e error, i ...interface{}) error {
+	if e != nil {
+		return WriteError(stderr, e)
+	}
+
+	return WriteSuccess(stdout, i...)
+}
+
+func WriteSuccess(stdout *os.File, i ...interface{}) error {
+	var e error
+
+	for _, v := range i {
+		_, e = fmt.Fprintln(stdout, v)
+	}
+
+	return e
+}
+
+func WriteError(stderr *os.File, err error) error {
+	_, e := fmt.Fprintln(stderr, err.Error())
+
+	return e
+}
+
+func dynamicAdapter(completer CompleterFunction, c *razboy.Config) func(string) []string {
 	return func(line string) []string {
 		return completer(line, c)
 	}

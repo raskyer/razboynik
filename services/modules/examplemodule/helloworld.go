@@ -1,6 +1,8 @@
 package examplemodule
 
 import (
+	"os"
+
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
 	pflag "github.com/spf13/pflag"
@@ -16,29 +18,21 @@ func (hw *HelloWorldCmd) InitFlags(args []string) {
 	flaghandler.Parse(args)
 }
 
-func (hw *HelloWorldCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (hw *HelloWorldCmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	hw.InitFlags(kl.GetArr())
-	kl.WriteSuccess("Hello", hw.Name)
+	kernel.WriteSuccess(os.Stdout, "Hello", hw.Name)
 
-	return hw, nil
+	return nil
 }
 
 func (hw *HelloWorldCmd) GetName() string {
 	return "-helloworld"
 }
 
-func (hw *HelloWorldCmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (hw *HelloWorldCmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return hw.Complete, false
 }
 
 func (hw *HelloWorldCmd) Complete(l string, c *razboy.Config) []string {
 	return []string{"--name"}
-}
-
-func (hw *HelloWorldCmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (hw *HelloWorldCmd) GetResultStr() string {
-	return ""
 }

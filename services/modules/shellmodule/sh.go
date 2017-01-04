@@ -20,7 +20,7 @@ func (sh *Shcmd) InitFlags(args []string) {
 	flaghandler.Parse(args)
 }
 
-func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
 		a, raw   string
 		err      error
@@ -28,48 +28,38 @@ func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Kern
 		response *razboy.RESPONSE
 	)
 
-	sh.InitFlags(kl.GetArr())
+	//sh.InitFlags(kl.GetArr())
 
 	raw = strings.TrimSuffix(kl.GetRaw(), "--debug")
-	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.CreateAnswer(config.Method, config.Parameter)
+	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
 
 	request = razboy.CreateRequest(a, config)
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		kl.WriteError(err)
-
-		return sh, err
+		return err
 	}
 
 	if sh.Debug {
-		kl.WriteSuccess("- REQUEST")
+		kernel.WriteSuccess(kl.GetStdout(), "- REQUEST")
 		b, _ := httputil.DumpRequestOut(request.GetHTTP(), true)
-		kl.WriteSuccess(string(b))
+		kernel.WriteSuccess(kl.GetStdout(), string(b))
 
-		kl.WriteSuccess("\n")
-		kl.WriteSuccess("- RESPONSE\n\n")
+		kernel.WriteSuccess(kl.GetStdout(), "\n")
+		kernel.WriteSuccess(kl.GetStdout(), "- RESPONSE\n\n")
 		b, _ = httputil.DumpResponse(response.GetHTTP(), true)
-		kl.WriteSuccess(string(b))
+		kernel.WriteSuccess(kl.GetStdout(), string(b))
 	}
 
-	kl.WriteSuccess(response.GetResult())
+	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return sh, err
+	return err
 }
 
 func (sh *Shcmd) GetName() string {
 	return "sh"
 }
 
-func (sh *Shcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (sh *Shcmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, true
-}
-
-func (sh *Shcmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (sh *Shcmd) GetResultStr() string {
-	return ""
 }

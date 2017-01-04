@@ -5,14 +5,13 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboy/adapter/phpadapter"
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/lister"
 )
 
 type Uploadcmd struct{}
 
-func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
 		local, remote string
 		err           error
@@ -23,7 +22,7 @@ func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.K
 	args := kl.GetArr()
 
 	if len(args) < 1 {
-		return u, errors.New("Please write the path of the local file to upload")
+		return errors.New("Please write the path of the local file to upload")
 	}
 
 	request = razboy.CreateRequest(kl.GetRaw(), config)
@@ -40,34 +39,28 @@ func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.K
 	response, err = UploadAction(local, remote, request)
 
 	if err != nil {
-		return u, err
+		return err
 	}
 
 	if response.GetResult() != "1" {
-		return u, errors.New("Server havn't upload the file")
+		return errors.New("Server havn't upload the file")
 	}
 
-	return u, nil
+	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
+
+	return nil
 }
 
 func (u *Uploadcmd) GetName() string {
 	return "-upload"
 }
 
-func (u *Uploadcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (u *Uploadcmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return lister.Local, true
 }
 
-func (u *Uploadcmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (u *Uploadcmd) GetResultStr() string {
-	return ""
-}
-
 func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
-	request.Action = phpadapter.CreateUpload(remote)
+	request.Action = razboy.CreateUpload(remote)
 	request.Upload = true
 	request.UploadPath = local
 

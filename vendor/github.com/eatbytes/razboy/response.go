@@ -21,7 +21,7 @@ func (res *RESPONSE) GetRequest() *REQUEST {
 	return res.request
 }
 
-func (res *RESPONSE) GetBody() []byte {
+func (res *RESPONSE) GetRawBody() []byte {
 	var (
 		buffer []byte
 		err    error
@@ -41,15 +41,15 @@ func (res *RESPONSE) GetBody() []byte {
 	return buffer
 }
 
-func (res *RESPONSE) GetBodyStr() string {
-	return string(res.GetBody())
+func (res *RESPONSE) GetRawBodyStr() string {
+	return string(res.GetRawBody())
 }
 
-func (res *RESPONSE) GetHeaderStr() string {
+func (res *RESPONSE) GetRawHeaderStr() string {
 	return res.http.Header.Get(res.request.c.Parameter)
 }
 
-func (res *RESPONSE) GetCookieStr() string {
+func (res *RESPONSE) GetRawCookieStr() string {
 	var (
 		str     string
 		cookies []*http.Cookie
@@ -68,26 +68,26 @@ func (res *RESPONSE) GetCookieStr() string {
 	return ""
 }
 
-func (res *RESPONSE) GetResultStrByMethod(m string) string {
+func (res *RESPONSE) GetRawResultStrByMethod(m string) string {
 	if m == "HEADER" {
-		return res.GetHeaderStr()
+		return res.GetRawHeaderStr()
 	}
 
 	if m == "COOKIE" {
-		return res.GetCookieStr()
+		return res.GetRawCookieStr()
 	}
 
-	return res.GetBodyStr()
+	return res.GetRawBodyStr()
 }
 
-func (res *RESPONSE) GetResultStr() string {
-	return res.GetResultStrByMethod(res.request.c.Method)
+func (res *RESPONSE) GetRawResultStr() string {
+	return res.GetRawResultStrByMethod(res.request.c.Method)
 }
 
 func (res *RESPONSE) GetResult() string {
 	var str string
 
-	str = res.GetResultStr()
+	str = res.GetRawResultStr()
 	str, _ = Decode(str)
 
 	return str

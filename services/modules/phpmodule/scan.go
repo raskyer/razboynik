@@ -9,41 +9,31 @@ type Scancmd struct {
 	result string
 }
 
-func (scan *Scancmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (scan *Scancmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
 		action   string
-		result   string
 		err      error
 		request  *razboy.REQUEST
 		response *razboy.RESPONSE
 	)
 
-	action = razboy.CreateScan() + razboy.CreateAnswer(config.Method, config.Parameter)
+	action = razboy.CreateScan() + razboy.AddAnswer(config.Method, config.Parameter)
 	request = razboy.CreateRequest(action, config)
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return scan, err
+		return err
 	}
 
-	result = response.GetResult()
-	kl.WriteSuccess(result)
+	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return scan, nil
+	return nil
 }
 
 func (scan *Scancmd) GetName() string {
 	return "-scan"
 }
 
-func (scan *Scancmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (scan *Scancmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
-}
-
-func (scan *Scancmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (scan *Scancmd) GetResultStr() string {
-	return ""
 }

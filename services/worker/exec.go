@@ -5,7 +5,7 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func Exec(cmd string, config *razboy.Config) (kernel.KernelCommand, error) {
+func Exec(cmd string, config *razboy.Config) error {
 	var k *kernel.Kernel
 
 	k = kernel.Boot()

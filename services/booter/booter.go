@@ -18,6 +18,7 @@ func Boot() {
 	k.SetDefault(new(shellmodule.Shcmd))
 	k.SetCommands([]kernel.KernelCommand{
 		new(examplemodule.HelloWorldCmd),
+		new(examplemodule.Fibocmd),
 		new(shellmodule.Cdcmd),
 		new(shellmodule.Pwdcmd),
 		new(shellmodule.Vimcmd),

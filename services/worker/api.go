@@ -48,7 +48,7 @@ func _apiExec(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 
 	k = kernel.Boot()
-	_, err = k.Exec(api.Action, &api.Config)
+	err = k.Exec(api.Action, &api.Config)
 
 	if err != nil {
 		apires = apiresponse{

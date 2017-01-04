@@ -9,7 +9,7 @@ import (
 
 type Pwdcmd struct{}
 
-func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
 		raw, a, scope string
 		err           error
@@ -18,15 +18,13 @@ func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Ke
 	)
 
 	raw = "pwd " + strings.Join(kl.GetArr(), " ")
-	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.CreateAnswer(config.Method, config.Parameter)
+	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
 
 	request = razboy.CreateRequest(a, config)
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		kl.WriteError(err)
-
-		return pwd, err
+		return err
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -36,21 +34,13 @@ func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.Ke
 		kernel.Boot().UpdatePrompt(config.Url, scope)
 	}
 
-	return pwd, nil
+	return nil
 }
 
 func (pwd *Pwdcmd) GetName() string {
 	return "pwd"
 }
 
-func (pwd *Pwdcmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (pwd *Pwdcmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
-}
-
-func (pwd *Pwdcmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (pwd *Pwdcmd) GetResultStr() string {
-	return ""
 }

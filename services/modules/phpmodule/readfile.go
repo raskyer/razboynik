@@ -1,35 +1,3 @@
-// package phpmodule
-
-// import (
-// 	"errors"
-
-// 	"github.com/eatbytes/razboy"
-// 	"github.com/eatbytes/razboy/adapter/phpadapter"
-// 	"github.com/eatbytes/razboynik/services/kernel"
-// )
-
-// func ReadFile(kc *kernel.KernelCmd, c *razboy.Config) (*kernel.KernelCmd, error) {
-// 	var (
-// 		request *razboy.REQUEST
-// 		action  string
-// 		file    string
-// 		err     error
-// 	)
-
-// 	file = kc.GetArrItem(1)
-
-// 	if file == "" {
-// 		return kc, errors.New("You should give the path of the file")
-// 	}
-
-// 	action = phpadapter.CreateReadFile(file) + phpadapter.CreateAnswer(c.Method, c.Parameter)
-// 	request = razboy.CreateRequest(action, c)
-
-// 	_, err = kc.Send(request)
-
-// 	return kc, err
-// }
-
 package phpmodule
 
 import (
@@ -42,7 +10,7 @@ import (
 
 type Readfilecmd struct{}
 
-func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
+func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	var (
 		action   string
 		file     string
@@ -55,29 +23,29 @@ func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (ker
 	args = kl.GetArr()
 
 	if len(args) < 1 {
-		return read, errors.New("You should give the path of the file to read")
+		return errors.New("You should give the path of the file to read")
 	}
 
 	file = args[0]
 
-	action = "$r=file_get_contents('" + file + "');" + razboy.CreateAnswer(config.Method, config.Parameter)
+	action = "$r=file_get_contents('" + file + "');" + razboy.AddAnswer(config.Method, config.Parameter)
 	request = razboy.CreateRequest(action, config)
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return read, err
+		return err
 	}
 
-	kl.WriteSuccess(response.GetResult())
+	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return read, nil
+	return nil
 }
 
 func (read *Readfilecmd) GetName() string {
 	return "-readfile"
 }
 
-func (read *Readfilecmd) GetCompleter() (kernel.CompleteFunction, bool) {
+func (read *Readfilecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return lister.RemotePHP, true
 }
 
