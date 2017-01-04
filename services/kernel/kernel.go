@@ -7,6 +7,9 @@ import (
 	"log"
 	"os"
 
+	"reflect"
+	"strings"
+
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
 )
@@ -39,7 +42,7 @@ func (k *Kernel) Exec(line string, config *razboy.Config) error {
 	kl := CreateLine(line)
 
 	for _, cmd := range k.commands {
-		if cmd.GetName() == kl.name {
+		if cmd.GetName() == kl.GetName() {
 			return cmd.Exec(kl, config)
 		}
 	}
@@ -175,25 +178,6 @@ func (k *Kernel) SetCommands(cmd []KernelCommand) {
 	k.commands = cmd
 }
 
-// func (kl KernelLine) WriteInFile(path string, buf []byte) error {
-// 	var (
-// 		f   *os.File
-// 		err error
-// 	)
-
-// 	f, err = os.Create(path)
-
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	defer f.Close()
-
-// 	_, err = f.Write(buf)
-
-// 	return err
-// }
-
 func Write(stdout, stderr *os.File, e error, i ...interface{}) error {
 	if e != nil {
 		return WriteError(stderr, e)
@@ -206,8 +190,18 @@ func WriteSuccess(stdout *os.File, i ...interface{}) error {
 	var e error
 
 	for _, v := range i {
-		_, e = fmt.Fprintln(stdout, v)
+		if reflect.TypeOf(v).Kind() == reflect.String {
+			_, e = fmt.Fprint(stdout, strings.TrimSpace(v.(string)))
+		} else {
+			_, e = fmt.Fprint(stdout, v)
+		}
+
+		if e != nil {
+			fmt.Println(e)
+		}
 	}
+
+	fmt.Fprint(stdout, "\n")
 
 	return e
 }

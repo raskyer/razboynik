@@ -5,6 +5,10 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
+func CreateExit() kernel.KernelCommand {
+	return new(Exitcmd)
+}
+
 type Exitcmd struct{}
 
 func (exit *Exitcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {

@@ -1,6 +1,7 @@
 package kernel
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 type KernelLine struct {
 	name string
 	raw  string
+	str  string
 	arg  []string
 	out  *os.File
 	err  *os.File
@@ -17,10 +19,10 @@ type KernelLine struct {
 
 func CreateLine(raw string) *KernelLine {
 	var (
-		arg      []string
-		name     string
-		e        error
-		out, err *os.File
+		arg       []string
+		name, str string
+		e         error
+		out, err  *os.File
 	)
 
 	out = os.Stdout
@@ -38,30 +40,35 @@ func CreateLine(raw string) *KernelLine {
 	}
 
 	if i := extractIn(arg, "->"); i != -1 {
-		out, e = os.OpenFile(arg[i+1], os.O_CREATE, 0600)
+		out, e = os.OpenFile(arg[i+1], os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 
 		if e != nil {
+			fmt.Println(e)
 			out = os.Stdout
 		}
 
 		arg = append(arg[:i], arg[i+2:]...)
-		raw = name + strings.Join(arg, " ")
+		raw = name + " " + strings.Join(arg, " ")
 	}
 
 	if i := extractIn(arg, "-2>"); i != -1 {
-		err, e = os.OpenFile(arg[i+1], os.O_CREATE, 0600)
+		err, e = os.OpenFile(arg[i+1], os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 
 		if e != nil {
+			fmt.Println(e)
 			err = os.Stderr
 		}
 
 		arg = append(arg[:i], arg[i+2:]...)
-		raw = name + strings.Join(arg, " ")
+		raw = name + " " + strings.Join(arg, " ")
 	}
+
+	str = strings.Join(arg, " ")
 
 	return &KernelLine{
 		name: name,
 		raw:  raw,
+		str:  str,
 		arg:  arg,
 		out:  out,
 		err:  err,
@@ -72,8 +79,20 @@ func (kl KernelLine) GetRaw() string {
 	return kl.raw
 }
 
+func (kl KernelLine) GetArg() []string {
+	return kl.arg
+}
+
 func (kl KernelLine) GetArr() []string {
 	return kl.arg
+}
+
+func (kl KernelLine) GetName() string {
+	return kl.name
+}
+
+func (kl KernelLine) GetStr() string {
+	return kl.str
 }
 
 func (kl KernelLine) GetStdout() *os.File {
