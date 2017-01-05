@@ -14,6 +14,7 @@ import (
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/provider"
 )
 
 type CompleterFunction func(string, *razboy.Config) []string
@@ -44,7 +45,7 @@ func (k *Kernel) Exec(line string, config *razboy.Config) error {
 	kl := CreateLine(line)
 
 	if strings.HasPrefix(kl.GetName(), "#") {
-		return k.ExecByProvider(kl)
+		return k.ExecProvider(kl)
 	}
 
 	for _, cmd := range k.commands {
@@ -60,18 +61,30 @@ func (k *Kernel) Exec(line string, config *razboy.Config) error {
 	return k.Default(kl, config)
 }
 
-func (k *Kernel) ExecByProvider(kl *KernelLine) error {
-	args := new(KernelExternalArgs)
+func (k *Kernel) ExecProvider(kl *KernelLine) error {
+	var (
+		info *provider.Info
+		args *provider.Args
+		resp *provider.Response
+		err  error
+	)
+
+	args = new(provider.Args)
 	args.Line = kl.GetRaw()
 
-	name := DIR_PROVIDERS + "/" + strings.TrimPrefix(kl.GetName(), "#")
-	resp, err := ExecuteProvider(name, "Exec", args)
+	info = &provider.Info{
+		Path:   provider.DIR + "/",
+		Name:   strings.TrimPrefix(kl.GetName(), "#"),
+		Method: provider.EXEC_FN,
+	}
+
+	resp, err = provider.CallProvider(info, args)
 
 	if err != nil {
 		return WriteError(kl.GetStderr(), err)
 	}
 
-	return WriteSuccess(kl.GetStdout(), resp.Response)
+	return WriteSuccess(kl.GetStdout(), resp.Content)
 }
 
 func (k *Kernel) Run(config *razboy.Config) error {
@@ -136,7 +149,7 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	autocompleter = readline.NewPrefixCompleter()
 
 	dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
-	dir = dir + "/" + DIR_PROVIDERS + "/"
+	dir = dir + "/" + provider.DIR + "/"
 	filesInfo, err = ioutil.ReadDir(dir)
 	if err == nil {
 		for _, item := range filesInfo {
@@ -260,16 +273,21 @@ func dynamicAdapter(completer CompleterFunction, c *razboy.Config) func(string) 
 
 func dynamicExternalAdapter(path string) func(string) []string {
 	return func(line string) []string {
-		args := new(KernelExternalArgs)
+		args := new(provider.Args)
 		args.Line = line
 
-		ker, err := ExecuteProvider(path, "Completer", args)
+		info := &provider.Info{
+			Path:   path,
+			Method: provider.COMPLETER_FN,
+		}
+
+		resp, err := provider.CallProvider(info, args)
 
 		if err != nil {
 			fmt.Println(err)
 			return []string{}
 		}
 
-		return ker.Items
+		return resp.Items
 	}
 }
