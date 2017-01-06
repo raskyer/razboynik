@@ -9,7 +9,7 @@ import (
 
 type Deletecmd struct{}
 
-func (delete *Deletecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (delete *Deletecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		action  string
 		scope   string
@@ -18,10 +18,10 @@ func (delete *Deletecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) erro
 		request *razboy.REQUEST
 	)
 
-	args = kl.GetArr()
+	args = kl.GetArg()
 
 	if len(args) < 1 {
-		return errors.New("You should give the path of the file to delete")
+		return kernel.KernelResponse{Err: errors.New("You should give the path of the file to delete")}
 	}
 
 	scope = args[0]
@@ -36,12 +36,12 @@ func (delete *Deletecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) erro
 	_, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), "Delete successfully")
 
-	return nil
+	return kernel.KernelResponse{Body: true}
 }
 
 func (delete *Deletecmd) GetName() string {

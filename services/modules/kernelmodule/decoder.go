@@ -10,13 +10,13 @@ import (
 type Decodecmd struct{}
 type Encodecmd struct{}
 
-func (d *Decodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (d *Decodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	str := strings.Join(kl.GetArr(), " ")
 	sDec, err := razboy.Decode(str)
 
 	kernel.Write(kl.GetStdout(), kl.GetStderr(), err, sDec)
 
-	return nil
+	return kernel.KernelResponse{Err: err, Body: sDec}
 }
 
 func (d *Decodecmd) GetName() string {
@@ -27,13 +27,13 @@ func (d *Decodecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return nil, false
 }
 
-func (e *Encodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (e *Encodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	str := strings.Join(kl.GetArr(), " ")
 	sEnc := razboy.Encode(str)
 
 	kernel.WriteSuccess(kl.GetStdout(), sEnc)
 
-	return nil
+	return kernel.KernelResponse{Body: sEnc}
 }
 
 func (e *Encodecmd) GetName() string {

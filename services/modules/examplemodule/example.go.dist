@@ -1,11 +1,11 @@
 type Examplecmd struct {}
 
-func (ex *Examplecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) (kernel.KernelCommand, error) {
-	return ex, nil
+func (ex *Examplecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
+	return kernel.KernelResponse{}
 }
 
 func (ex *Examplecmd) GetName() string {
-	return "cd"
+	return "example"
 }
 
 func (ex *Examplecmd) GetCompleter() (kernel.CompleterFunction, bool) {

@@ -11,17 +11,18 @@ import (
 
 type Downloadcmd struct{}
 
-func (d *Downloadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (d *Downloadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
+		args          []string
 		local, remote string
 		err           error
 		request       *razboy.REQUEST
 	)
 
-	args := kl.GetArr()
+	args = kl.GetArg()
 
 	if len(args) < 1 {
-		return errors.New("Please write the path of the file to download")
+		return kernel.KernelResponse{Err: errors.New("Please write the path of the file to download")}
 	}
 
 	request = razboy.CreateRequest(kl.GetRaw(), config)
@@ -36,7 +37,7 @@ func (d *Downloadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	_, err = DownloadAction(remote, local, request)
 	kernel.Write(kl.GetStdout(), kl.GetStderr(), err, "Downloaded successfully to "+local)
 
-	return err
+	return kernel.KernelResponse{Err: err, Body: true}
 }
 
 func (d *Downloadcmd) GetName() string {

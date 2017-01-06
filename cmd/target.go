@@ -34,9 +34,7 @@ var targetCmd = &cobra.Command{
 	Short: "Target handler",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if !silent {
-			printer.PrintIntro()
-		}
+		printer.PrintIntro()
 
 		return worker.TargetList()
 	},

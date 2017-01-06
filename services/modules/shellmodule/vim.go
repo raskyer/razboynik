@@ -14,7 +14,7 @@ import (
 
 type Vimcmd struct{}
 
-func (vim *Vimcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (vim *Vimcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		remote, local string
 		resp          string
@@ -26,7 +26,7 @@ func (vim *Vimcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	args := kl.GetArr()
 
 	if len(args) < 1 {
-		return errors.New("Please write the path of the file to edit")
+		return kernel.KernelResponse{Err: errors.New("Please write the path of the file to edit")}
 	}
 
 	request = razboy.CreateRequest(kl.GetRaw(), config)
@@ -37,7 +37,7 @@ func (vim *Vimcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	_, err = phpmodule.DownloadAction(remote, local, request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	cmd = exec.Command("vim", local)
@@ -46,19 +46,19 @@ func (vim *Vimcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	err = cmd.Run()
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	_, err = phpmodule.UploadAction(local, remote, request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	resp, err = sysgo.Call("rm " + local)
 	kernel.WriteSuccess(kl.GetStdout(), resp)
 
-	return nil
+	return kernel.KernelResponse{Body: resp}
 }
 
 func (vim *Vimcmd) GetName() string {

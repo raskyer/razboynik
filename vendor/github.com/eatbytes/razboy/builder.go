@@ -17,16 +17,16 @@ func _createSimpleRequest(req *REQUEST) error {
 	req.cmd = Encode(req.Action)
 
 	switch req.c.Method {
-	case "GET":
+	case M_GET:
 		err = _buildGET(req)
 		break
-	case "POST":
+	case M_POST:
 		err = _buildPOST(req)
 		break
-	case "HEADER":
+	case M_HEADER:
 		err = _buildHEADER(req)
 		break
-	case "COOKIE":
+	case M_COOKIE:
 		err = _buildCOOKIE(req)
 		break
 	default:

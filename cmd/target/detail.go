@@ -39,10 +39,8 @@ var DetailCmd = &cobra.Command{
 			return errors.New("not enough arguments")
 		}
 
-		if cmd.Flag("silent").Value.String() == "false" {
-			printer.PrintIntro()
-			printer.PrintSection("Detail target", "Detail target '"+args[0]+"' in config file")
-		}
+		printer.PrintIntro()
+		printer.PrintSection("Detail target", "Detail target '"+args[0]+"' in config file")
 
 		return worker.TargetDetail(args[0])
 	},

@@ -18,11 +18,6 @@ import (
 )
 
 type CompleterFunction func(string, *razboy.Config) []string
-type KernelCommand interface {
-	Exec(*KernelLine, *razboy.Config) error
-	GetName() string
-	GetCompleter() (CompleterFunction, bool)
-}
 
 type Kernel struct {
 	def      KernelCommand
@@ -41,9 +36,11 @@ func Boot() *Kernel {
 	return kInstance
 }
 
-func (k *Kernel) Exec(line string, config *razboy.Config) error {
-	kl := CreateLine(line)
+func (k *Kernel) Exec(line string, config *razboy.Config) KernelResponse {
+	return k.ExecKernelLine(CreateLine(line), config)
+}
 
+func (k *Kernel) ExecKernelLine(kl *KernelLine, config *razboy.Config) KernelResponse {
 	if strings.HasPrefix(kl.GetName(), "#") {
 		return k.ExecProvider(kl)
 	}
@@ -61,7 +58,7 @@ func (k *Kernel) Exec(line string, config *razboy.Config) error {
 	return k.Default(kl, config)
 }
 
-func (k *Kernel) ExecProvider(kl *KernelLine) error {
+func (k *Kernel) ExecProvider(kl *KernelLine) KernelResponse {
 	var (
 		info *provider.Info
 		args *provider.Args
@@ -80,11 +77,17 @@ func (k *Kernel) ExecProvider(kl *KernelLine) error {
 
 	resp, err = provider.CallProvider(info, args)
 
+	//DEBUG
 	if err != nil {
-		return WriteError(kl.GetStderr(), err)
+		WriteError(kl.GetStderr(), err)
+	} else {
+		WriteSuccess(kl.GetStdout(), resp.Content)
 	}
 
-	return WriteSuccess(kl.GetStdout(), resp.Content)
+	return KernelResponse{
+		Err:  err,
+		Body: []byte(resp.Content),
+	}
 }
 
 func (k *Kernel) Run(config *razboy.Config) error {
@@ -105,6 +108,7 @@ func (k *Kernel) Loop(config *razboy.Config) error {
 	var (
 		line string
 		err  error
+		kr   KernelResponse
 	)
 
 	defer k.readline.Close()
@@ -125,10 +129,10 @@ func (k *Kernel) Loop(config *razboy.Config) error {
 			continue
 		}
 
-		err = k.Exec(line, config)
+		kr = k.Exec(line, config)
 
-		if err != nil {
-			fmt.Println(err)
+		if kr.Err != nil {
+			fmt.Println(kr.Err.Error())
 		}
 	}
 
@@ -199,8 +203,8 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	return err
 }
 
-func (k Kernel) Default(kl *KernelLine, config *razboy.Config) error {
-	return errors.New("No default fonction defined")
+func (k Kernel) Default(kl *KernelLine, config *razboy.Config) KernelResponse {
+	return KernelResponse{Err: errors.New("No default fonction defined")}
 }
 
 func (k Kernel) GetCommands() []KernelCommand {

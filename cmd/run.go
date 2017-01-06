@@ -26,6 +26,7 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/gflags"
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
@@ -42,22 +43,10 @@ var runCmd = &cobra.Command{
 			return errors.New("not enough arguments")
 		}
 
-		if !silent {
-			printer.PrintIntro()
-			printer.PrintSection("Run", "Run reverse shell with configuration")
-		}
+		printer.PrintIntro()
+		printer.PrintSection("Run", "Run reverse shell with configuration")
 
-		c = &razboy.Config{
-			Url:         args[0],
-			Method:      method,
-			Parameter:   parameter,
-			Key:         key,
-			Proxy:       proxy,
-			Encoding:    encoding,
-			Shellmethod: shellmethod,
-			Shellscope:  shellscope,
-			NoExtra:     noextra,
-		}
+		c = gflags.BuildConfig(args[0])
 
 		return worker.Run(c)
 	},
@@ -66,12 +55,12 @@ var runCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(runCmd)
 
-	runCmd.Flags().StringVarP(&method, "method", "m", "GET", "Method to use. Ex: -m POST")
-	runCmd.Flags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
-	runCmd.Flags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
-	runCmd.Flags().StringVarP(&shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
-	runCmd.Flags().StringVarP(&encoding, "encoding", "e", "base64", "Encoding of the request. Ex: -e base64")
-	runCmd.Flags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
-	runCmd.Flags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
-	runCmd.Flags().BoolVar(&noextra, "no-extra", false, "Unallowed Razboynik to make extra request that user don't want. Ex: --no-extra")
+	runCmd.Flags().StringVarP(&gflags.Method, "method", "m", "GET", "Method to use. Ex: -m POST")
+	runCmd.Flags().StringVarP(&gflags.Parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
+	runCmd.Flags().StringVarP(&gflags.Key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
+	runCmd.Flags().StringVarP(&gflags.Shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
+	runCmd.Flags().IntVarP(&gflags.Encoding, "encoding", "e", razboy.E_BASE64, "Encoding of the request. Ex: -e 0")
+	runCmd.Flags().StringVar(&gflags.Shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
+	runCmd.Flags().StringVar(&gflags.Proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
+	runCmd.Flags().BoolVar(&gflags.Noextra, "no-extra", false, "Unallowed Razboynik to make extra request that user don't want. Ex: --no-extra")
 }

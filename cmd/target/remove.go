@@ -39,10 +39,8 @@ var RemoveCmd = &cobra.Command{
 			return errors.New("not enough arguments")
 		}
 
-		if cmd.Flag("silent").Value.String() == "false" {
-			printer.PrintIntro()
-			printer.PrintSection("Remove target", "Remove target '"+args[0]+"' in config file")
-		}
+		printer.PrintIntro()
+		printer.PrintSection("Remove target", "Remove target '"+args[0]+"' in config file")
 
 		return worker.TargetRemove(args[0])
 	},

@@ -28,6 +28,7 @@ func Api(port string) error {
 func _apiExec(w http.ResponseWriter, req *http.Request) {
 	var (
 		k       *kernel.Kernel
+		kr      kernel.KernelResponse
 		decoder *json.Decoder
 		api     *apidata
 		apires  apiresponse
@@ -48,17 +49,17 @@ func _apiExec(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 
 	k = kernel.Boot()
-	err = k.Exec(api.Action, &api.Config)
+	kr = k.Exec(api.Action, &api.Config)
 
-	if err != nil {
+	if kr.Err != nil {
 		apires = apiresponse{
 			Status:   "error",
-			Response: err.Error(),
+			Response: kr.Err.Error(),
 		}
 	} else {
 		apires = apiresponse{
 			Status:   "success",
-			Response: "res",
+			Response: kr.Body.(string),
 		}
 	}
 

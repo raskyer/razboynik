@@ -1,8 +1,7 @@
 package worker
 
 import (
-	"strconv"
-
+	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker/targetwork"
 )
@@ -92,11 +91,10 @@ func TargetDetail(name string) error {
 
 	printer.Println("Name: " + target.Name)
 	printer.Println("Url: " + target.Config.Url)
-	printer.Println("Method: " + target.Config.Method)
+	printer.Println("Method: " + razboy.MethodToStr(target.Config.Method))
 	printer.Println("Parameter: " + target.Config.Parameter)
-	printer.Println("Shellmethod: " + target.Config.Shellmethod)
+	printer.Println("Shellmethod: " + razboy.ShellmethodToStr(target.Config.Shellmethod))
 	printer.Println("Shellscope: " + target.Config.Shellscope)
-	printer.Println("NoExtra: " + strconv.FormatBool(target.Config.NoExtra))
 
 	return nil
 }

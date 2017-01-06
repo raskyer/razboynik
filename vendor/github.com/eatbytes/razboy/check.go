@@ -17,12 +17,12 @@ func _checkSERVER(req *REQUEST) error {
 		return errors.New("REQUEST [url] should not be empty")
 	}
 
-	if req.c.Method != "GET" && req.c.Method != "POST" && req.c.Method != "HEADER" && req.c.Method != "COOKIE" {
-		req.c.Method = "GET"
+	if req.c.Method != M_GET && req.c.Method != M_POST && req.c.Method != M_HEADER && req.c.Method != M_COOKIE {
+		req.c.Method = M_GET
 	}
 
 	if req.c.Parameter == "" {
-		req.c.Parameter = PARAM
+		req.c.Parameter = PARAMETER
 	}
 
 	return nil

@@ -11,7 +11,7 @@ import (
 
 type Uploadcmd struct{}
 
-func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		local, remote string
 		err           error
@@ -22,7 +22,7 @@ func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	args := kl.GetArr()
 
 	if len(args) < 1 {
-		return errors.New("Please write the path of the local file to upload")
+		return kernel.KernelResponse{Err: errors.New("Please write the path of the local file to upload")}
 	}
 
 	request = razboy.CreateRequest(kl.GetRaw(), config)
@@ -39,16 +39,16 @@ func (u *Uploadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = UploadAction(local, remote, request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	if response.GetResult() != "1" {
-		return errors.New("Server havn't upload the file")
+		return kernel.KernelResponse{Err: errors.New("Server havn't upload the file")}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return nil
+	return kernel.KernelResponse{Body: response.GetResult()}
 }
 
 func (u *Uploadcmd) GetName() string {

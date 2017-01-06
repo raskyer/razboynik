@@ -39,10 +39,8 @@ var RunCmd = &cobra.Command{
 			return errors.New("not enough arguments")
 		}
 
-		if cmd.Flag("silent").Value.String() == "false" {
-			printer.PrintIntro()
-			printer.PrintSection("Run target", "Run target '"+args[0]+"' in config file")
-		}
+		printer.PrintIntro()
+		printer.PrintSection("Run target", "Run target '"+args[0]+"' in config file")
 
 		return worker.TargetRun(args[0])
 	},

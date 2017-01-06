@@ -68,12 +68,12 @@ func (res *RESPONSE) GetRawCookieStr() string {
 	return ""
 }
 
-func (res *RESPONSE) GetRawResultStrByMethod(m string) string {
-	if m == "HEADER" {
+func (res *RESPONSE) GetRawResultStrByMethod(m int) string {
+	if m == M_HEADER {
 		return res.GetRawHeaderStr()
 	}
 
-	if m == "COOKIE" {
+	if m == M_COOKIE {
 		return res.GetRawCookieStr()
 	}
 

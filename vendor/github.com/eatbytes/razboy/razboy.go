@@ -5,10 +5,6 @@ import (
 	"net/http"
 )
 
-const KEY = "RAZBOYNIK_KEY"
-const PARAM = "razboynik"
-const MAX_SIZE = 512
-
 func main() {}
 
 func Send(req *REQUEST) (*RESPONSE, error) {

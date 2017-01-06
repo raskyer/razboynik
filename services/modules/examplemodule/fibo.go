@@ -5,7 +5,7 @@ import "github.com/eatbytes/razboy"
 
 type Fibocmd struct{}
 
-func (f *Fibocmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (f *Fibocmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		action   string
 		request  *razboy.REQUEST
@@ -33,12 +33,12 @@ func (f *Fibocmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return nil
+	return kernel.KernelResponse{Body: response.GetResult()}
 }
 
 func (f *Fibocmd) GetName() string {

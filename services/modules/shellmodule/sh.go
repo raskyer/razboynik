@@ -7,28 +7,19 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/services/kernel"
-	"github.com/spf13/pflag"
 )
 
 type Shcmd struct {
 	Debug bool
 }
 
-func (sh *Shcmd) InitFlags(args []string) {
-	flaghandler := pflag.NewFlagSet("/bin/sh", pflag.ContinueOnError)
-	flaghandler.BoolVar(&sh.Debug, "debug", false, "Debug mode")
-	flaghandler.Parse(args)
-}
-
-func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		a, raw   string
 		err      error
 		request  *razboy.REQUEST
 		response *razboy.RESPONSE
 	)
-
-	//sh.InitFlags(kl.GetArr())
 
 	raw = strings.TrimSuffix(kl.GetRaw(), "--debug")
 	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
@@ -37,7 +28,7 @@ func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	if sh.Debug {
@@ -53,7 +44,7 @@ func (sh *Shcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 
 	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return err
+	return kernel.KernelResponse{Err: err}
 }
 
 func (sh *Shcmd) GetName() string {

@@ -12,7 +12,7 @@ func Invisible(url, referer string) (string, error) {
 
 	c = &razboy.Config{
 		Url:       url,
-		Method:    "GET",
+		Method:    razboy.M_GET,
 		Parameter: "",
 		Key:       "",
 	}

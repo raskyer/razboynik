@@ -10,7 +10,7 @@ import (
 
 type Readfilecmd struct{}
 
-func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		action   string
 		file     string
@@ -20,10 +20,10 @@ func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) erro
 		response *razboy.RESPONSE
 	)
 
-	args = kl.GetArr()
+	args = kl.GetArg()
 
 	if len(args) < 1 {
-		return errors.New("You should give the path of the file to read")
+		return kernel.KernelResponse{Err: errors.New("You should give the path of the file to read")}
 	}
 
 	file = args[0]
@@ -33,12 +33,12 @@ func (read *Readfilecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) erro
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return nil
+	return kernel.KernelResponse{Body: response.GetResult()}
 }
 
 func (read *Readfilecmd) GetName() string {
@@ -47,12 +47,4 @@ func (read *Readfilecmd) GetName() string {
 
 func (read *Readfilecmd) GetCompleter() (kernel.CompleterFunction, bool) {
 	return lister.RemotePHP, true
-}
-
-func (read *Readfilecmd) GetResult() []byte {
-	return make([]byte, 0)
-}
-
-func (read *Readfilecmd) GetResultStr() string {
-	return ""
 }

@@ -9,7 +9,7 @@ import (
 
 type Cdcmd struct{}
 
-func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		raw, a, scope string
 		err           error
@@ -20,7 +20,7 @@ func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	raw = "cd " + strings.Join(kl.GetArr(), " ")
 
 	if strings.Contains(raw, "&&") || strings.Contains(raw, "-") {
-		return nil
+		return kernel.KernelResponse{}
 	}
 
 	raw += " && pwd"
@@ -31,7 +31,7 @@ func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -41,7 +41,7 @@ func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 		kernel.Boot().UpdatePrompt(config.Url, scope)
 	}
 
-	return nil
+	return kernel.KernelResponse{}
 }
 
 func (cd *Cdcmd) GetName() string {

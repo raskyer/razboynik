@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/eatbytes/razboynik/services/gflags"
 	"github.com/fatih/color"
 )
 
 func PrintIntro() {
+	if gflags.Silent {
+		return
+	}
+
 	fmt.Print("\n")
 	color.White("███████████████████████████████████████████████████████████████████████")
 	color.Blue("███████████████████████████████████████████████████████████████████████")
@@ -26,20 +31,12 @@ func PrintIntro() {
 	fmt.Print("\n")
 }
 
-func err_intro() {
-	fmt.Print("\n")
-	color.Red("███ ERROR ███")
-	color.Red("_____________")
-}
-
-func suc_intro() {
-	fmt.Print("\n")
-	color.Green("███ SUCCESS ███")
-	color.Green("_______________")
-}
-
 func PrintTitle(str string) {
 	var i, lenght int
+
+	if gflags.Silent {
+		return
+	}
 
 	lenght = len(str)
 
@@ -55,26 +52,21 @@ func PrintTitle(str string) {
 	fmt.Print("\n")
 }
 
-func PrintStart() {
-	color.Green("### STARTING ###")
-	color.Green("----------------")
-	color.White("Trying to communicate with server...")
-	fmt.Print("\n")
-}
-
-func PrintError(err error) {
-	err_intro()
-	color.White(err.Error())
-	fmt.Print("\n")
-}
-
 func PrintSection(section string, str string) {
+	if gflags.Silent {
+		return
+	}
+
 	PrintTitle(section)
 	color.White(str)
 	fmt.Print("\n")
 }
 
 func PrintSectionI(section string, i ...interface{}) {
+	if gflags.Silent {
+		return
+	}
+
 	PrintTitle(section)
 
 	for _, item := range i {

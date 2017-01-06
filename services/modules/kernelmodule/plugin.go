@@ -11,7 +11,7 @@ import (
 
 type Plugincmd struct{}
 
-func (plugin *Plugincmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (plugin *Plugincmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		arr  []string
 		err  error
@@ -23,7 +23,7 @@ func (plugin *Plugincmd) Exec(kl *kernel.KernelLine, config *razboy.Config) erro
 	arr = kl.GetArg()
 
 	if len(arr) < 1 {
-		return errors.New("Please specify a path for external plugin")
+		return kernel.KernelResponse{Err: errors.New("Please specify a path for external plugin")}
 	}
 
 	args = new(provider.Args)
@@ -37,12 +37,12 @@ func (plugin *Plugincmd) Exec(kl *kernel.KernelLine, config *razboy.Config) erro
 	resp, err = provider.CallProvider(info, args)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), resp.Content)
 
-	return nil
+	return kernel.KernelResponse{Body: resp.Content}
 }
 
 func (plugin *Plugincmd) GetName() string {

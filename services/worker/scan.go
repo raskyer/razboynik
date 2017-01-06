@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/fatih/color"
 )
 
@@ -31,29 +32,30 @@ func test(n string) string {
 
 func Scan(config *razboy.Config) (string, error) {
 	var (
+		kr      kernel.KernelResponse
 		s       *scanresult
 		decoder *json.Decoder
-		m       []string
+		m       []int
 		info    [2]string
 		result  string
 		err     error
 	)
 
 	s = new(scanresult)
-	m = []string{"GET", "POST", "HEADER", "COOKIE"}
+	m = []int{razboy.M_GET, razboy.M_POST, razboy.M_HEADER, razboy.M_COOKIE}
 
 	for i := 0; i < 4; i++ {
-		result += "\nMethod: " + color.YellowString(m[i]) + "\n"
+		result += "\nMethod: " + color.YellowString(razboy.MethodToStr(m[i])) + "\n"
 
 		config.Method = m[i]
-		err = Exec("-scan", config)
+		kr = Exec("-scan", config)
 
-		if err != nil {
-			result += "-" + color.RedString("[x]") + " Error Exec: " + err.Error() + "\n"
+		if kr.Err != nil {
+			result += "-" + color.RedString("[x]") + " Error Exec: " + kr.Err.Error() + "\n"
 			continue
 		}
 
-		decoder = json.NewDecoder(bytes.NewReader([]byte("kc.GetResult()")))
+		decoder = json.NewDecoder(bytes.NewReader([]byte(kr.Body.(string))))
 		err = decoder.Decode(&s)
 
 		if err != nil {

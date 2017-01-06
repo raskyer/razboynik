@@ -26,20 +26,8 @@ import (
 	"os"
 
 	"github.com/eatbytes/razboynik/services/booter"
+	"github.com/eatbytes/razboynik/services/gflags"
 	"github.com/spf13/cobra"
-)
-
-var (
-	method      string
-	parameter   string
-	key         string
-	shellmethod string
-	encoding    string
-	proxy       string
-	shellscope  string
-	debug       bool
-	silent      bool
-	noextra     bool
 )
 
 var RootCmd = &cobra.Command{
@@ -57,5 +45,5 @@ func Execute() {
 }
 
 func init() {
-	RootCmd.PersistentFlags().BoolVar(&silent, "silent", false, "Don't print anything else than result or error. Ex: --silent")
+	RootCmd.PersistentFlags().BoolVar(&gflags.Silent, "silent", false, "Don't print anything else than result or error. Ex: --silent")
 }

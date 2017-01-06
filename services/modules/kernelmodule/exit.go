@@ -11,10 +11,9 @@ func CreateExit() kernel.KernelCommand {
 
 type Exitcmd struct{}
 
-func (exit *Exitcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (exit *Exitcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	kernel.Boot().StopRun()
-
-	return nil
+	return kernel.KernelResponse{}
 }
 
 func (e *Exitcmd) GetName() string {

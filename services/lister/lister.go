@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/gflags"
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
@@ -33,11 +34,6 @@ func local(line string, filename string) []string {
 
 	arg = strings.TrimPrefix(line, a[0]+" ")
 	arg = strings.TrimSpace(arg)
-
-	//Generate a bug, TO DO: fix this better
-	if strings.Contains(arg, "~") {
-		return []string{}
-	}
 
 	//Check if path is a valid folder or file
 	f, err := os.Stat(arg)
@@ -112,8 +108,13 @@ func RemoteSHELL(line string, config *razboy.Config) []string {
 	var (
 		addScope string
 		arr      []string
-		err      error
+		k        *kernel.Kernel
+		resp     kernel.KernelResponse
 	)
+
+	if gflags.Noextra {
+		return arr
+	}
 
 	arr = strings.Fields(line)
 
@@ -121,23 +122,27 @@ func RemoteSHELL(line string, config *razboy.Config) []string {
 		addScope = arr[1]
 	}
 
-	err = kernel.Boot().Exec("ls "+addScope+" -> /dev/null", config)
+	k = kernel.Boot()
+	resp = k.Exec("ls "+addScope+" -> /dev/null", config)
 
-	if err != nil {
+	if resp.Err != nil {
 		return make([]string, 0)
 	}
 
-	return arr
-
-	//return strings.Fields(cmd.GetResultStr())
+	return strings.Fields(resp.Body.(string))
 }
 
 func RemotePHP(line string, config *razboy.Config) []string {
 	var (
 		addScope string
 		arr      []string
-		err      error
+		k        *kernel.Kernel
+		resp     kernel.KernelResponse
 	)
+
+	if gflags.Noextra {
+		return arr
+	}
 
 	arr = strings.Fields(line)
 
@@ -145,13 +150,12 @@ func RemotePHP(line string, config *razboy.Config) []string {
 		addScope = arr[1]
 	}
 
-	err = kernel.Boot().Exec("-list "+addScope+" -> /dev/null", config)
+	k = kernel.Boot()
+	resp = k.Exec("-list "+addScope+" -> /dev/null", config)
 
-	if err != nil {
+	if resp.Err != nil {
 		return make([]string, 0)
 	}
 
-	return arr
-
-	//return strings.Fields(cmd.GetResultStr())
+	return strings.Fields(resp.Body.(string))
 }

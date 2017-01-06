@@ -9,7 +9,7 @@ import (
 
 type Phpcmd struct{}
 
-func (php *Phpcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (php *Phpcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		action   string
 		err      error
@@ -22,12 +22,12 @@ func (php *Phpcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return nil
+	return kernel.KernelResponse{Body: response.GetResult()}
 }
 
 func (php *Phpcmd) GetName() string {

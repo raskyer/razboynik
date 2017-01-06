@@ -26,6 +26,8 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/gflags"
+	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
 	"github.com/spf13/cobra"
@@ -37,45 +39,30 @@ var execCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			err error
-			c   *razboy.Config
+			kr kernel.KernelResponse
+			c  *razboy.Config
 		)
 
 		if len(args) < 2 {
 			return errors.New("not enough arguments")
 		}
 
-		if !silent {
-			printer.PrintIntro()
-			printer.PrintSection("Execute", "Execute a command on server")
-		}
+		printer.PrintIntro()
+		printer.PrintSection("Execute", "Execute a command on server")
 
-		c = &razboy.Config{
-			Url:         args[0],
-			Method:      method,
-			Parameter:   parameter,
-			Key:         key,
-			Proxy:       proxy,
-			Encoding:    encoding,
-			Shellmethod: shellmethod,
-			Shellscope:  shellscope,
-		}
-
-		err = worker.Exec(args[1], c)
+		c = gflags.BuildConfig(args[0])
+		kr = worker.Exec(args[1], c)
 
 		// if debug && kc.GetResponse() != nil {
 		// 	debugger.HTTP(kc.GetResponse())
 		// }
 
-		if err != nil {
-			return err
+		if kr.Err != nil {
+			return kr.Err
 		}
 
-		if !silent {
-			printer.PrintSection("Result", "kc.GetResult()")
-		} else {
-			printer.Println("kc.GetResult()")
-		}
+		printer.PrintTitle("Result")
+		printer.Println(kr.Body.(string))
 
 		return nil
 	},
@@ -84,12 +71,12 @@ var execCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(execCmd)
 
-	execCmd.Flags().StringVarP(&method, "method", "m", "GET", "Method to use. Ex: -m POST")
-	execCmd.Flags().StringVarP(&parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
-	execCmd.Flags().StringVarP(&key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
-	execCmd.Flags().StringVarP(&shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
-	execCmd.Flags().StringVarP(&encoding, "encoding", "e", "base64", "Encoding of the request. Ex: -e base64")
-	execCmd.Flags().StringVar(&shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
-	execCmd.Flags().BoolVar(&debug, "debug", false, "Print more information for debugging. Ex: --debug")
-	execCmd.Flags().StringVar(&proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
+	execCmd.Flags().StringVarP(&gflags.Method, "method", "m", "GET", "Method to use. Ex: -m POST")
+	execCmd.Flags().StringVarP(&gflags.Parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
+	execCmd.Flags().StringVarP(&gflags.Key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
+	execCmd.Flags().StringVarP(&gflags.Shellmethod, "shellmethod", "s", "system", "System function used in php script. Ex: -s shell_exec")
+	execCmd.Flags().IntVarP(&gflags.Encoding, "encoding", "e", razboy.E_BASE64, "Encoding of the request. Ex: -e 0")
+	execCmd.Flags().StringVar(&gflags.Shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
+	execCmd.Flags().BoolVar(&gflags.Debug, "debug", false, "Print more information for debugging. Ex: --debug")
+	execCmd.Flags().StringVar(&gflags.Proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
 }

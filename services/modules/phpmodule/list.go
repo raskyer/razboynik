@@ -7,7 +7,7 @@ import (
 
 type Listcmd struct{}
 
-func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		action   string
 		scope    string
@@ -18,7 +18,7 @@ func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	)
 
 	scope = "__DIR__"
-	args = kl.GetArr()
+	args = kl.GetArg()
 
 	if config.Shellscope != "" {
 		scope = "'" + config.Shellscope + "'"
@@ -33,12 +33,12 @@ func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
 
-	return nil
+	return kernel.KernelResponse{Body: response.GetResult()}
 }
 
 func (list *Listcmd) GetName() string {

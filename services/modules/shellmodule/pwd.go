@@ -9,7 +9,7 @@ import (
 
 type Pwdcmd struct{}
 
-func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
+func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
 	var (
 		raw, a, scope string
 		err           error
@@ -24,7 +24,7 @@ func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 	response, err = razboy.Send(request)
 
 	if err != nil {
-		return err
+		return kernel.KernelResponse{Err: err}
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -34,7 +34,7 @@ func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) error {
 		kernel.Boot().UpdatePrompt(config.Url, scope)
 	}
 
-	return nil
+	return kernel.KernelResponse{Body: scope}
 }
 
 func (pwd *Pwdcmd) GetName() string {

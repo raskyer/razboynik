@@ -2,11 +2,6 @@ package razboy
 
 import "net/http"
 
-type _shellscope struct {
-	Name    string
-	Content []string
-}
-
 type HEADER struct {
 	Key   string
 	Value string
