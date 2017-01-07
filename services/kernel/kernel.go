@@ -14,6 +14,7 @@ import (
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/gflags"
 	"github.com/eatbytes/razboynik/services/provider"
 )
 
@@ -212,6 +213,10 @@ func (k Kernel) GetCommands() []KernelCommand {
 }
 
 func (k *Kernel) StartRun() {
+	if gflags.Rpc {
+		go LaunchRPC(&RPCServer{Port: 1234})
+	}
+
 	k.run = true
 }
 

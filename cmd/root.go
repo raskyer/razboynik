@@ -46,4 +46,5 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().BoolVar(&gflags.Silent, "silent", false, "Don't print anything else than result or error. Ex: --silent")
+	RootCmd.PersistentFlags().BoolVar(&gflags.Rpc, "rpc", false, "Launch socket server that send information during process. Ex: --rpc")
 }

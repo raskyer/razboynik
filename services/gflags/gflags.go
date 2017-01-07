@@ -14,6 +14,7 @@ var (
 	Debug       bool
 	Silent      bool
 	Noextra     bool
+	Rpc         bool
 	Encoding    int
 )
 
