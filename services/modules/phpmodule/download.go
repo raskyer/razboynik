@@ -9,43 +9,31 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Downloadcmd struct{}
+var Downloaditem = kernel.Item{
+	Name: "-download",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			args          []string
+			local, remote string
+			err           error
+			request       *razboy.REQUEST
+		)
 
-func (d *Downloadcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		args          []string
-		local, remote string
-		err           error
-		request       *razboy.REQUEST
-	)
+		args = l.GetArg()
 
-	args = kl.GetArg()
+		if len(args) < 1 {
+			return kernel.Response{Err: errors.New("Please write the path of the file to download")}
+		}
 
-	if len(args) < 1 {
-		return kernel.KernelResponse{Err: errors.New("Please write the path of the file to download")}
-	}
+		request = razboy.CreateRequest(l.GetRaw(), config)
+		remote = getRemote(args, config.Shellscope)
+		local = getLocal(args)
 
-	request = razboy.CreateRequest(kl.GetRaw(), config)
-	remote = _getRemote(args, config.Shellscope)
+		_, err = DownloadAction(remote, local, request)
+		kernel.Write(l.GetStdout(), l.GetStderr(), err, "Downloaded successfully to "+local)
 
-	if len(args) > 1 {
-		local = args[1]
-	} else {
-		local = "output.txt"
-	}
-
-	_, err = DownloadAction(remote, local, request)
-	kernel.Write(kl.GetStdout(), kl.GetStderr(), err, "Downloaded successfully to "+local)
-
-	return kernel.KernelResponse{Err: err, Body: true}
-}
-
-func (d *Downloadcmd) GetName() string {
-	return "-download"
-}
-
-func (d *Downloadcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Err: err, Body: true}
+	},
 }
 
 func DownloadAction(remote, local string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {
@@ -75,7 +63,7 @@ func DownloadAction(remote, local string, request *razboy.REQUEST) (*razboy.RESP
 	return res, err
 }
 
-func _getRemote(arr []string, context string) string {
+func getRemote(arr []string, context string) string {
 	var path string
 
 	path = arr[1]
@@ -85,4 +73,12 @@ func _getRemote(arr []string, context string) string {
 	}
 
 	return path
+}
+
+func getLocal(args []string) string {
+	if len(args) > 1 {
+		return args[1]
+	}
+
+	return "output.txt"
 }

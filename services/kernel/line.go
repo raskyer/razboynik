@@ -8,7 +8,7 @@ import (
 	shellwords "github.com/mattn/go-shellwords"
 )
 
-type KernelLine struct {
+type Line struct {
 	name string
 	raw  string
 	str  string
@@ -17,7 +17,7 @@ type KernelLine struct {
 	err  *os.File
 }
 
-func CreateLine(raw string) *KernelLine {
+func CreateLine(raw string) *Line {
 	var (
 		arg       []string
 		name, str string
@@ -65,7 +65,7 @@ func CreateLine(raw string) *KernelLine {
 
 	str = strings.Join(arg, " ")
 
-	return &KernelLine{
+	return &Line{
 		name: name,
 		raw:  raw,
 		str:  str,
@@ -75,31 +75,27 @@ func CreateLine(raw string) *KernelLine {
 	}
 }
 
-func (kl KernelLine) GetRaw() string {
+func (kl Line) GetRaw() string {
 	return kl.raw
 }
 
-func (kl KernelLine) GetArg() []string {
+func (kl Line) GetArg() []string {
 	return kl.arg
 }
 
-func (kl KernelLine) GetArr() []string {
-	return kl.arg
-}
-
-func (kl KernelLine) GetName() string {
+func (kl Line) GetName() string {
 	return kl.name
 }
 
-func (kl KernelLine) GetStr() string {
+func (kl Line) GetStr() string {
 	return kl.str
 }
 
-func (kl KernelLine) GetStdout() *os.File {
+func (kl Line) GetStdout() *os.File {
 	return kl.out
 }
 
-func (kl KernelLine) GetStderr() *os.File {
+func (kl Line) GetStderr() *os.File {
 	return kl.err
 }
 

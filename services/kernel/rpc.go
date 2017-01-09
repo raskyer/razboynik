@@ -29,6 +29,7 @@ func LaunchRPC(r *RPCServer) {
 
 		if err != nil {
 			fmt.Fprintln(os.Stderr, e)
+			return
 		}
 
 		go server.ServeCodec(jsonrpc.NewServerCodec(conn))
@@ -56,7 +57,6 @@ type RPCServer struct {
 }
 
 func (rs RPCServer) Handshake(args RPCArgs, reply *RPCReply) error {
-	fmt.Println(args)
 	rs.Clients = append(rs.Clients, RPCClient{args.Addr})
 	reply.Status = true
 
@@ -72,7 +72,7 @@ func (rs RPCServer) Send(args RPCArgs, reply *RPCReply) error {
 	return err
 }
 
-func (rc RPCClient) Call(m string, args RPCArgs) error {
+func Call(addr, m string, args RPCArgs) error {
 	var (
 		conn   io.ReadWriteCloser
 		client *rpc.Client
@@ -80,10 +80,10 @@ func (rc RPCClient) Call(m string, args RPCArgs) error {
 		err    error
 	)
 
-	conn, err = net.Dial("tcp", rc.Addr)
+	conn, err = net.Dial("tcp", addr)
+	reply = RPCReply{}
 
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 
@@ -93,7 +93,6 @@ func (rc RPCClient) Call(m string, args RPCArgs) error {
 	err = client.Call(m, args, &reply)
 
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 

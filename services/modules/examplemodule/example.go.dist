@@ -1,13 +1,6 @@
-type Examplecmd struct {}
-
-func (ex *Examplecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	return kernel.KernelResponse{}
-}
-
-func (ex *Examplecmd) GetName() string {
-	return "example"
-}
-
-func (ex *Examplecmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+var Exampleitem = kernel.Item{
+	Name: "example",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		return kernel.Response{}
+	},
 }

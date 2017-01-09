@@ -32,7 +32,7 @@ func test(n string) string {
 
 func Scan(config *razboy.Config) (string, error) {
 	var (
-		kr      kernel.KernelResponse
+		kr      kernel.Response
 		s       *scanresult
 		decoder *json.Decoder
 		m       []int

@@ -28,7 +28,7 @@ func Api(port string) error {
 func _apiExec(w http.ResponseWriter, req *http.Request) {
 	var (
 		k       *kernel.Kernel
-		kr      kernel.KernelResponse
+		kr      kernel.Response
 		decoder *json.Decoder
 		api     *apidata
 		apires  apiresponse

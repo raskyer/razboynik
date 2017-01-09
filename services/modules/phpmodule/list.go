@@ -5,20 +5,44 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Listcmd struct{}
+var Listitem = kernel.Item{
+	Name: "-list",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			scope    string
+			args     []string
+			err      error
+			response *razboy.RESPONSE
+		)
 
-func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
+		args = l.GetArg()
+		scope = getScope(args, config)
+		response, err = List(scope, config)
+
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
+
+		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
+
+		return kernel.Response{Body: response.GetResult()}
+	},
+}
+
+func List(scope string, config *razboy.Config) (*razboy.RESPONSE, error) {
 	var (
-		action   string
-		scope    string
-		args     []string
-		err      error
-		request  *razboy.REQUEST
-		response *razboy.RESPONSE
+		action  string
+		request *razboy.REQUEST
 	)
 
-	scope = "__DIR__"
-	args = kl.GetArg()
+	action = "$r=implode('\n', scandir(" + scope + "));" + razboy.AddAnswer(config.Method, config.Parameter)
+	request = razboy.CreateRequest(action, config)
+
+	return razboy.Send(request)
+}
+
+func getScope(args []string, config *razboy.Config) string {
+	scope := "__DIR__"
 
 	if config.Shellscope != "" {
 		scope = "'" + config.Shellscope + "'"
@@ -28,23 +52,5 @@ func (list *Listcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.K
 		scope = "'" + args[0] + "'"
 	}
 
-	action = "$r=implode('\n', scandir(" + scope + "));" + razboy.AddAnswer(config.Method, config.Parameter)
-	request = razboy.CreateRequest(action, config)
-	response, err = razboy.Send(request)
-
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
-
-	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
-
-	return kernel.KernelResponse{Body: response.GetResult()}
-}
-
-func (list *Listcmd) GetName() string {
-	return "-list"
-}
-
-func (list *Listcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+	return scope
 }

@@ -1,6 +1,6 @@
 package kernel
 
-type KernelResponse struct {
+type Response struct {
 	Err  error
 	Body interface{}
 }

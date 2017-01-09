@@ -7,39 +7,26 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Decodecmd struct{}
-type Encodecmd struct{}
+var Decodeitem = kernel.Item{
+	Name: "-decode",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		str := strings.Join(l.GetArg(), " ")
+		sDec, err := razboy.Decode(str)
 
-func (d *Decodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	str := strings.Join(kl.GetArr(), " ")
-	sDec, err := razboy.Decode(str)
+		kernel.Write(l.GetStdout(), l.GetStderr(), err, sDec)
 
-	kernel.Write(kl.GetStdout(), kl.GetStderr(), err, sDec)
-
-	return kernel.KernelResponse{Err: err, Body: sDec}
+		return kernel.Response{Err: err, Body: sDec}
+	},
 }
 
-func (d *Decodecmd) GetName() string {
-	return "-decode"
-}
+var Encodeitem = kernel.Item{
+	Name: "-encode",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		str := strings.Join(l.GetArg(), " ")
+		sEnc := razboy.Encode(str)
 
-func (d *Decodecmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
-}
+		kernel.WriteSuccess(l.GetStdout(), sEnc)
 
-func (e *Encodecmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	str := strings.Join(kl.GetArr(), " ")
-	sEnc := razboy.Encode(str)
-
-	kernel.WriteSuccess(kl.GetStdout(), sEnc)
-
-	return kernel.KernelResponse{Body: sEnc}
-}
-
-func (e *Encodecmd) GetName() string {
-	return "-encode"
-}
-
-func (e *Encodecmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Body: sEnc}
+	},
 }

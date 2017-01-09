@@ -7,40 +7,33 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Pwdcmd struct{}
+var Pwditem = kernel.Item{
+	Name: "pwd",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			raw, a, scope string
+			err           error
+			request       *razboy.REQUEST
+			response      *razboy.RESPONSE
+		)
 
-func (pwd *Pwdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		raw, a, scope string
-		err           error
-		request       *razboy.REQUEST
-		response      *razboy.RESPONSE
-	)
+		raw = "pwd " + l.GetStr()
+		a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
 
-	raw = "pwd " + strings.Join(kl.GetArr(), " ")
-	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
+		request = razboy.CreateRequest(a, config)
+		response, err = razboy.Send(request)
 
-	request = razboy.CreateRequest(a, config)
-	response, err = razboy.Send(request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		scope = strings.TrimSpace(response.GetResult())
 
-	scope = strings.TrimSpace(response.GetResult())
+		if scope != "" {
+			config.Shellscope = scope
+			kernel.Boot().UpdatePrompt(config.Url, scope)
+		}
 
-	if scope != "" {
-		config.Shellscope = scope
-		kernel.Boot().UpdatePrompt(config.Url, scope)
-	}
-
-	return kernel.KernelResponse{Body: scope}
-}
-
-func (pwd *Pwdcmd) GetName() string {
-	return "pwd"
-}
-
-func (pwd *Pwdcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Body: scope}
+	},
 }

@@ -109,7 +109,7 @@ func RemoteSHELL(line string, config *razboy.Config) []string {
 		addScope string
 		arr      []string
 		k        *kernel.Kernel
-		resp     kernel.KernelResponse
+		resp     kernel.Response
 	)
 
 	if gflags.Noextra {
@@ -137,7 +137,7 @@ func RemotePHP(line string, config *razboy.Config) []string {
 		addScope string
 		arr      []string
 		k        *kernel.Kernel
-		resp     kernel.KernelResponse
+		resp     kernel.Response
 	)
 
 	if gflags.Noextra {

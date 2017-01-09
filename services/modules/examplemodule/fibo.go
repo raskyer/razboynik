@@ -1,50 +1,45 @@
 package examplemodule
 
-import "github.com/eatbytes/razboynik/services/kernel"
-import "github.com/eatbytes/razboy"
+import (
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/kernel"
+)
 
-type Fibocmd struct{}
+var Fiboitem = kernel.Item{
+	Name: "-fibo",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			action   string
+			request  *razboy.REQUEST
+			response *razboy.RESPONSE
+			err      error
+		)
 
-func (f *Fibocmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		action   string
-		request  *razboy.REQUEST
-		response *razboy.RESPONSE
-		err      error
-	)
+		action = `function fibo($n) {
+			if($n < 2) {
+				return 1;
+			}
 
-	action = `function fibo($n) {
-		if($n < 2) {
-			return 1;
+			return fibo($n - 1) + fibo($n - 2);
 		}
 
-		return fibo($n - 1) + fibo($n - 2);
-	}
+		$r = array();
+		for($i = 0; $i < 20; $i++) {
+			$r[] = fibo($i);
+		}
 
-	$r = array();
-	for($i = 0; $i < 20; $i++) {
-		$r[] = fibo($i);
-	}
+		$r = implode("\n", $r);`
 
-	$r = implode("\n", $r);`
+		action += razboy.AddAnswer(config.Method, config.Parameter)
+		request = razboy.CreateRequest(action, config)
+		response, err = razboy.Send(request)
 
-	action += razboy.AddAnswer(config.Method, config.Parameter)
-	request = razboy.CreateRequest(action, config)
-	response, err = razboy.Send(request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
 
-	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
-
-	return kernel.KernelResponse{Body: response.GetResult()}
-}
-
-func (f *Fibocmd) GetName() string {
-	return "-fibo"
-}
-
-func (f *Fibocmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Body: response.GetResult()}
+	},
 }

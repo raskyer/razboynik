@@ -4,27 +4,25 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
-	"path/filepath"
 
 	"reflect"
 	"strings"
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/gflags"
-	"github.com/eatbytes/razboynik/services/provider"
 )
 
 type CompleterFunction func(string, *razboy.Config) []string
+type GetCompleterFunction func() (CompleterFunction, bool)
 
 type Kernel struct {
-	def      KernelCommand
-	commands []KernelCommand
-	readline *readline.Instance
-	run      bool
+	def           *Item
+	commands      []*Item
+	readline      *readline.Instance
+	autocompleter *readline.PrefixCompleter
+	run           bool
 }
 
 var kInstance *Kernel
@@ -37,64 +35,26 @@ func Boot() *Kernel {
 	return kInstance
 }
 
-func (k *Kernel) Exec(line string, config *razboy.Config) KernelResponse {
+func (k *Kernel) Exec(line string, config *razboy.Config) Response {
 	return k.ExecKernelLine(CreateLine(line), config)
 }
 
-func (k *Kernel) ExecKernelLine(kl *KernelLine, config *razboy.Config) KernelResponse {
-	if strings.HasPrefix(kl.GetName(), "#") {
-		return k.ExecProvider(kl)
-	}
-
+func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) Response {
 	for _, cmd := range k.commands {
-		if cmd.GetName() == kl.GetName() {
-			return cmd.Exec(kl, config)
+		if cmd.Name == l.GetName() {
+			return cmd.Exec(l, config)
 		}
 	}
 
 	if k.def != nil {
-		return k.def.Exec(kl, config)
+		return k.def.Exec(l, config)
 	}
 
-	return k.Default(kl, config)
-}
-
-func (k *Kernel) ExecProvider(kl *KernelLine) KernelResponse {
-	var (
-		info *provider.Info
-		args *provider.Args
-		resp *provider.Response
-		err  error
-	)
-
-	args = new(provider.Args)
-	args.Line = kl.GetRaw()
-
-	info = &provider.Info{
-		Path:   provider.DIR + "/",
-		Name:   strings.TrimPrefix(kl.GetName(), "#"),
-		Method: provider.EXEC_FN,
-	}
-
-	resp, err = provider.CallProvider(info, args)
-
-	//DEBUG
-	if err != nil {
-		WriteError(kl.GetStderr(), err)
-	} else {
-		WriteSuccess(kl.GetStdout(), resp.Content)
-	}
-
-	return KernelResponse{
-		Err:  err,
-		Body: []byte(resp.Content),
-	}
+	return k.Default(l, config)
 }
 
 func (k *Kernel) Run(config *razboy.Config) error {
-	var err error
-
-	err = k.initReadline(config)
+	err := k.initReadline(config)
 
 	if err != nil {
 		return err
@@ -109,7 +69,7 @@ func (k *Kernel) Loop(config *razboy.Config) error {
 	var (
 		line string
 		err  error
-		kr   KernelResponse
+		r    Response
 	)
 
 	defer k.readline.Close()
@@ -130,10 +90,10 @@ func (k *Kernel) Loop(config *razboy.Config) error {
 			continue
 		}
 
-		kr = k.Exec(line, config)
+		r = k.Exec(line, config)
 
-		if kr.Err != nil {
-			fmt.Println(kr.Err.Error())
+		if r.Err != nil {
+			fmt.Println(r.Err.Error())
 		}
 	}
 
@@ -146,49 +106,36 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 		config        *readline.Config
 		autocompleter *readline.PrefixCompleter
 		child         *readline.PrefixCompleter
-		filesInfo     []os.FileInfo
-		dir           string
+		children      []readline.PrefixCompleterInterface
 		err           error
 	)
 
 	autocompleter = readline.NewPrefixCompleter()
 
-	dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
-	dir = dir + "/" + provider.DIR + "/"
-	filesInfo, err = ioutil.ReadDir(dir)
-	if err == nil {
-		for _, item := range filesInfo {
-			if strings.Contains(item.Name(), ".") {
-				continue
-			}
-
-			child = readline.PcItem(
-				"#"+item.Name(),
-				readline.PcItemDynamic(dynamicExternalAdapter(dir+item.Name())),
-			)
-
-			autocompleter.SetChildren(append(autocompleter.GetChildren(), child))
-		}
-	}
-
 	for _, item := range k.GetCommands() {
-		completer, multilevel := item.GetCompleter()
-
-		if completer != nil {
-			child = readline.PcItem(
-				item.GetName(),
-				readline.PcItemDynamic(dynamicAdapter(completer, c)),
-			)
-
-			if multilevel {
-				child.MultiLevel = true
-			}
-		} else {
-			child = readline.PcItem(item.GetName())
+		if item.Completer == nil {
+			child = readline.PcItem(item.Name)
+			children = append(children, child)
+			continue
 		}
 
-		autocompleter.SetChildren(append(autocompleter.GetChildren(), child))
+		completer, multilevel := item.Completer()
+
+		child = readline.PcItem(
+			item.Name,
+			readline.PcItemDynamic(dynamicAdapter(completer, c)),
+		)
+
+		if multilevel {
+			child.MultiLevel = true
+		}
+
+		children = append(children, child)
 	}
+
+	autocompleter.SetChildren(children)
+
+	k.autocompleter = autocompleter
 
 	config = &readline.Config{
 		Prompt:          "(" + c.Url + ")$ ",
@@ -204,19 +151,15 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	return err
 }
 
-func (k Kernel) Default(kl *KernelLine, config *razboy.Config) KernelResponse {
-	return KernelResponse{Err: errors.New("No default fonction defined")}
+func (k Kernel) Default(l *Line, config *razboy.Config) Response {
+	return Response{Err: errors.New("No default fonction defined")}
 }
 
-func (k Kernel) GetCommands() []KernelCommand {
+func (k Kernel) GetCommands() []*Item {
 	return k.commands
 }
 
 func (k *Kernel) StartRun() {
-	if gflags.Rpc {
-		go LaunchRPC(&RPCServer{Port: 1234})
-	}
-
 	k.run = true
 }
 
@@ -232,12 +175,12 @@ func (k *Kernel) UpdatePrompt(url, scope string) {
 	k.readline.SetPrompt("(" + url + "):" + scope + "$ ")
 }
 
-func (k *Kernel) SetDefault(d KernelCommand) {
+func (k *Kernel) SetDefault(d *Item) {
 	k.def = d
 }
 
-func (k *Kernel) SetCommands(cmd []KernelCommand) {
-	k.commands = cmd
+func (k *Kernel) SetCommands(items []*Item) {
+	k.commands = items
 }
 
 func Write(stdout, stderr *os.File, e error, i ...interface{}) error {
@@ -277,26 +220,5 @@ func WriteError(stderr *os.File, err error) error {
 func dynamicAdapter(completer CompleterFunction, c *razboy.Config) func(string) []string {
 	return func(line string) []string {
 		return completer(line, c)
-	}
-}
-
-func dynamicExternalAdapter(path string) func(string) []string {
-	return func(line string) []string {
-		args := new(provider.Args)
-		args.Line = line
-
-		info := &provider.Info{
-			Path:   path,
-			Method: provider.COMPLETER_FN,
-		}
-
-		resp, err := provider.CallProvider(info, args)
-
-		if err != nil {
-			fmt.Println(err)
-			return []string{}
-		}
-
-		return resp.Items
 	}
 }

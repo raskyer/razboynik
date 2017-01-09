@@ -7,47 +7,40 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Cdcmd struct{}
+var Cditem = kernel.Item{
+	Name: "cd",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			raw, a, scope string
+			err           error
+			request       *razboy.REQUEST
+			response      *razboy.RESPONSE
+		)
 
-func (cd *Cdcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		raw, a, scope string
-		err           error
-		request       *razboy.REQUEST
-		response      *razboy.RESPONSE
-	)
+		raw = "cd " + l.GetStr()
 
-	raw = "cd " + strings.Join(kl.GetArr(), " ")
+		if strings.Contains(raw, "&&") || strings.Contains(raw, "-") {
+			return kernel.Response{}
+		}
 
-	if strings.Contains(raw, "&&") || strings.Contains(raw, "-") {
-		return kernel.KernelResponse{}
-	}
+		raw += " && pwd"
 
-	raw += " && pwd"
+		a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
+		request = razboy.CreateRequest(a, config)
 
-	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
-	request = razboy.CreateRequest(a, config)
+		response, err = razboy.Send(request)
 
-	response, err = razboy.Send(request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		scope = strings.TrimSpace(response.GetResult())
 
-	scope = strings.TrimSpace(response.GetResult())
+		if scope != "" {
+			config.Shellscope = scope
+			kernel.Boot().UpdatePrompt(config.Url, scope)
+		}
 
-	if scope != "" {
-		config.Shellscope = scope
-		kernel.Boot().UpdatePrompt(config.Url, scope)
-	}
-
-	return kernel.KernelResponse{}
-}
-
-func (cd *Cdcmd) GetName() string {
-	return "cd"
-}
-
-func (cd *Cdcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{}
+	},
 }

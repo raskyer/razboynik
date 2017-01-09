@@ -7,33 +7,26 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Phpcmd struct{}
+var Phpitem = kernel.Item{
+	Name: "-php",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			action   string
+			err      error
+			request  *razboy.REQUEST
+			response *razboy.RESPONSE
+		)
 
-func (php *Phpcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		action   string
-		err      error
-		request  *razboy.REQUEST
-		response *razboy.RESPONSE
-	)
+		action = strings.Join(l.GetArg(), " ")
+		request = razboy.CreateRequest(action, config)
+		response, err = razboy.Send(request)
 
-	action = strings.Join(kl.GetArr(), " ")
-	request = razboy.CreateRequest(action, config)
-	response, err = razboy.Send(request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
 
-	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
-
-	return kernel.KernelResponse{Body: response.GetResult()}
-}
-
-func (php *Phpcmd) GetName() string {
-	return "-php"
-}
-
-func (php *Phpcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Body: response.GetResult()}
+	},
 }

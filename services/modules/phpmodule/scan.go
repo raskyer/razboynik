@@ -5,35 +5,26 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-type Scancmd struct {
-	result string
-}
+var Scanitem = kernel.Item{
+	Name: "-scan",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			action   string
+			err      error
+			request  *razboy.REQUEST
+			response *razboy.RESPONSE
+		)
 
-func (scan *Scancmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		action   string
-		err      error
-		request  *razboy.REQUEST
-		response *razboy.RESPONSE
-	)
+		action = razboy.CreateScan() + razboy.AddAnswer(config.Method, config.Parameter)
+		request = razboy.CreateRequest(action, config)
+		response, err = razboy.Send(request)
 
-	action = razboy.CreateScan() + razboy.AddAnswer(config.Method, config.Parameter)
-	request = razboy.CreateRequest(action, config)
-	response, err = razboy.Send(request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
 
-	kernel.WriteSuccess(kl.GetStdout(), response.GetResult())
-
-	return kernel.KernelResponse{Body: response.GetResult()}
-}
-
-func (scan *Scancmd) GetName() string {
-	return "-scan"
-}
-
-func (scan *Scancmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Body: response.GetResult()}
+	},
 }

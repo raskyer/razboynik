@@ -12,59 +12,52 @@ import (
 	"github.com/eatbytes/sysgo"
 )
 
-type Vimcmd struct{}
+var Vimitem = kernel.Item{
+	Name: "vim",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			remote, local string
+			resp          string
+			err           error
+			cmd           *exec.Cmd
+			request       *razboy.REQUEST
+		)
 
-func (vim *Vimcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		remote, local string
-		resp          string
-		err           error
-		cmd           *exec.Cmd
-		request       *razboy.REQUEST
-	)
+		args := l.GetArg()
 
-	args := kl.GetArr()
+		if len(args) < 1 {
+			return kernel.Response{Err: errors.New("Please write the path of the file to edit")}
+		}
 
-	if len(args) < 1 {
-		return kernel.KernelResponse{Err: errors.New("Please write the path of the file to edit")}
-	}
+		request = razboy.CreateRequest(l.GetRaw(), config)
 
-	request = razboy.CreateRequest(kl.GetRaw(), config)
+		remote = args[0]
+		local = "/tmp/tmp-razboynik." + filepath.Ext(remote)
 
-	remote = args[0]
-	local = "/tmp/tmp-razboynik." + filepath.Ext(remote)
+		_, err = phpmodule.DownloadAction(remote, local, request)
 
-	_, err = phpmodule.DownloadAction(remote, local, request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		cmd = exec.Command("vim", local)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		err = cmd.Run()
 
-	cmd = exec.Command("vim", local)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	err = cmd.Run()
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		_, err = phpmodule.UploadAction(local, remote, request)
 
-	_, err = phpmodule.UploadAction(local, remote, request)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		resp, err = sysgo.Call("rm " + local)
+		kernel.WriteSuccess(l.GetStdout(), resp)
 
-	resp, err = sysgo.Call("rm " + local)
-	kernel.WriteSuccess(kl.GetStdout(), resp)
-
-	return kernel.KernelResponse{Body: resp}
-}
-
-func (vim *Vimcmd) GetName() string {
-	return "vim"
-}
-
-func (vim *Vimcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, true
+		return kernel.Response{Body: resp, Err: err}
+	},
 }

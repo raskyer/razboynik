@@ -8,31 +8,24 @@ import (
 	"github.com/eatbytes/sysgo"
 )
 
-type Syscmd struct{}
+var Sysitem = kernel.Item{
+	Name: "-sys",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		var (
+			action string
+			result string
+			err    error
+		)
 
-func (sys *Syscmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	var (
-		action string
-		result string
-		err    error
-	)
+		action = strings.Join(l.GetArg(), " ")
+		result, err = sysgo.Call(action)
 
-	action = strings.Join(kl.GetArr(), " ")
-	result, err = sysgo.Call(action)
+		if err != nil {
+			return kernel.Response{Err: err}
+		}
 
-	if err != nil {
-		return kernel.KernelResponse{Err: err}
-	}
+		kernel.WriteSuccess(l.GetStdout(), result)
 
-	kernel.WriteSuccess(kl.GetStdout(), result)
-
-	return kernel.KernelResponse{Err: err, Body: result}
-}
-
-func (sys *Syscmd) GetName() string {
-	return "-sys"
-}
-
-func (sys *Syscmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{Err: err, Body: result}
+	},
 }

@@ -39,7 +39,7 @@ var execCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			kr kernel.KernelResponse
+			kr kernel.Response
 			c  *razboy.Config
 		)
 

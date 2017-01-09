@@ -5,21 +5,12 @@ import (
 	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-func CreateExit() kernel.KernelCommand {
-	return new(Exitcmd)
-}
+var Exititem = kernel.Item{
+	Name: "exit",
+	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
+		k := kernel.Boot()
+		k.StopRun()
 
-type Exitcmd struct{}
-
-func (exit *Exitcmd) Exec(kl *kernel.KernelLine, config *razboy.Config) kernel.KernelResponse {
-	kernel.Boot().StopRun()
-	return kernel.KernelResponse{}
-}
-
-func (e *Exitcmd) GetName() string {
-	return "exit"
-}
-
-func (e *Exitcmd) GetCompleter() (kernel.CompleterFunction, bool) {
-	return nil, false
+		return kernel.Response{}
+	},
 }
