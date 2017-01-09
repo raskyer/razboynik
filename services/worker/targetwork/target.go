@@ -11,6 +11,7 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/usr"
 	"github.com/fatih/color"
 )
@@ -21,7 +22,8 @@ type Target struct {
 }
 
 type Configuration struct {
-	Targets []*Target `json:"targets"`
+	Targets   []*Target      `json:"targets"`
+	Providers []*kernel.Item `json:"providers"`
 }
 
 func _getInput(txt, def string) string {

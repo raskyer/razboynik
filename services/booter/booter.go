@@ -1,15 +1,14 @@
 package booter
 
 import (
-	"encoding/json"
-	"os"
+	"fmt"
 
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/modules/examplemodule"
 	"github.com/eatbytes/razboynik/services/modules/kernelmodule"
 	"github.com/eatbytes/razboynik/services/modules/phpmodule"
 	"github.com/eatbytes/razboynik/services/modules/shellmodule"
-	"github.com/eatbytes/razboynik/services/usr"
+	"github.com/eatbytes/razboynik/services/worker/targetwork"
 )
 
 func Boot() {
@@ -47,38 +46,16 @@ func Boot() {
 
 func bootRPC() []*kernel.Item {
 	var (
-		file          *os.File
-		decoder       *json.Decoder
-		items         []*kernel.Item
-		filepath, dir string
-		err           error
+		config *targetwork.Configuration
+		err    error
 	)
 
-	dir, err = usr.GetHomeDir()
+	config, err = targetwork.GetConfiguration()
 
 	if err != nil {
-		return items
+		fmt.Println(err)
+		return []*kernel.Item{}
 	}
 
-	filepath = dir + "/.razboynik.providers.json"
-
-	if err != nil {
-		return items
-	}
-
-	file, err = os.Open(filepath)
-	defer file.Close()
-
-	if err != nil {
-		return items
-	}
-
-	decoder = json.NewDecoder(file)
-	err = decoder.Decode(items)
-
-	if err != nil {
-		return items
-	}
-
-	return items
+	return config.Providers
 }

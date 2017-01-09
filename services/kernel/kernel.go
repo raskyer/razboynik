@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"strings"
 
+	"strconv"
+
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
 )
@@ -42,6 +44,10 @@ func (k *Kernel) Exec(line string, config *razboy.Config) Response {
 func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) Response {
 	for _, cmd := range k.commands {
 		if cmd.Name == l.GetName() {
+			if cmd.RPC != nil {
+				return k.ExecProvider(cmd, l, config)
+			}
+
 			return cmd.Exec(l, config)
 		}
 	}
@@ -51,6 +57,12 @@ func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) Response {
 	}
 
 	return k.Default(l, config)
+}
+
+func (k *Kernel) ExecProvider(cmd *Item, l *Line, c *razboy.Config) Response {
+	err := Call(cmd.RPC.Addr+":"+strconv.Itoa(cmd.RPC.Port), cmd.RPC.Method, RPCArgs{})
+
+	return Response{Err: err}
 }
 
 func (k *Kernel) Run(config *razboy.Config) error {
