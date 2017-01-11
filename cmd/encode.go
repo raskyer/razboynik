@@ -25,8 +25,8 @@ package cmd
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/printer"
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/worker/printer"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +41,7 @@ var encodeCmd = &cobra.Command{
 			return errors.New("not enough arguments")
 		}
 
-		sEnc = worker.Encode(args[0])
+		sEnc = razboy.Encode(args[0])
 		printer.Println(sEnc)
 
 		return nil

@@ -25,8 +25,9 @@ package target
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/printer"
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboynik/services/worker/configuration"
+	"github.com/eatbytes/razboynik/services/worker/printer"
+	"github.com/eatbytes/razboynik/services/worker/target"
 	"github.com/spf13/cobra"
 )
 
@@ -35,6 +36,12 @@ var EditCmd = &cobra.Command{
 	Short: "Edit a target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var (
+			config *configuration.Configuration
+			t      *target.Target
+			err    error
+		)
+
 		if len(args) < 1 {
 			return errors.New("not enough arguments")
 		}
@@ -42,6 +49,20 @@ var EditCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Edit target", "Edit target '"+args[0]+"' in config file")
 
-		return worker.TargetEdit(args[0])
+		config, err = configuration.GetConfiguration()
+
+		if err != nil {
+			return err
+		}
+
+		t, _, err = configuration.FindTarget(config, args[0])
+
+		if err != nil {
+			return err
+		}
+
+		target.EditTarget(t)
+
+		return configuration.SaveConfiguration(config)
 	},
 }

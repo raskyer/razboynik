@@ -25,8 +25,10 @@ package target
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/printer"
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/worker/configuration"
+	"github.com/eatbytes/razboynik/services/worker/printer"
+	"github.com/eatbytes/razboynik/services/worker/target"
 	"github.com/spf13/cobra"
 )
 
@@ -35,6 +37,12 @@ var DetailCmd = &cobra.Command{
 	Short: "Get detail of a target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var (
+			config *configuration.Configuration
+			target *target.Target
+			err    error
+		)
+
 		if len(args) < 1 {
 			return errors.New("not enough arguments")
 		}
@@ -42,6 +50,25 @@ var DetailCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Detail target", "Detail target '"+args[0]+"' in config file")
 
-		return worker.TargetDetail(args[0])
+		config, err = configuration.GetConfiguration()
+
+		if err != nil {
+			return err
+		}
+
+		target, _, err = configuration.FindTarget(config, args[0])
+
+		if err != nil {
+			return err
+		}
+
+		printer.Println("Name: " + target.Name)
+		printer.Println("Url: " + target.Config.Url)
+		printer.Println("Method: " + razboy.MethodToStr(target.Config.Method))
+		printer.Println("Parameter: " + target.Config.Parameter)
+		printer.Println("Shellmethod: " + razboy.ShellmethodToStr(target.Config.Shellmethod))
+		printer.Println("Shellscope: " + target.Config.Shellscope)
+
+		return nil
 	},
 }

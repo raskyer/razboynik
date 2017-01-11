@@ -1,4 +1,4 @@
-package gflags
+package gflag
 
 import (
 	"github.com/eatbytes/razboy"

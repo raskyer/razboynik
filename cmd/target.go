@@ -24,8 +24,8 @@ package cmd
 
 import (
 	"github.com/eatbytes/razboynik/cmd/target"
-	"github.com/eatbytes/razboynik/services/printer"
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboynik/services/worker/configuration"
+	"github.com/eatbytes/razboynik/services/worker/printer"
 	"github.com/spf13/cobra"
 )
 
@@ -34,9 +34,26 @@ var targetCmd = &cobra.Command{
 	Short: "Target handler",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var (
+			config *configuration.Configuration
+			err    error
+		)
+
 		printer.PrintIntro()
 
-		return worker.TargetList()
+		config, err = configuration.GetConfiguration()
+
+		if err != nil {
+			return err
+		}
+
+		printer.PrintTitle("TARGETS")
+		for _, item := range config.Targets {
+			printer.Println("- " + item.Name)
+		}
+		printer.Print("\n")
+
+		return nil
 	},
 }
 

@@ -25,8 +25,8 @@ package cmd
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/printer"
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboy"
+	"github.com/eatbytes/razboynik/services/worker/printer"
 	"github.com/spf13/cobra"
 )
 
@@ -44,7 +44,7 @@ var decodeCmd = &cobra.Command{
 			return errors.New("not enough arguments")
 		}
 
-		sDec, err = worker.Decode(args[0])
+		sDec, err = razboy.Decode(args[0])
 
 		if err != nil {
 			return err

@@ -26,7 +26,7 @@ import (
 	"os"
 
 	"github.com/eatbytes/razboynik/services/booter"
-	"github.com/eatbytes/razboynik/services/gflags"
+	"github.com/eatbytes/razboynik/services/worker/gflag"
 	"github.com/spf13/cobra"
 )
 
@@ -45,6 +45,6 @@ func Execute() {
 }
 
 func init() {
-	RootCmd.PersistentFlags().BoolVar(&gflags.Silent, "silent", false, "Don't print anything else than result or error. Ex: --silent")
-	RootCmd.PersistentFlags().BoolVar(&gflags.Rpc, "rpc", false, "Launch socket server that send information during process. Ex: --rpc")
+	RootCmd.PersistentFlags().BoolVar(&gflag.Silent, "silent", false, "Don't print anything else than result or error. Ex: --silent")
+	RootCmd.PersistentFlags().BoolVar(&gflag.Rpc, "rpc", false, "Launch socket server that send information during process. Ex: --rpc")
 }

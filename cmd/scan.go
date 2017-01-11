@@ -26,9 +26,9 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/gflags"
-	"github.com/eatbytes/razboynik/services/printer"
 	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboynik/services/worker/gflag"
+	"github.com/eatbytes/razboynik/services/worker/printer"
 	"github.com/spf13/cobra"
 )
 
@@ -50,7 +50,7 @@ var scanCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Scan", "Scan target by url and display possible method to use")
 
-		c = gflags.BuildConfig(args[0])
+		c = gflag.BuildConfig(args[0])
 		res, err = worker.Scan(c)
 
 		if err != nil {
@@ -67,8 +67,8 @@ var scanCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(scanCmd)
 
-	scanCmd.Flags().StringVarP(&gflags.Parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
-	scanCmd.Flags().StringVarP(&gflags.Key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
-	scanCmd.Flags().StringVar(&gflags.Shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
-	scanCmd.Flags().StringVar(&gflags.Proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
+	scanCmd.Flags().StringVarP(&gflag.Parameter, "parameter", "p", "razboynik", "Parameter to use. Ex: -p test")
+	scanCmd.Flags().StringVarP(&gflag.Key, "key", "k", "", "Key to unlock optional small protection. Ex: -k keytounlock")
+	scanCmd.Flags().StringVar(&gflag.Shellscope, "scope", "", "Scope inside the shell. Ex: --scope /var")
+	scanCmd.Flags().StringVar(&gflag.Proxy, "proxy", "", "Proxy url where request will be sent before. Ex: --proxy http://localhost:8080")
 }

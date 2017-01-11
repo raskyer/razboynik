@@ -8,7 +8,7 @@ import (
 	"github.com/eatbytes/razboynik/services/modules/kernelmodule"
 	"github.com/eatbytes/razboynik/services/modules/phpmodule"
 	"github.com/eatbytes/razboynik/services/modules/shellmodule"
-	"github.com/eatbytes/razboynik/services/worker/targetwork"
+	"github.com/eatbytes/razboynik/services/worker/configuration"
 )
 
 func Boot() {
@@ -46,11 +46,11 @@ func Boot() {
 
 func bootRPC() []*kernel.Item {
 	var (
-		config *targetwork.Configuration
+		config *configuration.Configuration
 		err    error
 	)
 
-	config, err = targetwork.GetConfiguration()
+	config, err = configuration.GetConfiguration()
 
 	if err != nil {
 		fmt.Println(err)

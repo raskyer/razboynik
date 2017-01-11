@@ -25,8 +25,8 @@ package target
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/services/printer"
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboynik/services/worker/configuration"
+	"github.com/eatbytes/razboynik/services/worker/printer"
 	"github.com/spf13/cobra"
 )
 
@@ -35,6 +35,12 @@ var RemoveCmd = &cobra.Command{
 	Short: "Remove a target in config file",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var (
+			config *configuration.Configuration
+			index  int
+			err    error
+		)
+
 		if len(args) < 1 {
 			return errors.New("not enough arguments")
 		}
@@ -42,6 +48,20 @@ var RemoveCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Remove target", "Remove target '"+args[0]+"' in config file")
 
-		return worker.TargetRemove(args[0])
+		config, err = configuration.GetConfiguration()
+
+		if err != nil {
+			return err
+		}
+
+		_, index, err = configuration.FindTarget(config, args[0])
+
+		if err != nil {
+			return err
+		}
+
+		config.Targets = append(config.Targets[:index], config.Targets[index+1:]...)
+
+		return configuration.SaveConfiguration(config)
 	},
 }

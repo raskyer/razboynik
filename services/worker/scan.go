@@ -32,7 +32,8 @@ func test(n string) string {
 
 func Scan(config *razboy.Config) (string, error) {
 	var (
-		kr      kernel.Response
+		k       *kernel.Kernel
+		resp    kernel.Response
 		s       *scanresult
 		decoder *json.Decoder
 		m       []int
@@ -41,6 +42,8 @@ func Scan(config *razboy.Config) (string, error) {
 		err     error
 	)
 
+	k = kernel.Boot()
+
 	s = new(scanresult)
 	m = []int{razboy.M_GET, razboy.M_POST, razboy.M_HEADER, razboy.M_COOKIE}
 
@@ -48,14 +51,14 @@ func Scan(config *razboy.Config) (string, error) {
 		result += "\nMethod: " + color.YellowString(razboy.MethodToStr(m[i])) + "\n"
 
 		config.Method = m[i]
-		kr = Exec("-scan", config)
+		resp = k.Exec("-scan", config)
 
-		if kr.Err != nil {
-			result += "-" + color.RedString("[x]") + " Error Exec: " + kr.Err.Error() + "\n"
+		if resp.Err != nil {
+			result += "-" + color.RedString("[x]") + " Error Exec: " + resp.Err.Error() + "\n"
 			continue
 		}
 
-		decoder = json.NewDecoder(bytes.NewReader([]byte(kr.Body.(string))))
+		decoder = json.NewDecoder(bytes.NewReader([]byte(resp.Body.(string))))
 		err = decoder.Decode(&s)
 
 		if err != nil {

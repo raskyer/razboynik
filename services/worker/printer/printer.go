@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/eatbytes/razboynik/services/gflags"
+	"github.com/eatbytes/razboynik/services/worker/gflag"
 	"github.com/fatih/color"
 )
 
 func PrintIntro() {
-	if gflags.Silent {
+	if gflag.Silent {
 		return
 	}
 
@@ -34,7 +34,7 @@ func PrintIntro() {
 func PrintTitle(str string) {
 	var i, lenght int
 
-	if gflags.Silent {
+	if gflag.Silent {
 		return
 	}
 
@@ -53,7 +53,7 @@ func PrintTitle(str string) {
 }
 
 func PrintSection(section string, str string) {
-	if gflags.Silent {
+	if gflag.Silent {
 		return
 	}
 
@@ -63,7 +63,7 @@ func PrintSection(section string, str string) {
 }
 
 func PrintSectionI(section string, i ...interface{}) {
-	if gflags.Silent {
+	if gflag.Silent {
 		return
 	}
 
