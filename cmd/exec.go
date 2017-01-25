@@ -49,6 +49,7 @@ var execCmd = &cobra.Command{
 
 		printer.PrintIntro()
 		printer.PrintSection("Execute", "Execute a command on server")
+		printer.PrintTitle("Result")
 
 		c = gflag.BuildConfig(args[0])
 
@@ -59,14 +60,7 @@ var execCmd = &cobra.Command{
 		// 	debugger.HTTP(kc.GetResponse())
 		// }
 
-		if resp.Err != nil {
-			return resp.Err
-		}
-
-		printer.PrintTitle("Result")
-		printer.Println(resp.Body.(string))
-
-		return nil
+		return resp.Err
 	},
 }
 

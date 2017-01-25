@@ -20,6 +20,7 @@ var (
 
 func BuildConfig(url string) *razboy.Config {
 	return &razboy.Config{
+		Url:         url,
 		Method:      razboy.MethodToInt(Method),
 		Parameter:   Parameter,
 		Key:         Key,

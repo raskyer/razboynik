@@ -1,21 +1,17 @@
 package booter
 
 import (
-	"fmt"
-
 	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/modules/examplemodule"
 	"github.com/eatbytes/razboynik/services/modules/kernelmodule"
 	"github.com/eatbytes/razboynik/services/modules/phpmodule"
 	"github.com/eatbytes/razboynik/services/modules/shellmodule"
-	"github.com/eatbytes/razboynik/services/worker/configuration"
 )
 
 func Boot() {
 	var (
-		k        *kernel.Kernel
-		items    []*kernel.Item
-		rpcitems []*kernel.Item
+		k     *kernel.Kernel
+		items []*kernel.Item
 	)
 
 	k = kernel.Boot()
@@ -37,25 +33,7 @@ func Boot() {
 		&examplemodule.Fiboitem,
 		&kernelmodule.Exititem,
 	}
-	rpcitems = bootRPC()
-	items = append(items, rpcitems...)
 
 	k.SetDefault(&shellmodule.Shitem)
 	k.SetCommands(items)
-}
-
-func bootRPC() []*kernel.Item {
-	var (
-		config *configuration.Configuration
-		err    error
-	)
-
-	config, err = configuration.GetConfiguration()
-
-	if err != nil {
-		fmt.Println(err)
-		return []*kernel.Item{}
-	}
-
-	return config.Providers
 }

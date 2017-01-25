@@ -10,8 +10,6 @@ import (
 	"reflect"
 	"strings"
 
-	"strconv"
-
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
 )
@@ -28,6 +26,7 @@ type Kernel struct {
 }
 
 var kInstance *Kernel
+var kSilent bool
 
 func Boot() *Kernel {
 	if kInstance == nil {
@@ -37,6 +36,10 @@ func Boot() *Kernel {
 	return kInstance
 }
 
+func Silent() {
+	kSilent = true
+}
+
 func (k *Kernel) Exec(line string, config *razboy.Config) Response {
 	return k.ExecKernelLine(CreateLine(line), config)
 }
@@ -44,10 +47,6 @@ func (k *Kernel) Exec(line string, config *razboy.Config) Response {
 func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) Response {
 	for _, cmd := range k.commands {
 		if cmd.Name == l.GetName() {
-			if cmd.RPC != nil {
-				return k.ExecProvider(cmd, l, config)
-			}
-
 			return cmd.Exec(l, config)
 		}
 	}
@@ -57,12 +56,6 @@ func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) Response {
 	}
 
 	return k.Default(l, config)
-}
-
-func (k *Kernel) ExecProvider(cmd *Item, l *Line, c *razboy.Config) Response {
-	err := Call(cmd.RPC.Addr+":"+strconv.Itoa(cmd.RPC.Port), cmd.RPC.Method, RPCArgs{})
-
-	return Response{Err: err}
 }
 
 func (k *Kernel) Run(config *razboy.Config) error {
@@ -196,6 +189,10 @@ func (k *Kernel) SetCommands(items []*Item) {
 }
 
 func Write(stdout, stderr *os.File, e error, i ...interface{}) error {
+	if kSilent {
+		return nil
+	}
+
 	if e != nil {
 		return WriteError(stderr, e)
 	}
@@ -205,6 +202,10 @@ func Write(stdout, stderr *os.File, e error, i ...interface{}) error {
 
 func WriteSuccess(stdout *os.File, i ...interface{}) error {
 	var e error
+
+	if kSilent {
+		return nil
+	}
 
 	for _, v := range i {
 		if reflect.TypeOf(v).Kind() == reflect.String {
@@ -224,6 +225,10 @@ func WriteSuccess(stdout *os.File, i ...interface{}) error {
 }
 
 func WriteError(stderr *os.File, err error) error {
+	if kSilent {
+		return nil
+	}
+
 	_, e := fmt.Fprintln(stderr, err.Error())
 
 	return e

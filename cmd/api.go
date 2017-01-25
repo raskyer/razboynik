@@ -25,7 +25,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/eatbytes/razboynik/services/worker"
+	"github.com/eatbytes/razboynik/services/worker/api"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +37,7 @@ var apiCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("Start on port: " + port)
-		return worker.Api(port)
+		return api.Api(port)
 	},
 }
 

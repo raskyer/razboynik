@@ -43,6 +43,7 @@ func Scan(config *razboy.Config) (string, error) {
 	)
 
 	k = kernel.Boot()
+	kernel.Silent()
 
 	s = new(scanresult)
 	m = []int{razboy.M_GET, razboy.M_POST, razboy.M_HEADER, razboy.M_COOKIE}

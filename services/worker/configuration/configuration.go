@@ -6,14 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/eatbytes/razboynik/services/kernel"
 	"github.com/eatbytes/razboynik/services/worker/target"
 	"github.com/eatbytes/razboynik/services/worker/usr"
 )
 
 type Configuration struct {
-	Targets   []*target.Target `json:"targets"`
-	Providers []*kernel.Item   `json:"providers"`
+	Targets []*target.Target `json:"targets"`
 }
 
 func CreateFile(filepath string) error {

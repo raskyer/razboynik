@@ -40,6 +40,6 @@ var Shitem = kernel.Item{
 
 		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
 
-		return kernel.Response{Err: err}
+		return kernel.Response{Err: err, Body: response.GetResult()}
 	},
 }

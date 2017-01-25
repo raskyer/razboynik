@@ -68,6 +68,8 @@ var DetailCmd = &cobra.Command{
 		printer.Println("Parameter: " + target.Config.Parameter)
 		printer.Println("Shellmethod: " + razboy.ShellmethodToStr(target.Config.Shellmethod))
 		printer.Println("Shellscope: " + target.Config.Shellscope)
+		printer.Println("Key: " + target.Config.Key)
+		printer.Println("Proxy: " + target.Config.Proxy)
 
 		return nil
 	},
