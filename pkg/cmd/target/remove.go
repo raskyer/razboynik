@@ -25,7 +25,7 @@ package target
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/pkg/services/worker/configuration"
+	"github.com/eatbytes/razboynik/pkg/services/worker/config"
 	"github.com/eatbytes/razboynik/pkg/services/worker/printer"
 	"github.com/spf13/cobra"
 )
@@ -36,9 +36,9 @@ var RemoveCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			config *configuration.Configuration
-			index  int
-			err    error
+			conf  *config.Config
+			index int
+			err   error
 		)
 
 		if len(args) < 1 {
@@ -48,20 +48,20 @@ var RemoveCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Remove target", "Remove target '"+args[0]+"' in config file")
 
-		config, err = configuration.GetConfiguration()
+		conf, err = config.GetConfiguration()
 
 		if err != nil {
 			return err
 		}
 
-		_, index, err = configuration.FindTarget(config, args[0])
+		_, index, err = config.FindTarget(conf, args[0])
 
 		if err != nil {
 			return err
 		}
 
-		config.Targets = append(config.Targets[:index], config.Targets[index+1:]...)
+		conf.Targets = append(conf.Targets[:index], conf.Targets[index+1:]...)
 
-		return configuration.SaveConfiguration(config)
+		return config.SaveConfiguration(conf)
 	},
 }

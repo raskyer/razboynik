@@ -1,46 +1,60 @@
-package shellmodule
+package main
 
 import (
+	"fmt"
 	"strings"
 
+	"os"
+
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
+	"github.com/eatbytes/razpomoshnik"
 )
 
-var Cditem = kernel.Item{
-	Name: "cd",
-	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
-		var (
-			raw, a, scope string
-			err           error
-			request       *razboy.REQUEST
-			response      *razboy.RESPONSE
-		)
+const (
+	RPC_ERROR     int = 1
+	NETWORK_ERROR int = 2
+)
 
-		raw = "cd " + l.GetStr()
+func main() {
+	var (
+		raw, a, scope string
+		err           error
+		config        *razboy.Config
+		request       *razboy.REQUEST
+		response      *razboy.RESPONSE
+	)
 
-		if strings.Contains(raw, "&&") || strings.Contains(raw, "-") {
-			return kernel.Response{}
-		}
+	config, err = razpomoshnik.GetConfig()
 
-		raw += " && pwd"
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(RPC_ERROR)
+	}
 
-		a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
-		request = razboy.CreateRequest(a, config)
+	raw = "cd " + strings.Join(os.Args[1:], " ") + " && pwd"
 
-		response, err = razboy.Send(request)
+	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
+	request = razboy.CreateRequest(a, config)
 
-		if err != nil {
-			return kernel.Response{Err: err}
-		}
+	response, err = razboy.Send(request)
 
-		scope = strings.TrimSpace(response.GetResult())
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(NETWORK_ERROR)
+	}
 
-		if scope != "" {
-			config.Shellscope = scope
-			kernel.Boot().UpdatePrompt(config.Url, scope)
-		}
+	scope = strings.TrimSpace(response.GetResult())
 
-		return kernel.Response{}
-	},
+	if scope == "" {
+		return
+	}
+
+	config.Shellscope = scope
+	err = razpomoshnik.UpdatePrompt(scope)
+	err = razpomoshnik.UpdateConfig(config)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(RPC_ERROR)
+	}
 }

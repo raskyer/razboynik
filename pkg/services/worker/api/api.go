@@ -6,7 +6,7 @@ import (
 
 	"github.com/eatbytes/razboy"
 	"github.com/eatbytes/razboynik/pkg/services/kernel"
-	"github.com/eatbytes/razboynik/pkg/services/worker/configuration"
+	"github.com/eatbytes/razboynik/pkg/services/worker/config"
 	"github.com/eatbytes/razboynik/pkg/services/worker/printer"
 )
 
@@ -50,13 +50,13 @@ func extractData(req *http.Request) *data {
 
 func getConfig(d *data) *razboy.Config {
 	if d.Target != "" {
-		c, err := configuration.GetConfiguration()
+		c, err := config.GetConfiguration()
 
 		if err != nil {
 			return &d.Config
 		}
 
-		target, _, err := configuration.FindTarget(c, d.Target)
+		target, _, err := config.FindTarget(c, d.Target)
 
 		if err != nil {
 			return &d.Config

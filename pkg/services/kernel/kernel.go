@@ -5,11 +5,11 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"sort"
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/pkg/services/rpc"
-	"github.com/eatbytes/razboynik/pkg/services/worker/configuration"
+	"github.com/eatbytes/razboynik/pkg/services/worker/config"
 	"github.com/eatbytes/razboynik/pkg/services/worker/printer"
 	"github.com/eatbytes/razboynik/pkg/services/worker/usr"
 )
@@ -18,12 +18,12 @@ type CompleterFunction func(string, *razboy.Config) []string
 type GetCompleterFunction func() (CompleterFunction, bool)
 
 type Kernel struct {
-	def           string
-	commands      []string
-	path          string
-	readline      *readline.Instance
-	autocompleter *readline.PrefixCompleter
-	run           bool
+	def       string
+	commands  map[string]bool
+	run       bool
+	readline  *readline.Instance
+	completer *readline.PrefixCompleter
+	rpc       *RPCKernel
 }
 
 var kInstance *Kernel
@@ -39,26 +39,34 @@ func Boot() *Kernel {
 
 func (k *Kernel) Build() {
 	var (
-		config *configuration.Configuration
-		dir    []string
-		path   string
-		err    error
+		cmd  map[string]bool
+		dir  []string
+		path string
+		err  error
 	)
 
-	path = "./plugin/bin"
-	config, err = configuration.GetConfiguration()
+	path, err = config.GetPluginPath()
 
 	if err != nil {
+		path = "./plugin/bin"
 		printer.PrintError(errors.New("Can't load configuration. Plugin path will be set : ./plugin/bin"))
-	} else {
-		path = config.PluginDir
 	}
 
 	dir = usr.ListDir(path)
-	k.SetCommands(dir)
+
+	cmd = make(map[string]bool)
+	for _, v := range dir {
+		cmd[v] = true
+	}
+	k.SetCommands(cmd)
+
+	k.rpc = CreateRPCServer()
+	k.def = "sh"
+	go StartServer(k.rpc)
 }
 
 func (k *Kernel) Exec(line string, config *razboy.Config) error {
+	k.rpc.Config = config
 	return k.ExecKernelLine(CreateLine(line), config)
 }
 
@@ -67,17 +75,11 @@ func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) error {
 		k.StopRun()
 	}
 
-	for _, cmd := range k.commands {
-		if cmd == l.GetName() {
-			return k.ExecCmd(l)
-		}
+	if !k.commands[l.GetName()] {
+		l = CreateLine("sh " + l.GetName())
 	}
 
-	if k.def != "" {
-		return nil
-	}
-
-	return k.Default(l, config)
+	return k.ExecCmd(l)
 }
 
 func (k *Kernel) ExecCmd(l *Line) error {
@@ -99,9 +101,6 @@ func (k *Kernel) Run(config *razboy.Config) error {
 	}
 
 	k.StartRun()
-
-	krpc := rpc.CreateRPCKernel(config)
-	go rpc.RPCStart(krpc)
 
 	return k.Loop(config)
 }
@@ -147,12 +146,19 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 		autocompleter *readline.PrefixCompleter
 		child         *readline.PrefixCompleter
 		children      []readline.PrefixCompleterInterface
+		cmd           []string
 		err           error
 	)
 
 	autocompleter = readline.NewPrefixCompleter()
 
-	for _, item := range k.GetCommands() {
+	for key, _ := range k.GetCommands() {
+		cmd = append(cmd, key)
+	}
+
+	sort.Strings(cmd)
+
+	for _, item := range cmd {
 		child = readline.PcItem(item)
 		children = append(children, child)
 	}
@@ -180,8 +186,7 @@ func (k *Kernel) initReadline(c *razboy.Config) error {
 	// }
 
 	autocompleter.SetChildren(children)
-
-	k.autocompleter = autocompleter
+	k.completer = autocompleter
 
 	config = &readline.Config{
 		Prompt:          "(" + c.Url + ")$ ",
@@ -201,10 +206,6 @@ func (k *Kernel) SetDefault(d string) {
 	k.def = d
 }
 
-func (k *Kernel) Default(l *Line, config *razboy.Config) error {
-	return errors.New("No default fonction defined")
-}
-
 func (k *Kernel) StartRun() {
 	k.run = true
 }
@@ -213,11 +214,11 @@ func (k *Kernel) StopRun() {
 	k.run = false
 }
 
-func (k *Kernel) GetCommands() []string {
+func (k *Kernel) GetCommands() map[string]bool {
 	return k.commands
 }
 
-func (k *Kernel) SetCommands(items []string) {
+func (k *Kernel) SetCommands(items map[string]bool) {
 	k.commands = items
 }
 

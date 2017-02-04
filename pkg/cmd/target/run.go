@@ -26,7 +26,7 @@ import (
 	"errors"
 
 	"github.com/eatbytes/razboynik/pkg/services/kernel"
-	"github.com/eatbytes/razboynik/pkg/services/worker/configuration"
+	"github.com/eatbytes/razboynik/pkg/services/worker/config"
 	"github.com/eatbytes/razboynik/pkg/services/worker/printer"
 	"github.com/eatbytes/razboynik/pkg/services/worker/target"
 	"github.com/spf13/cobra"
@@ -39,7 +39,7 @@ var RunCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
 			k      *kernel.Kernel
-			config *configuration.Configuration
+			conf   *config.Config
 			target *target.Target
 			err    error
 		)
@@ -51,13 +51,13 @@ var RunCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Run target", "Run target '"+args[0]+"' in config file")
 
-		config, err = configuration.GetConfiguration()
+		conf, err = config.GetConfiguration()
 
 		if err != nil {
 			return err
 		}
 
-		target, _, err = configuration.FindTarget(config, args[0])
+		target, _, err = config.FindTarget(conf, args[0])
 
 		if err != nil {
 			return err

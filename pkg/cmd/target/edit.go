@@ -25,7 +25,7 @@ package target
 import (
 	"errors"
 
-	"github.com/eatbytes/razboynik/pkg/services/worker/configuration"
+	"github.com/eatbytes/razboynik/pkg/services/worker/config"
 	"github.com/eatbytes/razboynik/pkg/services/worker/printer"
 	"github.com/eatbytes/razboynik/pkg/services/worker/target"
 	"github.com/spf13/cobra"
@@ -37,9 +37,9 @@ var EditCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			config *configuration.Configuration
-			t      *target.Target
-			err    error
+			conf *config.Config
+			t    *target.Target
+			err  error
 		)
 
 		if len(args) < 1 {
@@ -49,13 +49,13 @@ var EditCmd = &cobra.Command{
 		printer.PrintIntro()
 		printer.PrintSection("Edit target", "Edit target '"+args[0]+"' in config file")
 
-		config, err = configuration.GetConfiguration()
+		conf, err = config.GetConfiguration()
 
 		if err != nil {
 			return err
 		}
 
-		t, _, err = configuration.FindTarget(config, args[0])
+		t, _, err = config.FindTarget(conf, args[0])
 
 		if err != nil {
 			return err
@@ -63,6 +63,6 @@ var EditCmd = &cobra.Command{
 
 		target.EditTarget(t)
 
-		return configuration.SaveConfiguration(config)
+		return config.SaveConfiguration(conf)
 	},
 }

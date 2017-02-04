@@ -29,6 +29,17 @@ type Config struct {
 	Shellscope  string
 }
 
+func (c *Config) Copy(cc *Config) {
+	c.Url = cc.Url
+	c.Method = cc.Method
+	c.Parameter = cc.Parameter
+	c.Key = cc.Key
+	c.Proxy = cc.Proxy
+	c.Encoding = cc.Encoding
+	c.Shellmethod = cc.Shellmethod
+	c.Shellscope = cc.Shellscope
+}
+
 func NewConfig() *Config {
 	return &Config{
 		Method:      M_GET,

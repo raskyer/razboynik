@@ -23,7 +23,7 @@
 package target
 
 import (
-	"github.com/eatbytes/razboynik/pkg/services/worker/configuration"
+	"github.com/eatbytes/razboynik/pkg/services/worker/config"
 	"github.com/eatbytes/razboynik/pkg/services/worker/printer"
 	"github.com/eatbytes/razboynik/pkg/services/worker/target"
 	"github.com/spf13/cobra"
@@ -35,7 +35,7 @@ var AddCmd = &cobra.Command{
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			config    *configuration.Configuration
+			conf      *config.Config
 			newTarget *target.Target
 			err       error
 		)
@@ -45,15 +45,15 @@ var AddCmd = &cobra.Command{
 			printer.PrintSection("Add target", "Add target in config file")
 		}
 
-		config, err = configuration.GetConfiguration()
+		conf, err = config.GetConfiguration()
 
 		if err != nil {
 			return err
 		}
 
 		newTarget = target.CreateTarget()
-		config.Targets = append(config.Targets, newTarget)
+		conf.Targets = append(conf.Targets, newTarget)
 
-		return configuration.SaveConfiguration(config)
+		return config.SaveConfiguration(conf)
 	},
 }

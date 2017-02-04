@@ -1,39 +1,49 @@
-package shellmodule
+package main
 
 import (
+	"fmt"
+	"os"
 	"strings"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
+	"github.com/eatbytes/razpomoshnik"
 )
 
-var Pwditem = kernel.Item{
-	Name: "pwd",
-	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
-		var (
-			raw, a, scope string
-			err           error
-			request       *razboy.REQUEST
-			response      *razboy.RESPONSE
-		)
+func main() {
+	var (
+		raw, a, scope string
+		err           error
+		config        *razboy.Config
+		request       *razboy.REQUEST
+		response      *razboy.RESPONSE
+	)
 
-		raw = "pwd " + l.GetStr()
-		a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
+	config, err = razpomoshnik.GetConfig()
 
-		request = razboy.CreateRequest(a, config)
-		response, err = razboy.Send(request)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+
+	raw = "pwd " + strings.Join(os.Args[1:], " ")
+	a = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod) + razboy.AddAnswer(config.Method, config.Parameter)
+
+	request = razboy.CreateRequest(a, config)
+	response, err = razboy.Send(request)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+
+	scope = strings.TrimSpace(response.GetResult())
+
+	if scope != "" {
+		err = razpomoshnik.UpdatePrompt(scope)
 
 		if err != nil {
-			return kernel.Response{Err: err}
+			fmt.Fprintln(os.Stderr, err)
+			return
 		}
-
-		scope = strings.TrimSpace(response.GetResult())
-
-		if scope != "" {
-			config.Shellscope = scope
-			kernel.Boot().UpdatePrompt(config.Url, scope)
-		}
-
-		return kernel.Response{Body: scope}
-	},
+	}
 }
