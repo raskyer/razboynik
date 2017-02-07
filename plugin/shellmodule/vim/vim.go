@@ -1,63 +1,64 @@
-package shellmodule
+package main
 
 import (
-	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
+
+	"fmt"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
-	"github.com/eatbytes/razboynik/services/modules/phpmodule"
 	"github.com/eatbytes/sysgo"
 )
 
-var Vimitem = kernel.Item{
-	Name: "vim",
-	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
-		var (
-			remote, local string
-			resp          string
-			err           error
-			cmd           *exec.Cmd
-			request       *razboy.REQUEST
-		)
+func main() {
+	var (
+		remote, local string
+		resp          string
+		err           error
+		rpc           *razboy.RPCClient
+		config        *razboy.Config
+		cmd           *exec.Cmd
+		request       *razboy.REQUEST
+	)
 
-		args := l.GetArg()
+	rpc = razboy.CreateRPCClient()
+	config, err = rpc.GetConfig()
 
-		if len(args) < 1 {
-			return kernel.Response{Err: errors.New("Please write the path of the file to edit")}
-		}
+	if len(os.Args) < 1 {
+		return
+	}
 
-		request = razboy.CreateRequest(l.GetRaw(), config)
+	request = razboy.CreateRequest("vim "+strings.Join(os.Args[1:], " "), config)
 
-		remote = args[0]
-		local = "/tmp/tmp-razboynik." + filepath.Ext(remote)
+	fmt.Println(request)
 
-		_, err = phpmodule.DownloadAction(remote, local, request)
+	remote = os.Args[0]
+	local = "/tmp/tmp-razboynik." + filepath.Ext(remote)
 
-		if err != nil {
-			return kernel.Response{Err: err}
-		}
+	//_, err = phpmodule.DownloadAction(remote, local, request)
 
-		cmd = exec.Command("vim", local)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		err = cmd.Run()
+	if err != nil {
+		return
+	}
 
-		if err != nil {
-			return kernel.Response{Err: err}
-		}
+	cmd = exec.Command("vim", local)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
 
-		_, err = phpmodule.UploadAction(local, remote, request)
+	if err != nil {
+		return
+	}
 
-		if err != nil {
-			return kernel.Response{Err: err}
-		}
+	//_, err = phpmodule.UploadAction(local, remote, request)
 
-		resp, err = sysgo.Call("rm " + local)
-		kernel.WriteSuccess(l.GetStdout(), resp)
+	if err != nil {
+		return
+	}
 
-		return kernel.Response{Body: resp, Err: err}
-	},
+	resp, err = sysgo.Call("rm " + local)
+
+	fmt.Fprintln(os.Stdout, resp)
 }

@@ -1,6 +1,0 @@
-var Exampleitem = kernel.Item{
-	Name: "example",
-	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
-		return kernel.Response{}
-	},
-}
