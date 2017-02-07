@@ -18,7 +18,7 @@ func main() {
 		request       *razboy.REQUEST
 	)
 
-	if len(os.Args) < 1 {
+	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "Please write the path of the file to download")
 		return
 	}
@@ -53,8 +53,8 @@ func getRemote(arr []string, context string) string {
 }
 
 func getLocal(args []string) string {
-	if len(args) > 1 {
-		return args[1]
+	if len(args) > 2 {
+		return args[2]
 	}
 
 	return "output.txt"
