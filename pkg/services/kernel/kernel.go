@@ -23,7 +23,7 @@ type Kernel struct {
 	run       bool
 	readline  *readline.Instance
 	completer *readline.PrefixCompleter
-	rpc       *RPCKernel
+	rpc       *RPCServer
 }
 
 var kInstance *Kernel
@@ -47,8 +47,8 @@ func (k *Kernel) Build() {
 
 	path, err = config.GetPluginPath()
 
-	if err != nil {
-		path = "./plugin/bin"
+	if err != nil || path == "" {
+		path = "../plugin/bin"
 		printer.PrintError(errors.New("Can't load configuration. Plugin path will be set : ./plugin/bin"))
 	}
 

@@ -6,4 +6,5 @@ install:
 	go install
 
 clean: 
-	go clean
+	rm pkg/pkg
+	rm plugin/bin/*

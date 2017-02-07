@@ -7,19 +7,20 @@ import (
 	"os"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razpomoshnik"
 )
 
 func main() {
 	var (
 		action, raw string
 		err         error
+		rpc         *razboy.RPCClient
 		config      *razboy.Config
 		request     *razboy.REQUEST
 		response    *razboy.RESPONSE
 	)
 
-	config, err = razpomoshnik.GetConfig()
+	rpc = razboy.CreateRPCClient()
+	config, err = rpc.GetConfig()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)

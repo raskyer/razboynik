@@ -7,28 +7,24 @@ import (
 	"os"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razpomoshnik"
-)
-
-const (
-	RPC_ERROR     int = 1
-	NETWORK_ERROR int = 2
 )
 
 func main() {
 	var (
 		raw, a, scope string
 		err           error
+		rpc           *razboy.RPCClient
 		config        *razboy.Config
 		request       *razboy.REQUEST
 		response      *razboy.RESPONSE
 	)
 
-	config, err = razpomoshnik.GetConfig()
+	rpc = razboy.CreateRPCClient()
+	config, err = rpc.GetConfig()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(RPC_ERROR)
+		os.Exit(razboy.RPCERROR)
 	}
 
 	raw = "cd " + strings.Join(os.Args[1:], " ") + " && pwd"
@@ -40,7 +36,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(NETWORK_ERROR)
+		os.Exit(razboy.NETWORKERROR)
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -50,11 +46,12 @@ func main() {
 	}
 
 	config.Shellscope = scope
-	err = razpomoshnik.UpdatePrompt(scope)
-	err = razpomoshnik.UpdateConfig(config)
+
+	err = rpc.SetPrompt(config.Url, scope)
+	err = rpc.SetConfig(config)
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(RPC_ERROR)
+		os.Exit(razboy.RPCERROR)
 	}
 }

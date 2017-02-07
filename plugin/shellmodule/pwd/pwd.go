@@ -6,23 +6,24 @@ import (
 	"strings"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razpomoshnik"
 )
 
 func main() {
 	var (
 		raw, a, scope string
 		err           error
+		rpc           *razboy.RPCClient
 		config        *razboy.Config
 		request       *razboy.REQUEST
 		response      *razboy.RESPONSE
 	)
 
-	config, err = razpomoshnik.GetConfig()
+	rpc = razboy.CreateRPCClient()
+	config, err = rpc.GetConfig()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return
+		os.Exit(razboy.RPCERROR)
 	}
 
 	raw = "pwd " + strings.Join(os.Args[1:], " ")
@@ -33,17 +34,19 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return
+		os.Exit(razboy.NETWORKERROR)
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
 
-	if scope != "" {
-		err = razpomoshnik.UpdatePrompt(scope)
+	if scope == "" {
+		return
+	}
 
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			return
-		}
+	err = rpc.SetPrompt(config.Url, scope)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(razboy.RPCERROR)
 	}
 }

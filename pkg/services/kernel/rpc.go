@@ -5,35 +5,38 @@ import (
 	"github.com/smallnest/rpcx"
 )
 
-type RPCKernel struct {
+type RPCServer struct {
 	Config *razboy.Config
 }
+
 type Args interface{}
 type Reply interface{}
 
-func (r *RPCKernel) GetConfig(args *Args, reply *Reply) error {
-	*reply = r.Config
-	return nil
+func CreateRPCServer() *RPCServer {
+	return &RPCServer{}
 }
 
-func (r *RPCKernel) UpdateConfig(args *razboy.Config, reply *Reply) error {
-	*r.Config = *args
-	return nil
-}
-
-func (r *RPCKernel) UpdatePrompt(args *string, reply *Reply) error {
-	k := Boot()
-	k.UpdatePrompt(r.Config.Url, *args)
-
-	return nil
-}
-
-func CreateRPCServer() *RPCKernel {
-	return &RPCKernel{}
-}
-
-func StartServer(kernel *RPCKernel) {
+func StartServer(r *RPCServer) {
 	server := rpcx.NewServer()
-	server.RegisterName("Kernel", kernel)
-	server.Serve("tcp", ":8972")
+	server.RegisterName(razboy.OBJECT, r)
+	server.Serve(razboy.PROTOCOL, razboy.ADDR)
+}
+
+func (r *RPCServer) GetConfig(args *Args, reply *Reply) error {
+	*reply = r.Config
+
+	return nil
+}
+
+func (r *RPCServer) SetConfig(args *razboy.Config, reply *Reply) error {
+	*r.Config = *args
+
+	return nil
+}
+
+func (r *RPCServer) SetPrompt(args *[]string, reply *Reply) error {
+	k := Boot()
+	k.UpdatePrompt((*args)[0], (*args)[1])
+
+	return nil
 }
