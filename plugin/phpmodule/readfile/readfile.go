@@ -1,46 +1,46 @@
 package phpmodule
 
 import (
-	"errors"
+	"fmt"
+	"os"
 
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-var Readfileitem = kernel.Item{
-	Name: "-readfile",
-	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
-		var (
-			action   string
-			file     string
-			args     []string
-			err      error
-			request  *razboy.REQUEST
-			response *razboy.RESPONSE
-		)
+func main() {
+	var (
+		action   string
+		file     string
+		err      error
+		rpc      *razboy.RPCClient
+		config   *razboy.Config
+		request  *razboy.REQUEST
+		response *razboy.RESPONSE
+	)
 
-		args = l.GetArg()
+	if len(os.Args) < 2 {
+		fmt.Fprintln(os.Stderr, "You should give the path of the file to read")
+		return
+	}
 
-		if len(args) < 1 {
-			return kernel.Response{Err: errors.New("You should give the path of the file to read")}
-		}
+	rpc = razboy.CreateRPCClient()
+	config, err = rpc.GetConfig()
 
-		file = args[0]
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(razboy.RPCERROR)
+	}
 
-		action = "$r=file_get_contents('" + file + "');" + razboy.AddAnswer(config.Method, config.Parameter)
-		request = razboy.CreateRequest(action, config)
-		response, err = razboy.Send(request)
+	file = os.Args[1]
 
-		if err != nil {
-			return kernel.Response{Err: err}
-		}
+	action = "$r=file_get_contents('" + file + "');" + razboy.AddAnswer(config.Method, config.Parameter)
+	request = razboy.CreateRequest(action, config)
+	response, err = razboy.Send(request)
 
-		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(razboy.NETWORKERROR)
+	}
 
-		return kernel.Response{Body: response.GetResult()}
-	},
+	fmt.Fprintln(os.Stdout, response.GetResult())
 }
-
-// func (read *Readfilecmd) GetCompleter() (kernel.CompleterFunction, bool) {
-// 	return lister.RemotePHP, true
-// }

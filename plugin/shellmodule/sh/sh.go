@@ -27,7 +27,7 @@ func main() {
 		return
 	}
 
-	raw = strings.Join(os.Args[1:], " ")
+	raw = strings.Join(os.Args[1:len(os.Args)], " ")
 
 	action = razboy.CreateCMD(raw, config.Shellscope, config.Shellmethod)
 	action = action + razboy.AddAnswer(config.Method, config.Parameter)
@@ -51,5 +51,5 @@ func main() {
 	// 	kernel.WriteSuccess(kl.GetStdout(), string(b))
 	// }
 
-	fmt.Fprint(os.Stdout, response.GetResult())
+	fmt.Fprintln(os.Stdout, strings.TrimSpace(response.GetResult()))
 }

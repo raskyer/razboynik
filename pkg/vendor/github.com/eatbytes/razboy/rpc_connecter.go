@@ -6,12 +6,13 @@ import (
 
 //Const
 const (
-	OBJECT    = "Kernel"
-	PROTOCOL  = "tcp"
-	ADDR      = ":8972"
-	GETCONFIG = "Kernel.GetConfig"
-	SETCONFIG = "Kernel.SetConfig"
-	SETPROMPT = "Kernel.SetPrompt"
+	OBJECT       = "Kernel"
+	PROTOCOL     = "tcp"
+	ADDR         = ":8972"
+	GETCONFIG    = "Kernel.GetConfig"
+	SETCONFIG    = "Kernel.SetConfig"
+	SETPROMPT    = "Kernel.SetPrompt"
+	REQUESTOTHER = "Kernel.RequestOther"
 
 	RPCERROR     int = 1
 	NETWORKERROR int = 2
@@ -48,4 +49,9 @@ func (r *RPCClient) SetConfig(config *Config) error {
 //SetPrompt Set the prompt to rpc
 func (r *RPCClient) SetPrompt(url, path string) error {
 	return r.client.Call(SETPROMPT, &[]string{url, path}, nil)
+}
+
+//RequestOther Request an other bin
+func (r *RPCClient) RequestOther(name string, reply [][]byte) error {
+	return r.client.Call(REQUESTOTHER, &name, &reply)
 }

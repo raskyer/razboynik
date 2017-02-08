@@ -1,11 +1,11 @@
 package kernel
 
 import (
-	"errors"
 	"io"
 	"log"
 	"os/exec"
 	"sort"
+	"strings"
 
 	"github.com/chzyer/readline"
 	"github.com/eatbytes/razboy"
@@ -21,6 +21,7 @@ type Kernel struct {
 	def       string
 	commands  map[string]bool
 	run       bool
+	path      string
 	readline  *readline.Instance
 	completer *readline.PrefixCompleter
 	rpc       *RPCServer
@@ -39,34 +40,37 @@ func Boot() *Kernel {
 
 func (k *Kernel) Build() {
 	var (
-		cmd  map[string]bool
-		dir  []string
-		path string
-		err  error
+		cmd   map[string]bool
+		files []string
+		path  string
+		err   error
 	)
 
 	path, err = config.GetPluginPath()
 
 	if err != nil || path == "" {
 		path = "../plugin/bin"
-		printer.PrintError(errors.New("Can't load configuration. Plugin path will be set : ./plugin/bin"))
+		printer.PrintWarning("Can't load configuration. Plugin path will be set to : ../plugin/bin")
 	}
 
-	dir = usr.ListDir(path)
+	files = usr.ListDir(path)
 
 	cmd = make(map[string]bool)
-	for _, v := range dir {
+	for _, v := range files {
 		cmd[v] = true
 	}
 	k.SetCommands(cmd)
 
 	k.rpc = CreateRPCServer()
 	k.def = "sh"
+	k.path = path
+
 	go StartServer(k.rpc)
 }
 
 func (k *Kernel) Exec(line string, config *razboy.Config) error {
 	k.rpc.Config = config
+
 	return k.ExecKernelLine(CreateLine(line), config)
 }
 
@@ -76,18 +80,18 @@ func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) error {
 	}
 
 	if !k.commands[l.GetName()] {
-		l = CreateLine("sh " + l.GetName())
+		l = CreateLine("sh " + l.GetName() + " " + strings.Join(l.GetArg(), " "))
 	}
 
-	return k.ExecCmd(l)
+	return k.ExecCmd(l, l.GetStdout(), l.GetStderr())
 }
 
-func (k *Kernel) ExecCmd(l *Line) error {
-	var cmd *exec.Cmd
+func (k *Kernel) ExecCmd(l *Line, stdout io.Writer, stderr io.Writer) error {
+	fullPath := k.path + "/" + l.GetName()
 
-	cmd = exec.Command("../plugin/bin/"+l.GetName(), l.GetArg()...)
-	cmd.Stdout = l.GetStdout()
-	cmd.Stderr = l.GetStderr()
+	cmd := exec.Command(fullPath, l.GetArg()...)
+	cmd.Stdout = stdout
+	cmd.Stderr = stderr
 	err := cmd.Run()
 
 	return err

@@ -1,6 +1,8 @@
 package kernel
 
 import (
+	"bytes"
+
 	"github.com/eatbytes/razboy"
 	"github.com/smallnest/rpcx"
 )
@@ -37,6 +39,32 @@ func (r *RPCServer) SetConfig(args *razboy.Config, reply *Reply) error {
 func (r *RPCServer) SetPrompt(args *[]string, reply *Reply) error {
 	k := Boot()
 	k.UpdatePrompt((*args)[0], (*args)[1])
+
+	return nil
+}
+
+func (r *RPCServer) RequestOther(args *string, reply *[][]byte) error {
+	var (
+		k      *Kernel
+		l      *Line
+		stdout *bytes.Buffer
+		stderr *bytes.Buffer
+		err    error
+	)
+
+	stdout = new(bytes.Buffer)
+	stderr = new(bytes.Buffer)
+
+	k = Boot()
+	l = CreateLine(*args)
+
+	err = k.ExecCmd(l, stdout, stderr)
+
+	if err != nil {
+		return err
+	}
+
+	*reply = [][]byte{stdout.Bytes(), stderr.Bytes()}
 
 	return nil
 }

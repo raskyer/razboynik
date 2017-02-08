@@ -16,7 +16,7 @@ func PrintIntro() {
 	}
 
 	fmt.Fprint(os.Stdout, "\n")
-	fmt.Fprintln(os.Stdout, "███████████████████████████████████████████████████████████████████████")
+	fmt.Fprintln(os.Stdout, color.WhiteString("███████████████████████████████████████████████████████████████████████"))
 	fmt.Fprintln(os.Stdout, color.BlueString("███████████████████████████████████████████████████████████████████████"))
 	fmt.Fprint(os.Stdout, "\n")
 	fmt.Fprintln(os.Stdout, color.RedString(`██████╗  █████╗ ███████╗██████╗  ██████╗ ██╗   ██╗███╗   ██╗██╗██╗  ██╗
@@ -84,5 +84,9 @@ func Print(str string) {
 }
 
 func PrintError(err error) {
-	fmt.Fprintf(os.Stderr, color.RedString(err.Error()))
+	fmt.Fprintln(os.Stderr, color.RedString(err.Error()))
+}
+
+func PrintWarning(str string) {
+	fmt.Fprintln(os.Stdout, color.YellowString(str))
 }

@@ -1,4 +1,4 @@
-package phpmodule
+package main
 
 import (
 	"fmt"

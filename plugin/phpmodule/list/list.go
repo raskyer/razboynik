@@ -1,35 +1,42 @@
-package phpmodule
+package main
 
 import (
+	"os"
+
+	"fmt"
+
 	"github.com/eatbytes/razboy"
-	"github.com/eatbytes/razboynik/services/kernel"
 )
 
-var Listitem = kernel.Item{
-	Name: "-list",
-	Exec: func(l *kernel.Line, config *razboy.Config) kernel.Response {
-		var (
-			scope    string
-			args     []string
-			err      error
-			response *razboy.RESPONSE
-		)
+func main() {
+	var (
+		scope    string
+		err      error
+		rpc      *razboy.RPCClient
+		config   *razboy.Config
+		response *razboy.RESPONSE
+	)
 
-		args = l.GetArg()
-		scope = getScope(args, config)
-		response, err = List(scope, config)
+	rpc = razboy.CreateRPCClient()
+	config, err = rpc.GetConfig()
 
-		if err != nil {
-			return kernel.Response{Err: err}
-		}
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(razboy.RPCERROR)
+	}
 
-		kernel.WriteSuccess(l.GetStdout(), response.GetResult())
+	scope = getScope(os.Args[1:], config)
+	response, err = list(scope, config)
 
-		return kernel.Response{Body: response.GetResult()}
-	},
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(razboy.NETWORKERROR)
+	}
+
+	fmt.Fprintln(os.Stdout, response.GetResult())
 }
 
-func List(scope string, config *razboy.Config) (*razboy.RESPONSE, error) {
+func list(scope string, config *razboy.Config) (*razboy.RESPONSE, error) {
 	var (
 		action  string
 		request *razboy.REQUEST

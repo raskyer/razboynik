@@ -24,7 +24,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		return
+		os.Exit(razboy.RPCERROR)
 	}
 
 	action = strings.Join(os.Args[1:], " ")
@@ -33,7 +33,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		return
+		os.Exit(razboy.NETWORKERROR)
 	}
 
 	fmt.Fprintln(os.Stdout, response.GetResult())
