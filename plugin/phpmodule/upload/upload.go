@@ -49,7 +49,7 @@ func main() {
 		return
 	}
 
-	fmt.Fprintln(os.Stdout, response.GetResult())
+	fmt.Fprintln(os.Stdout, "Uploaded successfully")
 }
 
 func UploadAction(local, remote string, request *razboy.REQUEST) (*razboy.RESPONSE, error) {

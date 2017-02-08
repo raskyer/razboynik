@@ -2,6 +2,8 @@ package kernel
 
 import (
 	"bytes"
+	"os"
+	"os/exec"
 
 	"github.com/eatbytes/razboy"
 	"github.com/smallnest/rpcx"
@@ -43,7 +45,7 @@ func (r *RPCServer) SetPrompt(args *[]string, reply *Reply) error {
 	return nil
 }
 
-func (r *RPCServer) RequestOther(args *string, reply *[][]byte) error {
+func (r *RPCServer) RequestPlugin(args *string, reply *[][]byte) error {
 	var (
 		k      *Kernel
 		l      *Line
@@ -67,4 +69,13 @@ func (r *RPCServer) RequestOther(args *string, reply *[][]byte) error {
 	*reply = [][]byte{stdout.Bytes(), stderr.Bytes()}
 
 	return nil
+}
+
+func (r *RPCServer) RequestSystem(args *[]string, reply *Reply) error {
+	cmd := exec.Command((*args)[0], (*args)[1:len(*args)]...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	return cmd.Run()
 }

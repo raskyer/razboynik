@@ -6,16 +6,17 @@ import (
 
 //Const
 const (
-	OBJECT       = "Kernel"
-	PROTOCOL     = "tcp"
-	ADDR         = ":8972"
-	GETCONFIG    = "Kernel.GetConfig"
-	SETCONFIG    = "Kernel.SetConfig"
-	SETPROMPT    = "Kernel.SetPrompt"
-	REQUESTOTHER = "Kernel.RequestOther"
+	OBJECT         = "Kernel"
+	PROTOCOL       = "tcp"
+	ADDR           = ":8972"
+	GET_CONFIG     = "Kernel.GetConfig"
+	SET_CONFIG     = "Kernel.SetConfig"
+	SET_PROMPT     = "Kernel.SetPrompt"
+	REQUEST_PLUGIN = "Kernel.RequestPlugin"
+	REQUEST_SYSTEM = "Kernel.RequestSystem"
 
-	RPCERROR     int = 1
-	NETWORKERROR int = 2
+	RPC_ERROR     int = 1
+	NETWORK_ERROR int = 2
 )
 
 type RPCClient struct {
@@ -36,22 +37,27 @@ func CreateRPCClient() *RPCClient {
 //GetConfig Get the config object from rpc
 func (r *RPCClient) GetConfig() (*Config, error) {
 	config := new(Config)
-	err := r.client.Call(GETCONFIG, nil, config)
+	err := r.client.Call(GET_CONFIG, nil, config)
 
 	return config, err
 }
 
 //SetConfig Set the config object to rpc
 func (r *RPCClient) SetConfig(config *Config) error {
-	return r.client.Call(SETCONFIG, config, nil)
+	return r.client.Call(SET_CONFIG, config, nil)
 }
 
 //SetPrompt Set the prompt to rpc
 func (r *RPCClient) SetPrompt(url, path string) error {
-	return r.client.Call(SETPROMPT, &[]string{url, path}, nil)
+	return r.client.Call(SET_PROMPT, &[]string{url, path}, nil)
 }
 
-//RequestOther Request an other bin
-func (r *RPCClient) RequestOther(name string, reply [][]byte) error {
-	return r.client.Call(REQUESTOTHER, &name, &reply)
+//RequestPlugin Request an other plugin
+func (r *RPCClient) RequestPlugin(cmd string, reply [][]byte) error {
+	return r.client.Call(REQUEST_PLUGIN, &cmd, &reply)
+}
+
+//RequestSystem Request an action on host system
+func (r *RPCClient) RequestSystem(cmd []string) error {
+	return r.client.Call(REQUEST_SYSTEM, &cmd, nil)
 }

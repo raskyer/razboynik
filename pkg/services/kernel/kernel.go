@@ -49,8 +49,8 @@ func (k *Kernel) Build() {
 	path, err = config.GetPluginPath()
 
 	if err != nil || path == "" {
-		path = "../plugin/bin"
-		printer.PrintWarning("Can't load configuration. Plugin path will be set to : ../plugin/bin")
+		path = "./plugin/bin"
+		printer.PrintWarning("Can't load configuration. Plugin path will be set to : ./plugin/bin")
 	}
 
 	files = usr.ListDir(path)
@@ -77,10 +77,12 @@ func (k *Kernel) Exec(line string, config *razboy.Config) error {
 func (k *Kernel) ExecKernelLine(l *Line, config *razboy.Config) error {
 	if l.GetName() == "exit" {
 		k.StopRun()
+
+		return nil
 	}
 
 	if !k.commands[l.GetName()] {
-		l = CreateLine("sh " + l.GetName() + " " + strings.Join(l.GetArg(), " "))
+		l = CreateLine(k.def + " " + l.GetName() + " " + strings.Join(l.GetArg(), " "))
 	}
 
 	return k.ExecCmd(l, l.GetStdout(), l.GetStderr())

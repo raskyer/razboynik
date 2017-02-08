@@ -23,7 +23,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(razboy.RPCERROR)
+		os.Exit(razboy.RPC_ERROR)
 	}
 
 	raw = "pwd " + strings.Join(os.Args[1:], " ")
@@ -34,7 +34,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(razboy.NETWORKERROR)
+		os.Exit(razboy.NETWORK_ERROR)
 	}
 
 	scope = strings.TrimSpace(response.GetResult())
@@ -47,6 +47,6 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(razboy.RPCERROR)
+		os.Exit(razboy.RPC_ERROR)
 	}
 }

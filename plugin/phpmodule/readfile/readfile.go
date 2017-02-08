@@ -1,4 +1,4 @@
-package phpmodule
+package main
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(razboy.RPCERROR)
+		os.Exit(razboy.RPC_ERROR)
 	}
 
 	file = os.Args[1]
@@ -39,7 +39,7 @@ func main() {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(razboy.NETWORKERROR)
+		os.Exit(razboy.NETWORK_ERROR)
 	}
 
 	fmt.Fprintln(os.Stdout, response.GetResult())

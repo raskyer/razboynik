@@ -1,8 +1,9 @@
 build:
-	cd pkg && go get
-	cd pkg && go build
+	cd pkg && go build -o ../razboynik
+	make plugin
 
 install:
+	cd pkg && go get
 	cd pkg && go install
 
 plugin:
@@ -11,7 +12,7 @@ plugin:
 	cd plugin && ./build_all.sh kernelmodule
 
 clean: 
-	rm pkg/pkg
+	rm razboynik
 	rm plugin/bin/*
 
 clean_pkg:
